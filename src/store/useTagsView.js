@@ -77,9 +77,9 @@ export async function delAllViews(view) {
 }
 
 export async function updateVisitedView(view) {
-    for (const v of state.visitedViews) {
-        if(v.path === view.path){
-            v = Object.assign(v, view)
+    for (let item of state.visitedViews) {
+        if(item.path === view.path){
+            item = Object.assign(item, view)
             break
         }
     }
