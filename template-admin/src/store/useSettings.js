@@ -1,7 +1,7 @@
 import { reactive, readonly } from "vue";
 import Cookies from 'js-cookie'
 /**
- * 系统设置
+ * @description 系统设置
  */
 // 创建默认的全局单例响应式数据，仅供该模块内部使用
 const state = reactive({
@@ -19,12 +19,18 @@ const state = reactive({
 // 对外暴露的数据是只读的，不能直接修改。也可以进一步使用toRefs进行封装，从而避免解构或展开后响应式丢失
 export const settingsStore = readonly(state)
 
-// 修改设置
+/**
+ * 修改设置
+ * @param {String} stateKey 需要修改的状态
+ * @param {any} value
+ */
 export async function modifi(stateKey, value) {
     state[stateKey] = value
 }
 
-// 切换侧边栏
+/**
+ * 切换侧边栏
+ */
 export async function toggleSidebar() {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
@@ -35,7 +41,10 @@ export async function toggleSidebar() {
     }
 }
 
-// 关闭侧边栏
+/**
+ * 关闭侧边栏
+ * @param {Boolean} withoutAnimation 是否无动画
+ */
 export async function closeSidebar({ withoutAnimation }){
     Cookies.set('sidebarStatus', 0)
     state.sidebar.opened = false

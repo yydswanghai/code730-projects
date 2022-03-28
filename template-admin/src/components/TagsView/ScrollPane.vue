@@ -35,6 +35,12 @@ export default {
         return {
             scrollContainer
         }
+    },
+    methods: {
+        /* 该方法是给父组件使用 */
+        moveToTarget(){
+            console.log('子组件的函数');
+        }
     }
 }
 

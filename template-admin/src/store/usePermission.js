@@ -2,7 +2,7 @@ import { reactive, readonly } from "vue";
 import { constantRoutes, userRoutes } from '@/router/routes'
 import { useRouter } from 'vue-router'
 /**
- * 鉴权路由
+ * @description 鉴权路由
  */
 const state = reactive({
     routes: [],// 用户路由
@@ -39,6 +39,7 @@ export async function addRoutes(routes) {
         router.addRoute(route)
     })
     console.log(router.getRoutes());
+    console.log(state.routes);
 }
 /**
  * 清除路由

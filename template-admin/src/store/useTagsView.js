@@ -1,6 +1,6 @@
 import { reactive, readonly } from "vue";
 /**
- * 标签
+ * @description 标签
  */
 const state = reactive({
     visitedViews: [],// 用户访问过的页面 就是标签栏导航显示的一个个 tag 数组集合
@@ -9,14 +9,21 @@ const state = reactive({
 
 export const tagsViewStore = readonly(state)
 
-export async function addView(view) {
-    /* add visited */
+export async function addVisitedView(view) {
+    // 如果存在则返回，否则添加进去
     if(state.visitedViews.some(v => v.path === view.path)) return
     state.visitedViews.push(
         Object.assign({}, view, {
             title: view.meta.title || 'no-name'
         })
     )
+}
+/**
+ * 添加tag
+ */
+export async function addView(view) {
+    /* add visited */
+    addVisitedView(view)
     /* add cached */
     if (state.cachedViews.includes(view.name)) return
     if(!view.meta.noCache){
@@ -75,7 +82,9 @@ export async function delAllViews(view) {
         cachedViews: [...state.cachedViews]
     }
 }
-
+/**
+ * 更新 visitedViews
+ */
 export async function updateVisitedView(view) {
     for (let item of state.visitedViews) {
         if(item.path === view.path){
