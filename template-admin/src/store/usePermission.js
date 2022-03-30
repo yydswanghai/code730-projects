@@ -38,7 +38,7 @@ export async function addRoutes(routes) {
     routes.forEach(route => {
         router.addRoute(route)
     })
-    console.log(router.getRoutes());
+    // console.log(router.getRoutes());
     console.log(state.routes);
 }
 /**

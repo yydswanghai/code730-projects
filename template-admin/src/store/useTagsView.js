@@ -9,6 +9,9 @@ const state = reactive({
 
 export const tagsViewStore = readonly(state)
 
+/**
+ * 仅添加tag
+ */
 export async function addVisitedView(view) {
     // 如果存在则返回，否则添加进去
     if(state.visitedViews.some(v => v.path === view.path)) return
@@ -19,7 +22,7 @@ export async function addVisitedView(view) {
     )
 }
 /**
- * 添加tag
+ * 添加tag并缓存
  */
 export async function addView(view) {
     /* add visited */
@@ -31,6 +34,16 @@ export async function addView(view) {
     }
 }
 
+/**
+ * 删除缓存tag
+ */
+export async function delCachedView(view) {
+    const index = state.cachedViews.indexOf(view.name)
+    index > -1 && state.cachedViews.splice(index, 1)
+}
+/**
+ * 删除tag和缓存的tag
+ */
 export async function delView(view) {
     /* del visited */
     for (const [i, v] of state.visitedViews.entries()) {
@@ -40,8 +53,7 @@ export async function delView(view) {
         }
     }
     /* del cached */
-    const index = state.cachedViews.indexOf(view.name)
-    index > -1 && state.cachedViews.splice(index, 1)
+    delCachedView(view)
 
     return {
         visitedViews: [...state.visitedViews],
@@ -68,8 +80,10 @@ export async function delOthersViews(view) {
         cachedViews: [...state.cachedViews]
     }
 }
-
-export async function delAllViews(view) {
+/**
+ * 清空所有tag，重置缓存
+ */
+export async function delAllViews() {
     /* del all visited */
     // keep affix tags
     const affixTags = state.visitedViews.filter(tag => tag.meta.affix)

@@ -12,8 +12,6 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 export default {
     name: 'ScrollPane',
     setup(props, ctx){
-        const tagAndTagSpacing = 4// 间距
-        const left = ref(0)
         const scrollContainer = ref(null)
         let scrollWrapper = null
         const emitScroll = () => {
@@ -26,22 +24,10 @@ export default {
         onBeforeUnmount(() => {
             scrollWrapper.value.removeEventListener('scroll', emitScroll)
         })
-        // const moveToTarget = (currentTag) => {
-        //     const $container = scrollContainer.value.$el
-        //     const $containerWidth = $container.offsetWidth
-        //     const $scrollWrapper = scrollWrapper
-
-        // }
         return {
-            scrollContainer
+            scrollContainer,
         }
     },
-    methods: {
-        /* 该方法是给父组件使用 */
-        moveToTarget(){
-            console.log('子组件的函数');
-        }
-    }
 }
 
 </script>

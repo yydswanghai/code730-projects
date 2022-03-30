@@ -83,7 +83,7 @@ export const userRoutes = [
                 path: '',
                 name: 'test-declaration',
                 component:  () => import('../views/user/commend-declaration/index.vue'),
-                meta: { title: '列表申报', icon: 'user' },
+                meta: { title: '测试申报', icon: 'user' },
             },
         ]
     },
@@ -94,21 +94,25 @@ export const userRoutes = [
         children: [
             {
                 path: '',
+                name: 'menu2-1',
                 component:  () => import('../views/menu/index.vue'),
                 meta: { title: '二级栏目-1', icon: 'el-menu' },
             },
             {
                 path: 'menu2-2',
+                name: 'menu2-2',
                 component:  () => import('../views/menu/index.vue'),
                 meta: { title: '二级栏目-2', icon: 'el-menu' },
                 children: [
                     {
                         path: '',
+                        name: 'menu2-2-1',
                         component:  () => import('../views/user/commend-declaration/index.vue'),
                         meta: { title: '三级栏目-1', icon: 'el-menu' },
                     },
                     {
                         path: 'menu3-2',
+                        name: 'menu2-2-2',
                         component:  () => import('../views/user/commend-declaration/index.vue'),
                         meta: { title: '三级栏目-2', icon: 'el-menu' },
                     }
@@ -119,6 +123,7 @@ export const userRoutes = [
     {
         path: '/a132',
         component: Layout,
-        meta: { title: 'a1231', icon: 'el-menu' },
+        name: 'a132',
+        meta: { title: 'a1231', icon: 'el-menu', affix: false },
     }
 ]
