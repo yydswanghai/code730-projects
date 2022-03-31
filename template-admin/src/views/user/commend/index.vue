@@ -1,15 +1,13 @@
 <template>
     <div>
+        <div>表彰申报列表主页</div>
         <RouterView />
     </div>
 </template>
 
 <script>
-export default {
-    
-}
 
 </script>
 <style lang="scss" scoped>
-    
+
 </style>

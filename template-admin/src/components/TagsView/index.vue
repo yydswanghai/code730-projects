@@ -84,7 +84,7 @@ export default {
         }
         // 初始化
         const initTags = () => {
-            const affixs = (affixTagsRef.value = filterAffixTags(routesRef.value))
+            const affixs = affixTagsRef.value = filterAffixTags(routesRef.value)
             for (const tag of affixs) {
                 if (tag.name) {
                     addVisitedView(tag)
@@ -99,12 +99,12 @@ export default {
             }
             return false
         }
-        // 移动至当前
+        // 移动至当前tag
         const moveToCurrentTag = () => {
             const tags = tagContainer.value
             nextTick(() => {
                 for (const tag of tags) {
-                    if (tag.to.path === $route.path) {
+                    if (tag && tag.to.path === $route.path) {
                         moveToTarget(tag)
                         if (tag.to.fullPath !== $route.fullPath) {
                             updateVisitedView($route)
@@ -129,6 +129,7 @@ export default {
                 firstTag = tagList[0]
                 lastTag = tagList[tagList.length - 1]
             }
+
             if (firstTag === currentTag) {
                 $scrollWrapper.scrollLeft = 0
             }else if(lastTag === currentTag){
@@ -137,12 +138,11 @@ export default {
                 const currentIndex = tagList.findIndex(item => item === currentTag)
                 const prevTag = tagList[currentIndex - 1]
                 const nextTag = tagList[currentIndex + 1]
-
                 // 标签的offsetLeft在nextTag后面
-                const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing
+                const afterNextTagOffsetLeft = nextTag ? (nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing) : 0
 
                 // 标签的offsetLeft在prevTag的前面
-                const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - tagAndTagSpacing
+                const beforePrevTagOffsetLeft = prevTag ? prevTag.$el.offsetLeft - tagAndTagSpacing : 0
                 if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
                     $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
                 } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {

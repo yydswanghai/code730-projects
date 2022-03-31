@@ -40,7 +40,10 @@ export default {
     setup() {
         const route = useRoute()
 
-        const routesRef = computed(() => permissionStore.routes); // 全部路由
+        /**
+         * 全部后台路由: Layout组件子路由
+         */
+        const routesRef = computed(() => permissionStore.routes)
 
         const activeMenuRef = computed(() => {
             // 当前栏目
@@ -50,7 +53,7 @@ export default {
                 return meta.activeMenu
             }
             return path
-        });
+        })
         return {
             activeMenu: activeMenuRef,
             routes: routesRef,

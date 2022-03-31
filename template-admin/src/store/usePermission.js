@@ -1,4 +1,4 @@
-import { reactive, readonly } from "vue";
+import { reactive, readonly, computed } from "vue";
 import { constantRoutes, userRoutes } from '@/router/routes'
 import { useRouter } from 'vue-router'
 /**
@@ -30,16 +30,24 @@ export async function generateRoutes(userinfo) {
     addRoutes(accessedRoutes)
     return accessedRoutes
 }
+
 /**
  * 添加路由
  */
-export async function addRoutes(routes) {
+export async function addRoutes(routes, parentName) {
     const router = useRouter()
     routes.forEach(route => {
-        router.addRoute(route)
+        if(parentName){
+            router.addRoute(parentName, route)
+        }else{
+            router.addRoute(route)
+        }
+        if(route.children && route.children.length){
+            addRoutes(route.children, route.name)
+        }
     })
     // console.log(router.getRoutes());
-    console.log(state.routes);
+    // console.log(state.routes);
 }
 /**
  * 清除路由

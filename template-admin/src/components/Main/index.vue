@@ -3,10 +3,10 @@
         <Navbar />
         <TagsView v-if="needTagsView" />
         <section class="app-main">
-            <RouterView v-slot="{ Component }">
-                <transition name="fade-transform" mode="out-in">
-                    <keep-alive :include="cachedViews">
-                        <component :is="Component" />
+            <RouterView v-slot="{ Component, route }">
+                <transition name="fade-transform" mode="out-in" appear>
+                    <keep-alive>
+                        <component :is="Component" :key="route.path" />
                     </keep-alive>
                 </transition>
             </RouterView>
@@ -15,14 +15,17 @@
 </template>
 
 <script>
+/**
+ * <transition/> Detail: https://staging-cn.vuejs.org/guide/built-ins/transition.html
+ * transition 组件需要一个跟元素，而<keep-alive>、<component>都不会创建真实的DOM元素，
+ * 如果<template>模板中等于使用了vue3的Fragments特性，存在两个root节点。这就是<transition>报错的原因。
+ * 所以可以在 transition 里添加一个div的根节点不过过渡效果就失效了，或者你在页面使用根节点
+ */
 import useHeaderMarginTop from '@/composition/useHeaderMarginTop.js'
 import useVariablesModule from '@/composition/useVariablesModule.js'
 import Navbar from '@/components/Navbar/index.vue'
 import TagsView from '@/components/TagsView/index.vue'
 import { settingsStore } from "@/store/useSettings"
-import { tagsViewStore } from "@/store/useTagsView.js"
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 export default {
     name: 'Main',
     components: {
@@ -30,12 +33,7 @@ export default {
         TagsView,
     },
     setup(){
-        const route = useRoute()
-        const cachedViewsRef = computed(() => tagsViewStore.cachedViews)
-        const keyRef = computed(() => route.path)
         return {
-            cachedViews: cachedViewsRef,
-            key: keyRef,
             needTagsView: settingsStore.tagsView,
             ...useHeaderMarginTop(),
             ...useVariablesModule(),

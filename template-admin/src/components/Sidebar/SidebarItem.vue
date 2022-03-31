@@ -1,6 +1,6 @@
 <template>
     <div v-if="!item.hidden">
-        <template v-if="hasOneChild && (!onlyOneChild.children || onlyOneChild.noShowingChildren)">
+        <template v-if="hasOneChild && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
             <AppLink v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
                 <ElMenuItem :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
                     <Item

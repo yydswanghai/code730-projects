@@ -49,6 +49,7 @@ export default {
             }
 
             levelListRef.value = matched.filter(it => it.meta.breadcrumb !== false)
+
         }
         /* 路由变化重新获取面包屑 */
         watch(route, (newVal, oldVal) => getBreadcrumb())
