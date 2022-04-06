@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getUserInfo, getUserMenu } from '@/api/user'
+import { getUserMenu } from '@/api/user'
 import { asyncRoutes, constantRouter } from '@/router/index'
 import { renderIcon } from '@/utils/'
 import { toRaw } from 'vue';
@@ -22,8 +22,7 @@ function generator(routerMap) {
         if(item.parentId === '-1'){
             currentRouter.component = () => import('@/layout/index.vue')
         }else{
-            const url = `@/views/user${item.path}.vue`
-            currentRouter.component = () => import(url)
+            currentRouter.component = () => import(`@/views/user${item.path}.vue`/*@vite ignore*/)
         }
         if(item.icon){
             currentRouter.meta.icon = renderIcon(item.icon)
@@ -39,7 +38,6 @@ export const useAsyncRouteStore = defineStore({
     id: 'async-route',
     state: () => ({
         menus: [],// 用户菜单
-        permissions: [],// 用户权限
         routers: constantRouter,// 路由
         addRouters: [],
         keepAliveComponents: [],// 缓存
@@ -62,12 +60,8 @@ export const useAsyncRouteStore = defineStore({
         setDynamicAddedRoute(added){
             this.isDynamicAddedRoute = added
         },
-        async generateRoutes(data){
+        async generateRoutes(){
             let accessedRouters
-            const userInfo = await getUserInfo()// 用户信息
-            if(userInfo.code === 200){
-                this.permissions = userInfo.permissions
-            }
             const userMenu = await getUserMenu()// 用户菜单
             if(userMenu.code === 200){
                 try {

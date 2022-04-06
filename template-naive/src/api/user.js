@@ -124,3 +124,60 @@ export async function getUserMenu() {
         msg: 'OK'
     }
 }
+
+export async function login(params){
+    const { username, password } = params
+    if(username === 'admin' && password === '123456'){
+        return {
+            access_token: "c9e2641a-44c4-4de3-89a2-0ed4ba5eab39",
+            clientId: "app_person_user",
+            expires_in: 7199,
+            refresh_token: "b05a6508-8a28-4270-bf71-68ae5af042f1",
+            user_info: {
+                accountNonExpired: true,
+                accountNonLocked: true,
+                authorities: [],
+                credentialsNonExpired: true,
+                enabled: true,
+                id: "5",
+                parentOid: null,
+                password: null,
+                phone: "15572151179",
+                username: "15572151179",
+            }
+        }
+    }
+    return null
+}
+
+export async function logout(){
+    return {
+        code: 200,
+        data: null,
+        msg: 'OK'
+    }
+}
+
+// export async function getUserInfo(){
+//     return {
+//         code: 200,
+//         data: {
+//             appUser: {
+//                 createBy: null,
+//                 createTime: "2022-02-21 15:51:11",
+//                 delFlag: 0,
+//                 idCard: "F4416C73D202CEB99D22E9B54C3D46F80D7EDEA75BE76BE0F08057B1FEBDDC98",
+//                 lockFlag: 0,
+//                 name: "王海",
+//                 password: "",
+//                 phone: "15572151179",
+//                 sex: 1,
+//                 updateBy: null,
+//                 updateTime: "2022-03-23 15:48:18",
+//                 userId: "5",
+//             },
+//             permissions: null
+//         },
+//         msg: 'OK'
+//     }
+// }

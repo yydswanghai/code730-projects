@@ -42,7 +42,7 @@ export default {
         AsideMenu,
     },
     setup(){
-        const collapsed = ref(false);
+        const collapsed = ref(false)
         const projectStore = useProjectSettingStore()
         const fixedHeader = computed(() => {
             const { fixed } = projectStore.headerSetting
@@ -91,3 +91,18 @@ export default {
     }
 }
 </script>
+<style lang="less">
+.layout-side-drawer {
+    background-color: rgb(0, 20, 40);
+    .layout-sider {
+        min-height: 100vh;
+        box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+        position: relative;
+        z-index: 13;
+        transition: all 0.2s ease-in-out;
+    }
+}
+</style>
+<style lang="less" scoped>
+
+</style>
