@@ -15,11 +15,12 @@
 </template>
 
 <script>
-import { ref, computed, watch, unref, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useAsyncRouteStore } from '@/store/modules/asyncRoute'
-import { generatorMenu, generatorMenuMix } from '@/utils/';
+import { getUserInfo } from '@/api/user'
+import { cloneDeep } from 'lodash-es'
 export default {
     name: 'Menu',
     props: {
@@ -35,33 +36,104 @@ export default {
         inverted: Boolean,
         navMode: String,
     },
-    setup(props){
+    setup(props, ctx){
         const projectStore = useProjectSettingStore()
         const asyncRouteStore = useAsyncRouteStore()
         const $route = useRoute()
-        const $router = useRouter();
+        const $router = useRouter()
         // 获取当前打开的子菜单
-        const matched = $route.matched
-        const openKeys = computed(() => {
+        function getOpenKeys() {
+            const matched = $route.matched
             return matched && matched.length ? matched.map((it) => it.name) : []
+        }
+        const state = reactive({
+            openKeys: getOpenKeys()// 展开的子菜单标识符
         })
-        const selectedKeys = ref($route.name)
+        const selectedKeys = ref($route.name)// 当前路由名称
         const headerMenuSelectKey = ref('')
-        const menus = ref([])
+        const menus = ref([])   // 菜单
 
+        // 是否是根路由
+        function isRootRouter(router) {
+            return router.meta?.alwaysShow != true && router.children?.length === 1;
+        }
+        // 过滤掉隐藏的菜单
+        function filterHide(routes) {
+            return routes.filter(it => (it.meta?.hidden || false) != true)
+        }
+        // 递归组装菜单格式
+        function generatorMenu(routes) {
+            return filterHide(routes).map(it => {
+                const isRoot = isRootRouter(it)
+                const routerInfo = isRoot ? it.children[0] : it// 当前路由信息
+                const currentMenu = {// 当前菜单
+                    key: routerInfo.name,// 后面点击菜单需要用到
+                    label: routerInfo.meta?.title,
+                    icon: isRoot ? it.meta?.icon : routerInfo.meta?.icon,
+                    disabled: routerInfo.meta?.disabled
+                }
+                // 是否有子菜单，并递归处理
+                if(routerInfo.children && routerInfo.children.length > 0){
+                    currentMenu.children = generatorMenu(routerInfo.children)
+                }
+                return currentMenu
+            })
+        }
+        // 混合菜单
+        function generatorMenuMix(routes, routerName, location) {
+            const cloneRoutes = cloneDeep(routes)
+            const newRoutes = filterHide(cloneRoutes)// 克隆的路由
+            if (location === 'header') {
+                // 菜单位置在头部
+                return newRoutes.map(it => {
+                    const isRoot = isRootRouter(it)
+                    const routerInfo = isRoot ? it.children[0] : it// 当前路由信息
+                    const currentMenu = {// 当前菜单
+                        key: routerInfo.name,
+                        label: routerInfo.meta?.title,
+                        disabled: routerInfo.meta?.disabled,
+                        children: undefined
+                    }
+                    return currentMenu
+                })
+            }else{
+                // 菜单位置在左侧
+                return getChildrenRouter(newRoutes.filter(it => it.name === routerName))
+            }
+        }
+        // 递归混合子菜单
+        function getChildrenRouter(routes) {
+            return filterHide(routes).map(it => {
+                const isRoot = isRootRouter(it)
+                const routerInfo = isRoot ? it.children[0] : it// 当前路由信息
+                const currentMenu = {// 当前菜单
+                    key: routerInfo.name,
+                    label: routerInfo.meta?.title,
+                    disabled: routerInfo.meta?.disabled,
+                }
+                // 是否有子菜单，并递归处理
+                if (info.children && info.children.length > 0) {
+                    currentMenu.children = getChildrenRouter(info.children);
+                }
+                return currentMenu
+            })
+        }
+        // 菜单当前的选中值
         const getSelectedKeys = computed(() => {
-            let location = props.location
-            return location === 'left' || (location === 'header' && unref(navMode) === 'horizontal')
-            ? unref(selectedKeys)
-            : unref(headerMenuSelectKey)
+            let { location, navMode } = props
+            return location === 'left' || (location === 'header' && navMode === 'horizontal')
+            ? selectedKeys.value : headerMenuSelectKey.value
         })
+
         function updateMenu() {
             if(!projectStore.menuSetting.mixMenu){
-                menus.value = generatorMenu(asyncRouteStore.menus)
+                // 不分割菜单
+                menus.value = generatorMenu(asyncRouteStore.addRoutes)
             }else{
-                // 混合菜单
+                // 分割菜单
+                // todo 混合菜单
                 const firstRouteName = ($route.matched[0].name) || ''
-                menus.value = generatorMenuMix(asyncRouteStore.menus, firstRouteName, props.location)
+                // menus.value = generatorMenuMix(asyncRouteStore.addRoutes, firstRouteName, props.location)
                 const activeMenu = $route?.matched[0].meta?.activeMenu
                 headerMenuSelectKey.value = (activeMenu ? activeMenu : firstRouteName) || ''
             }
@@ -69,13 +141,13 @@ export default {
         watch(() => projectStore.menuSetting.mixMenu, () => {
             updateMenu()
             if (props.collapsed) {
-                emit('update:collapsed', !props.collapsed);
+                ctx.emit('update:collapsed', !props.collapsed);
             }
         })
         watch(() => $route.fullPath, () => {
             updateMenu()
             const matched = $route.matched
-            openKeys.value = matched.map((item) => item.name)
+            state.openKeys = matched.map((item) => item.name)
             const activeMenu = ($route.meta?.activeMenu) || ''
             selectedKeys.value = activeMenu ? (activeMenu) : ($route.name)
         })
@@ -88,21 +160,21 @@ export default {
             } else {
                 $router.push({ name: key })
             }
-            emit('clickMenuItem', key)
+            ctx.emit('clickMenuItem', key)
         }
         //展开菜单
         function menuExpanded(openK) {
             if (!openK) return
             const latestOpenKey = openK.find((key) => openK.indexOf(key) === -1)
             const isExistChildren = findChildrenLen(latestOpenKey)
-            openKeys.value = isExistChildren ? (latestOpenKey ? latestOpenKey : []) : openK
+            state.openKeys = isExistChildren ? (latestOpenKey ? latestOpenKey : []) : openK
         }
 
         //查找是否存在子路由
         function findChildrenLen(key) {
             if (!key) return false
             const subRouteChildren = [];
-            for (const { children, key } of unref(menus)) {
+            for (const { children, key } of menus.value) {
                 if (children && children.length) {
                     subRouteChildren.push(key)
                 }
@@ -110,12 +182,17 @@ export default {
             return subRouteChildren.includes(key)
         }
 
-        onMounted(() => {
-            updateMenu()
+        onMounted(async () => {
+            const resp = await getUserInfo()
+            if(resp.code === 200){
+                const info = resp.data
+                await asyncRouteStore.generateRoutes(info)
+                updateMenu()// 生成菜单数据后更新
+            }
         })
         return {
+            ...toRefs(state),
             menus,
-            openKeys,
             getSelectedKeys,
             clickMenuItem,
             menuExpanded
@@ -124,6 +201,6 @@ export default {
 }
 
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
     
 </style>

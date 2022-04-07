@@ -43,7 +43,7 @@ export async function getUserInfo() {
 
 export async function getUserMenu() {
     return {
-        code: 200,
+        code: 201,
         data: [
             {
                 icon: "form",

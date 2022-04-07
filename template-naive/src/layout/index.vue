@@ -15,7 +15,12 @@
             @expand="collapsed = false"
             >
             <Logo :collapsed="collapsed" />
-            <AsideMenu v-model:collapsed="collapsed" v-model:location="getMenuLocation" :inverted="inverted" :navMode="navMode" />
+            <AsideMenu 
+                v-model:collapsed="collapsed" 
+                v-model:location="getMenuLocation" 
+                :inverted="inverted" 
+                :navMode="navMode" 
+            />
         </NLayoutSider>
 
         <NLayout :inverted="inverted">

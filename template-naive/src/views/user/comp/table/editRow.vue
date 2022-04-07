@@ -1,5 +1,5 @@
 <template>
-    <div>组织管理</div>
+    <div>row</div>
 </template>
 
 <script>

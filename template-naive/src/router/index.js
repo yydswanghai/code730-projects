@@ -17,7 +17,6 @@ function sortRoute(a, b) {
 }
 
 routeModuleList.sort(sortRoute)
-
 //需要验证权限
 export const asyncRoutes = [...routeModuleList]
 

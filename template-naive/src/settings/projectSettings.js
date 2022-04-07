@@ -1,7 +1,7 @@
 export default {
-    //导航模式 vertical 左侧菜单模式 horizontal 顶部菜单模式
+    //导航模式: vertical 左侧菜单模式 horizontal 顶部菜单模式
     navMode: 'vertical',
-    //导航风格 dark 暗色侧边栏 light 白色侧边栏 header-dark 暗色顶栏
+    //导航风格: dark 暗色侧边栏 light 白色侧边栏 header-dark 暗色顶栏
     navTheme: 'dark',
     // 是否处于移动端模式
     isMobile: false,

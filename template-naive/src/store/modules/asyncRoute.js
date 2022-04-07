@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { getUserInfo, getUserMenu } from '@/api/user'
+import { getUserMenu } from '@/api/user'
 import { asyncRoutes, constantRouter } from '@/router/index'
 import { renderIcon } from '@/utils/'
-import { toRaw } from 'vue';
+import { toRaw } from 'vue'
 
 /**
  * 格式化 后端接口路由信息并递归生成层级路由表
@@ -22,8 +22,7 @@ function generator(routerMap) {
         if(item.parentId === '-1'){
             currentRouter.component = () => import('@/layout/index.vue')
         }else{
-            const url = `@/views/user${item.path}.vue`
-            currentRouter.component = () => import(url)
+            currentRouter.component = () => import(/* @vite-ignore */`@/views/user${item.path}.vue`)
         }
         if(item.icon){
             currentRouter.meta.icon = renderIcon(item.icon)
@@ -38,36 +37,24 @@ function generator(routerMap) {
 export const useAsyncRouteStore = defineStore({
     id: 'async-route',
     state: () => ({
-        menus: [],// 用户菜单
         permissions: [],// 用户权限
-        routers: constantRouter,// 路由
-        addRouters: [],
-        keepAliveComponents: [],// 缓存
-        isDynamicAddedRoute: false,// 是否动态添加路由
+        routes: [],// 用户路由
+        addRoutes: [],
     }),
     actions: {
-        // 设置菜单
-        setMenus(menus){
-            this.menus = menus
-        },
         // 设置动态路由
-        setRouters(routers){
-            this.addRouters = routers
-            this.routers = constantRouter.concat(routers)
+        setRoutes(routers){
+            this.addRoutes = routers
+            this.routes = constantRouter.concat(routers)
         },
-        // 设置需要缓存的组件
-        setKeepAliveComponents(compNames) {
-            this.keepAliveComponents = compNames
+        // 设置用户权限
+        setPermissions(permissions){
+            this.permissions = permissions
         },
-        setDynamicAddedRoute(added){
-            this.isDynamicAddedRoute = added
-        },
-        async generateRoutes(data){
+        // 生成路由
+        async generateRoutes(info){
             let accessedRouters
-            const userInfo = await getUserInfo()// 用户信息
-            if(userInfo.code === 200){
-                this.permissions = userInfo.permissions
-            }
+            this.setPermissions(info.permissions)
             const userMenu = await getUserMenu()// 用户菜单
             if(userMenu.code === 200){
                 try {
@@ -82,8 +69,7 @@ export const useAsyncRouteStore = defineStore({
                     console.log(error)
                 }
             }
-            this.setRouters(accessedRouters)
-            this.setMenus(accessedRouters)
+            this.setRoutes(accessedRouters)
             return toRaw(accessedRouters)
         }
     }
