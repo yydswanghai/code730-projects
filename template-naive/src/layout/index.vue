@@ -23,6 +23,16 @@
             />
         </NLayoutSider>
 
+        <NDrawer 
+            class="layout-side-drawer"
+            placement="left"
+            :width="menuWidth"
+            v-model:show="showSideDrawder"
+            >
+            <Logo :collapsed="collapsed" />
+            <AsideMenu @clickMenuItem="collapsed = false" />
+        </NDrawer>
+
         <NLayout :inverted="inverted">
             <NLayoutHeader :inverted="getHeaderInverted" :position="fixedHeader">
             </NLayoutHeader>
@@ -49,11 +59,14 @@ export default {
     setup(){
         const collapsed = ref(false)
         const projectStore = useProjectSettingStore()
-        const fixedHeader = computed(() => {
+        const fixedHeader = computed(() => {// 固定头
             const { fixed } = projectStore.headerSetting
             return fixed ? 'absolute' : 'static'
         })
-        const isMobile = computed(() => projectStore.isMobile)
+        const isMobile = computed({// 是否为手机端
+            get: () => projectStore.isMobile,
+            set: (val) => projectStore.setIsMobile(val)
+        })
         const isMixMenuNoneSub = computed(() => {
             const mixMenu = projectStore.menuSetting.mixMenu
             const $route = useRoute()
@@ -63,7 +76,7 @@ export default {
             }
             return true
         })
-        const leftMenuWidth = computed(() => {
+        const leftMenuWidth = computed(() => {// 侧边菜单宽度
             const { minMenuWidth, menuWidth } = projectStore.menuSetting
             return collapsed.value ? minMenuWidth : menuWidth
         })
@@ -75,10 +88,39 @@ export default {
             return ['light', 'header-dark'].includes(navTheme) ? unref(inverted) : !unref(inverted)
         })
 
+        // 控制显示或隐藏移动端侧边栏
+        const showSideDrawder = computed({
+            get: () => isMobile.value && collapsed.value,
+            set: (val) => (collapsed.value = val)
+        })
+
+        // 判断是否触发移动端模式
+        function checkMobileMode(){
+            const { mobileWidth } = projectStore.menuSetting
+            if(document.body.clientWidth <= mobileWidth){
+                isMobile.value = true
+            }else{
+                isMobile.value = false
+            }
+            collapsed.value = false
+        }
+
+        function watchWidth(){
+            if(document.body.clientWidth <= 950){
+                collapsed.value = true
+            }else{
+                collapsed.value = false
+            }
+            checkMobileMode()
+        }
+
         onMounted(() => {
-            //挂载在 window 方便与在js中使用
+            // 全局loading-bar挂载在 window 方便与在js中使用
             window['$loading'] = useLoadingBar()
             window['$loading'].finish()
+
+            checkMobileMode()
+            window.addEventListener('resize', watchWidth)
         })
         return {
             collapsed,
@@ -86,12 +128,14 @@ export default {
             fixedMenu: fixedHeader,
             isMobile,
             isMixMenuNoneSub,
+            menuWidth: computed(() => projectStore.menuSetting.menuWidth),
             navMode: computed(() => projectStore.navMode),
             minMenuWidth: computed(() => projectStore.menuSetting.minMenuWidth),
             leftMenuWidth,
             inverted,
             getMenuLocation: computed(() => 'left'),
             getHeaderInverted,
+            showSideDrawder,
         }
     }
 }
@@ -108,6 +152,21 @@ export default {
     }
 }
 </style>
-<style lang="less" scoped>
 
+<style lang="less" scoped>
+.layout{
+    display: flex;
+    flex-direction: row;
+    flex: auto;
+    &-default-background {
+      background: #f5f7f9;
+    }
+    .layout-sider {
+      min-height: 100vh;
+      box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+      position: relative;
+      z-index: 13;
+      transition: all 0.2s ease-in-out;
+    }
+}
 </style>
