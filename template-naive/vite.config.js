@@ -27,7 +27,7 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     server: {
-      port: 12355,
+      port: 12345,
       open: true,
       strictPort: false,
       cors: true,

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { RootRoute, LoginRoute, RedirectRoute } from '@/router/base';
+import { RootRoute, LoginRoute, RedirectRoute } from '@/router/base'
 // 自动导入
 const modules = import.meta.globEager('./modules/**/*.js')
 
