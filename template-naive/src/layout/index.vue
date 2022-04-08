@@ -15,15 +15,15 @@
             @expand="collapsed = false"
             >
             <Logo :collapsed="collapsed" />
-            <AsideMenu 
-                v-model:collapsed="collapsed" 
-                v-model:location="getMenuLocation" 
-                :inverted="inverted" 
-                :navMode="navMode" 
+            <AsideMenu
+                v-model:collapsed="collapsed"
+                v-model:location="getMenuLocation"
+                :inverted="inverted"
+                :navMode="navMode"
             />
         </NLayoutSider>
 
-        <NDrawer 
+        <NDrawer
             class="layout-side-drawer"
             placement="left"
             :width="menuWidth"
@@ -35,6 +35,7 @@
 
         <NLayout :inverted="inverted">
             <NLayoutHeader :inverted="getHeaderInverted" :position="fixedHeader">
+                <Header :collapsed="collapsed" :inverted="inverted" :navMode="navMode" />
             </NLayoutHeader>
             <NBackTop :right="100" />
         </NLayout>
@@ -49,12 +50,14 @@ import { useLoadingBar } from 'naive-ui'
 
 import Logo from './components/Logo/index.vue'
 import AsideMenu from './components/Menu/index.vue'
+import Header from './components/Header/index.vue'
 
 export default {
     name: 'Layout',
     components: {
         Logo,
         AsideMenu,
+        Header,
     },
     setup(){
         const collapsed = ref(false)
@@ -80,11 +83,11 @@ export default {
             const { minMenuWidth, menuWidth } = projectStore.menuSetting
             return collapsed.value ? minMenuWidth : menuWidth
         })
-        const inverted = computed(() => {
+        const inverted = computed(() => {// 反转
             return ['dark', 'header-dark'].includes(projectStore.navTheme);
         })
         const getHeaderInverted = computed(() => {
-            const navTheme = unref(projectStore.navTheme)
+            const navTheme = projectStore.navTheme
             return ['light', 'header-dark'].includes(navTheme) ? unref(inverted) : !unref(inverted)
         })
 
@@ -159,14 +162,14 @@ export default {
     flex-direction: row;
     flex: auto;
     &-default-background {
-      background: #f5f7f9;
+        background: #f5f7f9;
     }
     .layout-sider {
-      min-height: 100vh;
-      box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
-      position: relative;
-      z-index: 13;
-      transition: all 0.2s ease-in-out;
+        min-height: 100vh;
+        box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+        position: relative;
+        z-index: 13;
+        transition: all 0.2s ease-in-out;
     }
 }
 </style>

@@ -10,7 +10,6 @@
     },
     "include": [
         "src/**/*.js",
-        "src/**/*.d.js",
         "src/**/*.jsx",
         "src/**/*.vue",
         "vite.config.js"

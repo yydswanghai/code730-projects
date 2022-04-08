@@ -11,7 +11,7 @@ export default {
         bgColor: '#fff',
         //固定顶部
         fixed: true,
-        //显示重载按钮
+        //显示刷新按钮
         isReload: true,
     },
     //页脚
