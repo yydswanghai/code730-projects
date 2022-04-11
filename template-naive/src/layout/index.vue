@@ -19,7 +19,6 @@
                 v-model:collapsed="collapsed"
                 v-model:location="getMenuLocation"
                 :inverted="inverted"
-                :navMode="navMode"
             />
         </NLayoutSider>
 
@@ -35,7 +34,7 @@
 
         <NLayout :inverted="inverted">
             <NLayoutHeader :inverted="getHeaderInverted" :position="fixedHeader">
-                <Header :collapsed="collapsed" :inverted="inverted" :navMode="navMode" />
+                <Header :collapsed="collapsed" :inverted="getHeaderInverted"  />
             </NLayoutHeader>
             <NBackTop :right="100" />
         </NLayout>
@@ -61,34 +60,35 @@ export default {
     },
     setup(){
         const collapsed = ref(false)
-        const projectStore = useProjectSettingStore()
-        const fixedHeader = computed(() => {// 固定头
-            const { fixed } = projectStore.headerSetting
+        const settingStore = useProjectSettingStore()
+        const navMode = computed(() => settingStore.navMode)// 导航栏模式
+        const navTheme = computed(() => settingStore.navTheme)// 导航栏主题
+        const fixedHeader = computed(() => {// 固定顶部
+            const { fixed } = settingStore.headerSetting
             return fixed ? 'absolute' : 'static'
         })
         const isMobile = computed({// 是否为手机端
-            get: () => projectStore.isMobile,
-            set: (val) => projectStore.setIsMobile(val)
+            get: () => settingStore.isMobile,
+            set: (val) => settingStore.setIsMobile(val)
         })
         const isMixMenuNoneSub = computed(() => {
-            const mixMenu = projectStore.menuSetting.mixMenu
+            const { mixMenu } = settingStore.menuSetting// 分割菜单
             const $route = useRoute()
-            if(projectStore.navMode !== 'horizontal-mix') return true
-            if(projectStore.navMode === 'horizontal-mix' && mixMenu && $route.meta.isRoot){
+            if(navMode.value !== 'horizontal-mix') return true
+            if(navMode.value === 'horizontal-mix' && mixMenu && $route.meta.isRoot){
                 return false
             }
             return true
         })
         const leftMenuWidth = computed(() => {// 侧边菜单宽度
-            const { minMenuWidth, menuWidth } = projectStore.menuSetting
+            const { minMenuWidth, menuWidth } = settingStore.menuSetting
             return collapsed.value ? minMenuWidth : menuWidth
         })
-        const inverted = computed(() => {// 反转
-            return ['dark', 'header-dark'].includes(projectStore.navTheme);
+        const inverted = computed(() => {// 反转，用来切换背景对比
+            return ['dark', 'header-dark'].includes(navTheme.value);
         })
-        const getHeaderInverted = computed(() => {
-            const navTheme = projectStore.navTheme
-            return ['light', 'header-dark'].includes(navTheme) ? unref(inverted) : !unref(inverted)
+        const getHeaderInverted = computed(() => {// 顶部反转
+            return ['light', 'header-dark'].includes(navTheme.value) ? unref(inverted) : !unref(inverted)
         })
 
         // 控制显示或隐藏移动端侧边栏
@@ -99,7 +99,7 @@ export default {
 
         // 判断是否触发移动端模式
         function checkMobileMode(){
-            const { mobileWidth } = projectStore.menuSetting
+            const { mobileWidth } = settingStore.menuSetting
             if(document.body.clientWidth <= mobileWidth){
                 isMobile.value = true
             }else{
@@ -127,13 +127,13 @@ export default {
         })
         return {
             collapsed,
+            navMode,
             fixedHeader,
             fixedMenu: fixedHeader,
             isMobile,
             isMixMenuNoneSub,
-            menuWidth: computed(() => projectStore.menuSetting.menuWidth),
-            navMode: computed(() => projectStore.navMode),
-            minMenuWidth: computed(() => projectStore.menuSetting.minMenuWidth),
+            menuWidth: computed(() => settingStore.menuSetting.menuWidth),
+            minMenuWidth: computed(() => settingStore.menuSetting.minMenuWidth),
             leftMenuWidth,
             inverted,
             getMenuLocation: computed(() => 'left'),
@@ -161,9 +161,6 @@ export default {
     display: flex;
     flex-direction: row;
     flex: auto;
-    &-default-background {
-        background: #f5f7f9;
-    }
     .layout-sider {
         min-height: 100vh;
         box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);

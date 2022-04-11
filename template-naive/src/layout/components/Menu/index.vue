@@ -34,13 +34,13 @@ export default {
             default: 'left',
         },
         inverted: Boolean,
-        navMode: String,
     },
     setup(props, ctx){
-        const projectStore = useProjectSettingStore()
+        const settingStore = useProjectSettingStore()
         const asyncRouteStore = useAsyncRouteStore()
         const $route = useRoute()
         const $router = useRouter()
+        const navMode = computed(() => settingStore.navMode)// 导航栏模式
         // 获取当前打开的子菜单
         function getOpenKeys() {
             const matched = $route.matched
@@ -84,20 +84,21 @@ export default {
             const cloneRoutes = cloneDeep(routes)
             const newRoutes = filterHide(cloneRoutes)// 克隆的路由
             if (location === 'header') {
-                // 菜单位置在头部
+                // 在顶部的菜单（不包含子菜单）
                 return newRoutes.map(it => {
                     const isRoot = isRootRouter(it)
                     const routerInfo = isRoot ? it.children[0] : it// 当前路由信息
                     const currentMenu = {// 当前菜单
                         key: routerInfo.name,
                         label: routerInfo.meta?.title,
+                        icon: isRoot ? it.meta?.icon : routerInfo.meta?.icon,
                         disabled: routerInfo.meta?.disabled,
                         children: undefined
                     }
                     return currentMenu
                 })
             }else{
-                // 菜单位置在左侧
+                // 在侧边栏的菜单（包含子菜单但仅显示当前和当前子菜单）
                 return getChildrenRouter(newRoutes.filter(it => it.name === routerName))
             }
         }
@@ -109,36 +110,37 @@ export default {
                 const currentMenu = {// 当前菜单
                     key: routerInfo.name,
                     label: routerInfo.meta?.title,
+                    icon: isRoot ? it.meta?.icon : routerInfo.meta?.icon,
                     disabled: routerInfo.meta?.disabled,
                 }
                 // 是否有子菜单，并递归处理
-                if (info.children && info.children.length > 0) {
-                    currentMenu.children = getChildrenRouter(info.children);
+                if (routerInfo.children && routerInfo.children.length > 0) {
+                    currentMenu.children = getChildrenRouter(routerInfo.children);
                 }
                 return currentMenu
             })
         }
         // 菜单当前的选中值
         const getSelectedKeys = computed(() => {
-            let { location, navMode } = props
-            return location === 'left' || (location === 'header' && navMode === 'horizontal')
+            let { location } = props
+            return location === 'left' || (location === 'header' && navMode.value === 'horizontal')
             ? selectedKeys.value : headerMenuSelectKey.value
         })
 
         function updateMenu() {
-            if(!projectStore.menuSetting.mixMenu){
+            if(!settingStore.menuSetting.mixMenu){
                 // 不分割菜单
+                // TODO 先写死，后续添加动态路由
                 menus.value = generatorMenu(asyncRouteStore.addRoutes)
             }else{
                 // 分割菜单
-                // todo 混合菜单
                 const firstRouteName = ($route.matched[0].name) || ''
-                // menus.value = generatorMenuMix(asyncRouteStore.addRoutes, firstRouteName, props.location)
+                menus.value = generatorMenuMix(asyncRouteStore.addRoutes, firstRouteName, props.location)
                 const activeMenu = $route?.matched[0].meta?.activeMenu
                 headerMenuSelectKey.value = (activeMenu ? activeMenu : firstRouteName) || ''
             }
         }
-        watch(() => projectStore.menuSetting.mixMenu, () => {
+        watch(() => settingStore.menuSetting.mixMenu, () => {
             updateMenu()
             if (props.collapsed) {
                 ctx.emit('update:collapsed', !props.collapsed);
@@ -146,8 +148,7 @@ export default {
         })
         watch(() => $route.fullPath, () => {
             updateMenu()
-            const matched = $route.matched
-            state.openKeys = matched.map((item) => item.name)
+            state.openKeys = $route.matched.map((item) => item.name)
             const activeMenu = ($route.meta?.activeMenu) || ''
             selectedKeys.value = activeMenu ? (activeMenu) : ($route.name)
         })

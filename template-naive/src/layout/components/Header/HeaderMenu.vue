@@ -1,12 +1,11 @@
 <template>
     <div class="header-menu">
-        <Logo v-if="navMode === 'horizontal'" :collapsed="collapsed" />
+        <Logo v-if="navMode === 'horizontal'" :collapsed="collapsed" class="logo-h" />
         <AsideMenu
             mode="horizontal"
             v-model:collapsed="collapsed"
             v-model:location="getMenuLocation"
             :inverted="inverted"
-            :navMode="navMode"
         />
     </div>
 </template>
@@ -36,5 +35,11 @@ export default {
 
 </script>
 <style lang="less" scoped>
-
+.header-menu{
+    display: flex;
+    align-items: center;
+    .logo-h{
+        padding-left: 10px;
+    }
+}
 </style>

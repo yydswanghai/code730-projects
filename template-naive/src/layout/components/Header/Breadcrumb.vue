@@ -37,7 +37,7 @@ export default {
     setup(){
         const $route = useRoute()
         const $router = useRouter()
-        const projectStore = useProjectSettingStore()
+        const settingStore = useProjectSettingStore()
 
         // 生成面包屑
         function generator(routes) {
@@ -65,7 +65,7 @@ export default {
         }
 
         return {
-            crumbsSetting: computed(() => projectStore.crumbsSetting),
+            crumbsSetting: computed(() => settingStore.crumbsSetting),
             breadcrumbList,
             dropdownSelect,
         }

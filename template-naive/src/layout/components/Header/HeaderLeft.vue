@@ -1,13 +1,13 @@
 <template>
     <div class="header-left">
         <!-- 菜单收起 -->
-        <div class="ml-1 header-trigger header-trigger-min"
+        <div class="ml-1 trigger"
             @click="() => $emit('update:collapsed', !collapsed)">
             <NIcon size="18" v-if="collapsed"><MenuUnfoldOutlined /></NIcon>
             <NIcon size="18" v-else><MenuFoldOutlined /></NIcon>
         </div>
         <!-- 刷新 -->
-        <div class="mr-1 header-trigger header-trigger-min"
+        <div class="mr-1 trigger"
             v-if="headerSetting.isReload" @click="reloadPage">
             <NIcon size="18"><ReloadOutlined /></NIcon>
         </div>
@@ -37,7 +37,7 @@ export default {
     setup(props, ctx){
         const $router = useRouter()
         const $route = useRoute()
-        const projectStore = useProjectSettingStore()
+        const settingStore = useProjectSettingStore()
         // 刷新页面
         function reloadPage() {
             $router.push({
@@ -45,7 +45,7 @@ export default {
             })
         }
         return {
-            headerSetting: computed(() => projectStore.headerSetting),
+            headerSetting: computed(() => settingStore.headerSetting),
             reloadPage,
         }
     }
