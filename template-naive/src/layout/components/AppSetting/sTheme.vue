@@ -20,7 +20,7 @@
 
 <script>
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 
 import { CheckOutlined } from '@vicons/antd'
 
@@ -37,9 +37,6 @@ export default {
             settingStore.setAppTheme(color)
         }
 
-        watch(() => settingStore.appTheme, () => {
-            console.log(settingStore.appTheme);
-        })
         return {
             appTheme: computed(() => settingStore.appTheme),
             appThemeList: computed(() => settingStore.appThemeList),

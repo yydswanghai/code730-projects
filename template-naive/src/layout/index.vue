@@ -34,7 +34,7 @@
 
         <NLayout :inverted="inverted">
             <NLayoutHeader :inverted="getHeaderInverted" :position="fixedHeader">
-                <Header :collapsed="collapsed" :inverted="getHeaderInverted"  />
+                <Header v-model:collapsed="collapsed" :inverted="getHeaderInverted"  />
             </NLayoutHeader>
             <NBackTop :right="100" />
         </NLayout>
@@ -125,6 +125,7 @@ export default {
             checkMobileMode()
             window.addEventListener('resize', watchWidth)
         })
+
         return {
             collapsed,
             navMode,

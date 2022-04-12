@@ -1,8 +1,7 @@
 <template>
     <div class="header-left">
         <!-- 菜单收起 -->
-        <div class="ml-1 trigger"
-            @click="() => $emit('update:collapsed', !collapsed)">
+        <div class="ml-1 trigger">
             <NIcon size="18" v-if="collapsed"><MenuUnfoldOutlined /></NIcon>
             <NIcon size="18" v-else><MenuFoldOutlined /></NIcon>
         </div>
@@ -44,6 +43,7 @@ export default {
                 path: '/redirect' + $route.fullPath
             })
         }
+
         return {
             headerSetting: computed(() => settingStore.headerSetting),
             reloadPage,
