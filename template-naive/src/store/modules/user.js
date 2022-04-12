@@ -7,7 +7,6 @@ export const useUserStore = defineStore({
     state: () => ({
         token: getStorage(ACCESS_TOKEN),
         userinfo: getStorage(CURRENT_USER),
-        permissions: [],// 用户权限
     }),
     actions: {
         setToken(token){

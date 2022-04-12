@@ -28,7 +28,9 @@ export default {
             type: String,
             default: 'vertical',
         },
-        collapsed: Boolean,// 侧边栏菜单是否收起
+        collapsed: {// 侧边栏菜单是否收起
+            type: Boolean
+        },
         location: {//位置
             type: String,
             default: 'left',

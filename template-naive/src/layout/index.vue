@@ -29,13 +29,19 @@
             v-model:show="showSideDrawder"
             >
             <Logo :collapsed="collapsed" />
-            <AsideMenu @clickMenuItem="collapsed = false" />
+            <AsideMenu :inverted="inverted" @clickMenuItem="collapsed = false" />
         </NDrawer>
 
         <NLayout :inverted="inverted">
             <NLayoutHeader :inverted="getHeaderInverted" :position="fixedHeader">
                 <Header v-model:collapsed="collapsed" :inverted="getHeaderInverted"  />
             </NLayoutHeader>
+            <NLayoutContent class="layout-content" :class="{ 'layout-default-background': isDarkTheme === false }">
+                <div class="layout-content-main"
+                    :class="{ 'layout-content-main-fix': fixedMulti, 'fluid-header': fixedHeader === 'static' }">
+                    <TagsView v-if="isMultiTabs" v-model:collapsed="collapsed" :isMixMenuNoneSub="isMixMenuNoneSub" />
+                </div>
+            </NLayoutContent>
             <NBackTop :right="100" />
         </NLayout>
     </NLayout>
@@ -50,6 +56,7 @@ import { useLoadingBar } from 'naive-ui'
 import Logo from './components/Logo/index.vue'
 import AsideMenu from './components/Menu/index.vue'
 import Header from './components/Header/index.vue'
+import TagsView from './components/TagsView/index.vue'
 
 export default {
     name: 'Layout',
@@ -57,6 +64,7 @@ export default {
         Logo,
         AsideMenu,
         Header,
+        TagsView,
     },
     setup(){
         const collapsed = ref(false)
@@ -71,7 +79,7 @@ export default {
             get: () => settingStore.isMobile,
             set: (val) => settingStore.setIsMobile(val)
         })
-        const isMixMenuNoneSub = computed(() => {
+        const isMixMenuNoneSub = computed(() => {// 混合菜单模式并开启分割菜单且没有子路由
             const { mixMenu } = settingStore.menuSetting// 分割菜单
             const $route = useRoute()
             if(navMode.value !== 'horizontal-mix') return true
@@ -80,9 +88,10 @@ export default {
             }
             return true
         })
+        const menuWidth = computed(() => settingStore.menuSetting.menuWidth)
+        const minMenuWidth = computed(() => settingStore.menuSetting.minMenuWidth)
         const leftMenuWidth = computed(() => {// 侧边菜单宽度
-            const { minMenuWidth, menuWidth } = settingStore.menuSetting
-            return collapsed.value ? minMenuWidth : menuWidth
+            return collapsed.value ? minMenuWidth.value : menuWidth.value
         })
         const inverted = computed(() => {// 反转，用来切换背景对比
             return ['dark', 'header-dark'].includes(navTheme.value);
@@ -133,13 +142,16 @@ export default {
             fixedMenu: fixedHeader,
             isMobile,
             isMixMenuNoneSub,
-            menuWidth: computed(() => settingStore.menuSetting.menuWidth),
-            minMenuWidth: computed(() => settingStore.menuSetting.minMenuWidth),
+            menuWidth,
+            minMenuWidth,
             leftMenuWidth,
             inverted,
             getMenuLocation: computed(() => 'left'),
             getHeaderInverted,
             showSideDrawder,
+            isDarkTheme: computed(() => settingStore.isDarkTheme),
+            fixedMulti: computed(() => settingStore.multiTabsSetting.fixed),
+            isMultiTabs: computed(() => settingStore.multiTabsSetting.show),
         }
     }
 }
@@ -147,13 +159,6 @@ export default {
 <style lang="less">
 .layout-side-drawer {
     background-color: rgb(0, 20, 40);
-    .layout-sider {
-        min-height: 100vh;
-        box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
-        position: relative;
-        z-index: 13;
-        transition: all 0.2s ease-in-out;
-    }
 }
 </style>
 
@@ -162,12 +167,30 @@ export default {
     display: flex;
     flex-direction: row;
     flex: auto;
+    .layout-default-background {
+        background: #f5f7f9;
+    }
     .layout-sider {
         min-height: 100vh;
         box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
         position: relative;
         z-index: 13;
         transition: all 0.2s ease-in-out;
+    }
+    .layout-content{
+        flex: auto;
+        // min-height: 100vh;
+    }
+    .layout-content-main {
+        margin: 0 10px 10px;
+        position: relative;
+        padding-top: 64px;
+    }
+    .layout-content-main-fix{
+        padding-top: 64px;
+    }
+    .fluid-header{
+        padding-top: 0;
     }
 }
 </style>

@@ -21,7 +21,8 @@
     "pinia": "^2.0.13",
     "vfonts": "0.0.3",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.31",

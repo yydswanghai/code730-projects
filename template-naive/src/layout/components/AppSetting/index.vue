@@ -58,7 +58,6 @@ export default {
 
         watch(() => settingStore.isDarkTheme, (to) => {
             const val = to ? 'header-dark' : 'dark'
-            console.log(to);
             settingStore.setNavTheme(val)
         })
 
