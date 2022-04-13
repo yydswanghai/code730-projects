@@ -8,7 +8,7 @@
             :navMode="navMode"
         />
         <!--左侧按钮集-->
-        <HeaderLeft v-else :collapsed="collapsed" @click="changeCollapsed" />
+        <HeaderLeft v-else v-model:collapsed="collapsed" />
         <!--右侧按钮集-->
         <HeaderRight />
     </div>
@@ -16,7 +16,7 @@
 
 <script>
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 import HeaderMenu from './HeaderMenu.vue'
 import HeaderLeft from './HeaderLeft.vue'
@@ -36,15 +36,13 @@ export default {
     setup(props,ctx){
         const settingStore = useProjectSettingStore()
 
-        function changeCollapsed() {
-            ctx.emit('update:collapsed', !props.collapsed)
-        }
-
+        watch(() => props.collapsed, (val) => {
+            ctx.emit('update:collapsed', val)
+        })
         return {
             navMode: computed(() => settingStore.navMode),// 导航栏模式
             mixMenu: computed(() => settingStore.menuSetting.mixMenu),// 分割菜单
             navTheme: computed(() => settingStore.navTheme),// 导航主题
-            changeCollapsed
         }
     }
 }

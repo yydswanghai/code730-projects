@@ -22,7 +22,7 @@
     "vfonts": "0.0.3",
     "vue": "^3.2.25",
     "vue-router": "^4.0.13",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.31",

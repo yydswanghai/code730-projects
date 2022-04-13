@@ -8,38 +8,63 @@
                 <span class="tags-next" :class="{ 'tags-next-hide': !scrollable }" @click="scrollNext">
                     <NIcon size="16" color="#515a6e"><RightOutlined /></NIcon>
                 </span>
-                <!-- <div ref="tagsScroll" class="tags-scroll">
+                <div ref="tagsScroll" class="tags-scroll">
                     <Draggable :list="tagsList" animation="300" item-key="fullPath" class="flex">
                         <template #item="{ element }">
                             <div class="tags-scroll-item"
-                                :class="{ 'active': activeKey === element.path }"
+                                :class="{ 'active-item': activeKey === element.path }"
                                 :id="`tag${element.fullPath.split('/').join('\/')}`"
-                                @click.stop="handleGoPage(element)"
+                                @click.stop="handleToPage(element)"
                                 @contextmenu="handleContextMenu($event, element)"
                                 >
                                 <span>{{ element.meta.title }}</span>
                                 <NIcon size="14" @click.stop="handleCloseTagItem(element)"
-                                    v-if="element.path !== '/dashboard/console'"
+                                    v-if="element.path !== BASE_HOME_REDIRECT"
                                 >
                                     <CloseOutlined />
                                 </NIcon>
                             </div>
                         </template>
                     </Draggable>
-                </div> -->
+                </div>
             </div>
+            <!-- 下拉菜单 -->
+            <div class="tabs-close">
+                <NDropdown
+                    trigger="hover"
+                    placement="bottom-end"
+                    :options="TabsMenuOptions"
+                    @select="closeHandleSelect"
+                    >
+                    <div class="tabs-close-btn">
+                        <NIcon size="16" color="#515a6e">
+                            <DownOutlined />
+                        </NIcon>
+                    </div>
+                </NDropdown>
+            </div>
+            <NDropdown
+                :show="showDropdown"
+                :x="dropdownX"
+                :y="dropdownY"
+                @clickoutside="showDropdown = false"
+                placement="bottom-start"
+                :options="TabsMenuOptions"
+                @select="closeHandleSelect"
+            />
         </div>
     </div>
 </template>
 
 <script>
-import { LeftOutlined, RightOutlined, CloseOutlined } from '@vicons/antd'
+import { LeftOutlined, RightOutlined, CloseOutlined, ReloadOutlined, ColumnWidthOutlined, MinusOutlined, DownOutlined } from '@vicons/antd'
 import { ref, computed, reactive, toRefs, watch, nextTick } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import Draggable from 'vuedraggable'
 import { useRoute, useRouter } from 'vue-router'
-import { useThemeVars } from 'naive-ui'
+import { useThemeVars, useMessage } from 'naive-ui'
+import { renderIcon } from '@/utils/'
 export default {
     name: 'TagsView',
     props: {
@@ -50,80 +75,33 @@ export default {
         LeftOutlined,
         RightOutlined,
         CloseOutlined,
+        ReloadOutlined,
+        ColumnWidthOutlined,
+        MinusOutlined,
+        DownOutlined,
         Draggable,
     },
     setup(props){
         const $route = useRoute()
         const $router = useRouter()
+        const $message = useMessage()
         const settingStore = useProjectSettingStore()
         const tagsViewStore = useTagsViewStore()
-        const themeVars = useThemeVars();
+        const themeVars = useThemeVars()
+
         const tagsScroll = ref(null)// dom
         const tagsWrap = ref(null)// dom
+        const BASE_HOME_REDIRECT = ref('/dashboard/console')
 
         const state = reactive({
-            activeKey: $route.fullPath,
-            scrollable: false,
+            activeKey: $route.fullPath,// 当前页面key
+            scrollable: false,// 可滚动
             dropdownX: 0,
             dropdownY: 0,
-            showDropdown: false,
+            showDropdown: false,// 下拉菜单
+            isCurrent: false,
             isMultiHeaderFixed: false,
-            multiTabsSetting: settingStore.multiTabsSetting
         })
-
-        // // tagsview缓存
-        // let cacheRoutes = []
-        // try{
-        //     const routesStr = localStorage.getItem('Tags-Views')
-        //     cacheRoutes = routesStr ? JSON.parse(routesStr) : [...$route]
-        // }catch(e){
-        //     cacheRoutes = [...$route]
-        // }
-        // // 将最新的路由信息同步到 localStorage 中
-        // const routes = $router.getRoutes()
-        // cacheRoutes.forEach(item => {
-        //     const route = routes.find((route) => route.path === item.path)
-        //     if(route){
-        //         item.meta = route.meta || item.meta
-        //         item.name = route.name || item.name
-        //     }
-        // })
-        // // 初始化标签页
-        // tagsViewStore.initTags(cacheRoutes)
-        const tagsList = computed(() => tagsViewStore.tagsList)
-        watch(() => $route.fullPath, (to) => {
-            state.activeKey = to
-            tagsViewStore.addTags($route)
-            updateNavScroll(true)
-        }, { immediate: true })
-        // 在页面关闭或刷新之前，保存数据
-        // window.addEventListener('beforeunload', () => {
-        //     localStorage.setItem('Tags-Views', JSON.stringify(tagsList.value))
-        // })
-
-        /**
-         * @param autoScroll 是否开启自动滚动功能
-         */
-        async function updateNavScroll(autoScroll) {
-            await nextTick()
-            if(!tagsScroll.value) return
-            const offsetWidth = tagsScroll.value.offsetWidth
-            const tagsWidth = tagsScroll.value.scrollWidth
-            if(offsetWidth < tagsWidth){
-                state.scrollable = true
-                if(autoScroll){
-                    let tagList = tagsScroll.value.querySelectorAll('.tags-scroll-item') || [];
-                    [...tagList].forEach(tag => {
-                        if (tag.id === `tag${state.activeKey.split('/').join('\/')}`) {
-                            tag.scrollIntoView && tag.scrollIntoView();
-                        }
-                    })
-                }
-            }else{
-                state.scrollable = false
-            }
-        }
-
         const getCardColor = computed(() => themeVars.value.cardColor)
         const getBaseColor = computed(() => themeVars.value.textColor1)
         const appTheme = computed(() => settingStore.appTheme)
@@ -151,30 +129,207 @@ export default {
                 width: `calc(100% - ${!fixed ? '0px' : lenNum})`
             }
         })
+        // 获取简易路由对象，添加addTags的时候容易出现重复标签被添加的bug
+        function getSimpleRoute(route) {
+            const { fullPath, hash, meta, name, params, path, query } = $route
+            return {
+                fullPath, hash, meta, name, params, path, query
+            }
+        }
+        // tagsview缓存
+        let cacheRoutes = []
+        const simpleRoute = getSimpleRoute($route)
+        try{
+            const localTags = localStorage.getItem('Tags-Views')
+            cacheRoutes = localTags ? JSON.parse(localTags) : [simpleRoute]
+        }catch(e){
+            cacheRoutes = [simpleRoute]
+        }
+        // 将最新的路由信息同步到 localStorage 中
+
+        // 初始化标签页
+        tagsViewStore.initTags(cacheRoutes)
+        const tagsList = computed(() => tagsViewStore.tagsList)
+        // 相当于添加新的tag
+        watch(() => $route.fullPath, (to) => {
+            state.activeKey = to
+            tagsViewStore.addTags(getSimpleRoute($route))
+            updateNavScroll(true)
+        }, { immediate: true })
+        // 在页面关闭或刷新之前，保存数据
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('Tags-Views', JSON.stringify(tagsList.value))
+        })
+
+        /**
+         * @param {Boolean} autoScroll 是否开启自动滚动功能
+         */
+        async function updateNavScroll(autoScroll) {
+            await nextTick()
+            if(!tagsScroll.value) return
+            const offsetWidth = tagsScroll.value.offsetWidth// 元素本身的宽度 width+padding+border
+            const tagsWidth = tagsScroll.value.scrollWidth// 出现滚动条时，包括超出范围的宽度
+            if(offsetWidth < tagsWidth){// 出现滚动条
+                state.scrollable = true// 显示左右点击按钮
+                if(autoScroll){
+                    let tagList = tagsScroll.value.querySelectorAll('.tags-scroll-item') || [];
+                    [...tagList].forEach(tag => {
+                        if (tag.id === `tag${state.activeKey.split('/').join('\/')}`) {
+                            // scrollIntoView 让当前的元素滚动到浏览器窗口的可视区域内。
+                            // Detail: https://developer.mozilla.org/zh-CN/docs/web/api/element/scrollintoview
+                            tag.scrollIntoView && tag.scrollIntoView()
+                        }
+                    })
+                }
+            }else{
+                state.scrollable = false
+            }
+        }
+        /**
+         * @param {number} value 要滚动到的位置
+         * @param {number} amplitude 每次滚动的长度
+         */
+        function scrollTo(value, amplitude) {
+            const currentScroll = tagsScroll.value.scrollLeft;
+            const scrollWidth =
+                (amplitude > 0 && currentScroll + amplitude >= value) ||
+                (amplitude < 0 && currentScroll + amplitude <= value)
+                    ? value : currentScroll + amplitude;
+            tagsScroll.value && tagsScroll.value.scrollTo(scrollWidth, 0);
+            if (scrollWidth === value) return
+            return window.requestAnimationFrame(() => scrollTo(value, amplitude))
+        }
+
         function scrollPrev() {
-            
+            const offsetWidth = tagsScroll.value.offsetWidth
+            const currentScroll = tagsScroll.value.scrollLeft
+            if (!currentScroll) return
+            const scrollLeft = currentScroll > offsetWidth ? currentScroll - offsetWidth : 0
+            scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
         }
         function scrollNext() {
-
+            const offsetWidth = tagsScroll.value.offsetWidth
+            const tagsWidth = tagsScroll.value.scrollWidth
+            const currentScroll = tagsScroll.value.scrollLeft
+            if (tagsWidth - currentScroll <= offsetWidth) return
+            const scrollLeft =
+                tagsWidth - currentScroll > offsetWidth * 2 ?
+                currentScroll + offsetWidth : tagsWidth - offsetWidth;
+            scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
         }
-        function handleGoPage() {
-
+        // 切换对应的页面
+        function handleToPage(element) {
+            const { fullPath } = element
+            if(fullPath === $route.fullPath) return
+            state.activeKey = fullPath
+            $router.push({ path: fullPath })
         }
-        function handleContextMenu() {
-
+        // 右键菜单
+        function handleContextMenu(event, element) {
+            event.preventDefault()
+            state.isCurrent = BASE_HOME_REDIRECT.value === element.path
+            state.showDropdown = false
+            nextTick().then(() => {
+                state.showDropdown = true
+                state.dropdownX = event.clientX
+                state.dropdownY = event.clientY
+            })
         }
-        function handleCloseTagItem() {
-
+        // 关闭标签
+        function handleCloseTagItem(element) {
+            const { fullPath } = element
+            const route = tagsList.value.find(it => it.fullPath === fullPath)
+            removeTab(route)
+        }
+        // 关闭当前页面
+        function removeTab(route) {
+            if (tagsList.value.length === 1) {
+                return $message.warning('这已经是最后一页，不能再关闭了！');
+            }
+            tagsViewStore.closeCurrentTag(route)
+            // 如果关闭是的当前页，则当前页自动变成上一个
+            if (state.activeKey === route.fullPath) {
+                const currentRoute = tagsList.value[Math.max(0, tagsList.value.length - 1)]
+                state.activeKey = currentRoute.fullPath
+                $router.push(currentRoute)
+            }
+            updateNavScroll()
         }
 
+        // 右侧下拉菜单
+        const TabsMenuOptions = computed(() => {
+            const isDisabled = tagsList.value.length <= 1
+            return [
+                {
+                    label: '刷新当前',
+                    key: '1',
+                    icon: renderIcon(ReloadOutlined),
+                },
+                {
+                    label: `关闭当前`,
+                    key: '2',
+                    disabled: state.isCurrent || isDisabled,
+                    icon: renderIcon(CloseOutlined),
+                },
+                {
+                    label: '关闭其他',
+                    key: '3',
+                    disabled: isDisabled,
+                    icon: renderIcon(ColumnWidthOutlined),
+                },
+                {
+                    label: '关闭全部',
+                    key: '4',
+                    disabled: isDisabled,
+                    icon: renderIcon(MinusOutlined),
+                },
+            ]
+        })
+        // 操作
+        function closeHandleSelect(key) {
+            if(key === '1'){
+                reloadPage()
+            }else if(key === '2'){
+                removeTab($route);
+            }else if(key === '3'){
+                closeOther($route);
+            }else if(key === '4'){
+                closeAll();
+            }
+            updateNavScroll()
+            state.showDropdown = false
+        }
+        // 刷新
+        function reloadPage() {
+            $router.push({
+                path: $route.fullPath
+            })
+        }
+        // 注入刷新页面方法
+        // provide('reloadPage', reloadPage);
+        // 关闭其他
+        function closeOther(route) {
+            tagsViewStore.closeOtherTags(route)
+            state.activeKey = route.fullPath
+            $router.replace(route.fullPath)
+            updateNavScroll()
+        }
+        // 关闭全部
+        function closeAll() {
+            localStorage.removeItem('Tags-Views')
+            tagsViewStore.closeAllTags()
+            $router.replace('/dashboard')
+            updateNavScroll()
+        }
         return {
+            BASE_HOME_REDIRECT,
             ...toRefs(state),
             classObj,
             styleObj,
             tagsList,
             scrollPrev,
             scrollNext,
-            handleGoPage,
+            handleToPage,
             handleContextMenu,
             handleCloseTagItem,
             getCardColor,
@@ -182,6 +337,8 @@ export default {
             appTheme,
             tagsScroll,
             tagsWrap,
+            TabsMenuOptions,
+            closeHandleSelect,
         }
     }
 }
@@ -248,15 +405,9 @@ export default {
                 display: inline-block;
                 position: relative;
                 flex: 0 0 auto;
-                &.active{
-                    color: v-bind(appTheme);
-                }
                 span{
                     float: left;
                     vertical-align: middle;
-                }
-                &:hover {
-                    color: #515a6e;
                 }
                 .n-icon {
                     height: 22px;
@@ -274,7 +425,30 @@ export default {
                         display: inline-block;
                     }
                 }
+                &:hover {
+                    color: #515a6e;
+                }
+                &.active-item{
+                    color: v-bind(appTheme);
+                }
             }
+        }
+    }
+    .tabs-close {
+        min-width: 32px;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background: var(--color);
+        border-radius: 2px;
+        cursor: pointer;
+        .tabs-close-btn {
+            color: var(--color);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 }

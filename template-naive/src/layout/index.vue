@@ -40,6 +40,9 @@
                 <div class="layout-content-main"
                     :class="{ 'layout-content-main-fix': fixedMulti, 'fluid-header': fixedHeader === 'static' }">
                     <TagsView v-if="isMultiTabs" v-model:collapsed="collapsed" :isMixMenuNoneSub="isMixMenuNoneSub" />
+                    <div class="layout-main" :class="{ 'main-view-fix': fixedMulti, 'noMultiTabs mt-3': !isMultiTabs }">
+                        <Main />
+                    </div>
                 </div>
             </NLayoutContent>
             <NBackTop :right="100" />
@@ -57,6 +60,7 @@ import Logo from './components/Logo/index.vue'
 import AsideMenu from './components/Menu/index.vue'
 import Header from './components/Header/index.vue'
 import TagsView from './components/TagsView/index.vue'
+import Main from './components/Main/index.vue'
 
 export default {
     name: 'Layout',
@@ -65,6 +69,7 @@ export default {
         AsideMenu,
         Header,
         TagsView,
+        Main,
     },
     setup(){
         const collapsed = ref(false)
@@ -156,20 +161,12 @@ export default {
     }
 }
 </script>
-<style lang="less">
-.layout-side-drawer {
-    background-color: rgb(0, 20, 40);
-}
-</style>
 
 <style lang="less" scoped>
 .layout{
     display: flex;
     flex-direction: row;
     flex: auto;
-    .layout-default-background {
-        background: #f5f7f9;
-    }
     .layout-sider {
         min-height: 100vh;
         box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
@@ -177,9 +174,12 @@ export default {
         z-index: 13;
         transition: all 0.2s ease-in-out;
     }
+    .layout-default-background {
+        background: #f5f7f9;
+    }
     .layout-content{
         flex: auto;
-        // min-height: 100vh;
+        min-height: 100vh;
     }
     .layout-content-main {
         margin: 0 10px 10px;
@@ -192,5 +192,20 @@ export default {
     .fluid-header{
         padding-top: 0;
     }
+    .main-view-fix {
+        padding-top: 44px;
+    }
+
+    .noMultiTabs {
+        padding-top: 0;
+    }
+}
+.n-layout-header.n-layout-header--absolute-positioned{
+    z-index: 100;
+}
+</style>
+<style lang="less">
+.layout-side-drawer {
+    background-color: rgb(0, 20, 40);
 }
 </style>
