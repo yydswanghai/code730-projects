@@ -1,183 +1,94 @@
-export async function getUserInfo() {
-    return {
-        code: 200,
-        data: {
-            permissions: [
-                "sys_org_add",
-                "sys_org_detail",
-                "sys_auth_edit",
-                "commend_add",
-                "commend_detail",
-                "sys_org_edit",
-                "sys_org_del",
-                "commend_to_examine",
-                "commend_edit",
-                "commend_del",
-            ],
-            sysOrg: {
-                accountSource: 2,
-                createBy: null,
-                createTime: "2022-02-24 19:02:10",
-                delFlag: 0,
-                level: 1,
-                lockFlag: 0,
-                orgCode: null,
-                orgDesc: null,
-                orgId: "1",
-                orgName: "中国共产主义青年团广东省委员会",
-                parentOid: "10000000",
-                password: "",
-                permCode: "00010001",
-                permNo: "0001",
-                phone: null,
-                sourceFullname: "中国共产主义青年团广东省委员会",
-                sourceId: "15247607",
-                updateBy: null,
-                updateTime: "2022-04-06 10:25:16",
-                username: null,
-            }
-        },
-        msg: 'OK'
+import request from './request'
+
+// 发送 formData
+function _transformFormData(data){
+    let ret = ''
+    for (let it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
     }
+    ret = ret.substring(0, ret.lastIndexOf('&'));
+    return ret
+}
+
+// 登录 - 普通用户
+export async function loginByPerson(data){
+    return request({
+        url: '/auth/oauth/token?grant_type=password&scope=app',
+        method: 'post',
+        data,
+        transformRequest: [function(data) {
+            return _transformFormData(data)
+        }],
+        headers: {
+            Authorization: `Basic ${btoa('app_person_user:50ed7ab5-6a9f-441f-80ea-1e7746007bea')}`,
+            ['Content-Type']: 'application/x-www-form-urlencoded'
+        }
+    })
+}
+// 登录 - 普通用户类型二
+export async function loginByCollective(data) {
+    return request({
+        url: '/auth/oauth/token?grant_type=password&scope=app',
+        method: 'post',
+        data,
+        transformRequest: [function(data) {
+            return _transformFormData(data)
+        }],
+        headers: {
+            Authorization: `Basic ${btoa('app_collective_user:004ea510-e05b-4fc0-8bc4-e43981956a00')}`,
+            ['Content-Type']: 'application/x-www-form-urlencoded'
+        }
+    })
+}
+// 登录 - 后台用户
+export async function loginByPcManage(data) {
+    return request({
+        url: '/auth/oauth/token?grant_type=password&scope=server',
+        method: 'post',
+        data,
+        transformRequest: [function(data) {
+            return _transformFormData(data)
+        }],
+        headers: {
+            Authorization: `Basic ${btoa('pc_manage:39f8858c-441d-415e-9385-b1ec602891c2')}`,
+            ['Content-Type']: 'application/x-www-form-urlencoded'
+        },
+    })
+}
+
+// 获取用户信息 - 普通用户
+export async function getInfoByPerson() {
+    return request({
+        url: '/upms/appPersonUser/getLoginInfo',
+        method: 'get'
+    })
+}
+// 获取用户信息 - 普通用户类型二
+export async function getInfoByCollective() {
+    return request({
+        url: '/upms/appCollectiveUser/getLoginInfo',
+        method: 'get'
+    })
+}
+// 获取用户信息 - 后台用户
+export async function getInfoByPcManage() {
+    return request({
+        url: '/upms/sysOrg/getLoginInfo',
+        method: 'get'
+    })
 }
 
 export async function getUserMenu() {
-    return {
-        code: 201,
-        data: [
-            {
-                icon: "form",
-                id: "1000",
-                keepAlive: "0",
-                label: "表彰管理",
-                name: "表彰管理",
-                parentId: "-1",
-                path: "/commend-management",
-                permission: null,
-                routeName: "commend-management",
-                sortOrder: 1000,
-                type: "0",
-                weight: 1000,
-                children: [
-                    {
-                        icon: null,
-                        id: "1010",
-                        keepAlive: "0",
-                        label: "新增表彰",
-                        name: "新增表彰",
-                        parentId: "1000",
-                        path: "/commend-management/add",
-                        permission: "commend_add",
-                        routeName: "commend-management-add",
-                        sortOrder: 1010,
-                        type: "1",
-                        weight: 1010,
-                    },
-                    {
-                        icon: null,
-                        id: "1020",
-                        keepAlive: "0",
-                        label: "编辑表彰",
-                        name: "编辑表彰",
-                        parentId: "1000",
-                        path: "/commend-management/edit",
-                        permission: "commend_edit",
-                        routeName: "commend-management-edit",
-                        sortOrder: 1020,
-                        type: "1",
-                        weight: 1020,
-                    },
-                    {
-                        icon: null,
-                        id: "1030",
-                        keepAlive: "0",
-                        label: "表彰明细",
-                        name: "表彰明细",
-                        parentId: "1000",
-                        path: "/commend-management/detail",
-                        permission: "commend_detail",
-                        routeName: "commend-management-detail",
-                        sortOrder: 1030,
-                        type: "1",
-                        weight: 1030,
-                    }
-                ]
-            },
-            {
-                icon: "organization",
-                id: "2000",
-                keepAlive: "0",
-                label: "组织管理",
-                name: "组织管理",
-                parentId: "-1",
-                path: "/organization-management",
-                permission: null,
-                routeName: "organization",
-                sortOrder: 2000,
-                type: "0",
-                weight: 2000,
-                children: [
-                    
-                ]
-            }
-        ],
-        msg: 'OK'
-    }
+    return []
 }
 
-export async function login(params){
-    const { username, password } = params
-    if(username === 'admin' && password === '123456'){
-        return {
-            access_token: "c9e2641a-44c4-4de3-89a2-0ed4ba5eab39",
-            clientId: "app_person_user",
-            expires_in: 7199,
-            refresh_token: "b05a6508-8a28-4270-bf71-68ae5af042f1",
-            user_info: {
-                accountNonExpired: true,
-                accountNonLocked: true,
-                authorities: [],
-                credentialsNonExpired: true,
-                enabled: true,
-                id: "5",
-                parentOid: null,
-                password: null,
-                phone: "15572151179",
-                username: "15572151179",
-            }
-        }
-    }
-    return null
+export async function getUserInfo() {
+    return {}
 }
-
+// 登出
 export async function logout(){
-    return {
-        code: 200,
-        data: null,
-        msg: 'OK'
-    }
+    return request({
+        url: '/auth/token/logout',
+        method: 'delete'
+    })
 }
-
-// export async function getUserInfo(){
-//     return {
-//         code: 200,
-//         data: {
-//             appUser: {
-//                 createBy: null,
-//                 createTime: "2022-02-21 15:51:11",
-//                 delFlag: 0,
-//                 idCard: "F4416C73D202CEB99D22E9B54C3D46F80D7EDEA75BE76BE0F08057B1FEBDDC98",
-//                 lockFlag: 0,
-//                 name: "王海",
-//                 password: "",
-//                 phone: "15572151179",
-//                 sex: 1,
-//                 updateBy: null,
-//                 updateTime: "2022-03-23 15:48:18",
-//                 userId: "5",
-//             },
-//             permissions: null
-//         },
-//         msg: 'OK'
-//     }
-// }

@@ -40,7 +40,7 @@
                 <div class="layout-content-main"
                     :class="{ 'layout-content-main-fix': fixedMulti, 'fluid-header': fixedHeader === 'static' }">
                     <TagsView v-if="isMultiTabs" v-model:collapsed="collapsed" :isMixMenuNoneSub="isMixMenuNoneSub" />
-                    <div class="layout-main" :class="{ 'main-view-fix': fixedMulti, 'noMultiTabs mt-3': !isMultiTabs }">
+                    <div class="layout-main" :class="{ 'main-view-fix': fixedMulti, 'noMultiTabs': !isMultiTabs }">
                         <Main />
                     </div>
                 </div>
@@ -198,6 +198,7 @@ export default {
 
     .noMultiTabs {
         padding-top: 0;
+        margin-top: 0.75rem;
     }
 }
 .n-layout-header.n-layout-header--absolute-positioned{

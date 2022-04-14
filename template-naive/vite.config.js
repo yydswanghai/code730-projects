@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { viteMockServe } from 'vite-plugin-mock'
 
 const resolvePath = (url) => path.resolve(__dirname, url)
 
@@ -46,7 +47,17 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       vue(),
-      vueJsx()
+      vueJsx(),
+      viteMockServe({
+          ignore: /^\_/,
+          mockPath: 'mock',
+          localEnabled: command !== 'build',
+          prodEnabled: command === 'build',
+          injectCode: `
+          import { setupProdMockServer } from './createProductionServer';
+          setupProdMockServer();
+          `
+      })
     ],
   }
 })

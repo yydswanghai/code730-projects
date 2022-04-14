@@ -9,7 +9,7 @@
                     <NIcon size="16" color="#515a6e"><RightOutlined /></NIcon>
                 </span>
                 <div ref="tagsScroll" class="tags-scroll">
-                    <Draggable :list="tagsList" animation="300" item-key="fullPath" class="flex">
+                    <Draggable :list="tagsList" animation="300" item-key="fullPath" class="tags-draggable">
                         <template #item="{ element }">
                             <div class="tags-scroll-item"
                                 :class="{ 'active-item': activeKey === element.path }"
@@ -60,11 +60,11 @@
 import { LeftOutlined, RightOutlined, CloseOutlined, ReloadOutlined, ColumnWidthOutlined, MinusOutlined, DownOutlined } from '@vicons/antd'
 import { ref, computed, reactive, toRefs, watch, nextTick } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { useTagsViewStore } from '@/store/modules/tagsView'
+import { useTagsViewStore, initTagsViewStore } from '@/store/modules/tagsView'
 import Draggable from 'vuedraggable'
 import { useRoute, useRouter } from 'vue-router'
 import { useThemeVars, useMessage } from 'naive-ui'
-import { renderIcon } from '@/utils/'
+import { renderIcon, reloadThePage } from '@/utils/'
 export default {
     name: 'TagsView',
     props: {
@@ -136,19 +136,9 @@ export default {
                 fullPath, hash, meta, name, params, path, query
             }
         }
-        // tagsview缓存
-        let cacheRoutes = []
-        const simpleRoute = getSimpleRoute($route)
-        try{
-            const localTags = localStorage.getItem('Tags-Views')
-            cacheRoutes = localTags ? JSON.parse(localTags) : [simpleRoute]
-        }catch(e){
-            cacheRoutes = [simpleRoute]
-        }
-        // 将最新的路由信息同步到 localStorage 中
 
-        // 初始化标签页
-        tagsViewStore.initTags(cacheRoutes)
+        initTagsViewStore(getSimpleRoute($route))// 初始化标签页
+
         const tagsList = computed(() => tagsViewStore.tagsList)
         // 相当于添加新的tag
         watch(() => $route.fullPath, (to) => {
@@ -156,10 +146,6 @@ export default {
             tagsViewStore.addTags(getSimpleRoute($route))
             updateNavScroll(true)
         }, { immediate: true })
-        // 在页面关闭或刷新之前，保存数据
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('Tags-Views', JSON.stringify(tagsList.value))
-        })
 
         /**
          * @param {Boolean} autoScroll 是否开启自动滚动功能
@@ -301,12 +287,8 @@ export default {
         }
         // 刷新
         function reloadPage() {
-            $router.push({
-                path: $route.fullPath
-            })
+            reloadThePage($router, $route)
         }
-        // 注入刷新页面方法
-        // provide('reloadPage', reloadPage);
         // 关闭其他
         function closeOther(route) {
             tagsViewStore.closeOtherTags(route)
@@ -316,7 +298,6 @@ export default {
         }
         // 关闭全部
         function closeAll() {
-            localStorage.removeItem('Tags-Views')
             tagsViewStore.closeAllTags()
             $router.replace('/dashboard')
             updateNavScroll()
@@ -394,6 +375,9 @@ export default {
         .tags-scroll{
             white-space: nowrap;
             overflow: hidden;
+            .tags-draggable{
+                display: flex;
+            }
             .tags-scroll-item{
                 background: v-bind(getCardColor);
                 color: v-bind(getBaseColor);

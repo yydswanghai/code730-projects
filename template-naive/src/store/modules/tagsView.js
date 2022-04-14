@@ -22,16 +22,6 @@ export const useTagsViewStore = defineStore({
             }
             return true
         },
-        // 关闭左侧
-        closeLeftTags(route){
-            const index = this.tagsList.findIndex(it => it.fullPath == route.fullPath)
-            this.tagsList.splice(0, index)
-        },
-        // 关闭右侧
-        closeRightTags(route){
-            const index = this.tagsList.findIndex(it => it.fullPath == route.fullPath)
-            this.tagsList.splice(index + 1)
-        },
         // 关闭其他
         closeOtherTags(route){
             this.tagsList = this.tagsList.filter(it => it.fullPath == route.fullPath)
@@ -44,6 +34,37 @@ export const useTagsViewStore = defineStore({
         // 关闭全部
         closeAllTags(){
             this.tagsList = []
-        }
+            localStorage.removeItem(this.$id)
+        },
+        // 关闭左侧-暂时不用
+        closeLeftTags(route){
+            const index = this.tagsList.findIndex(it => it.fullPath == route.fullPath)
+            this.tagsList.splice(0, index)
+        },
+        // 关闭右侧-暂时不用
+        closeRightTags(route){
+            const index = this.tagsList.findIndex(it => it.fullPath == route.fullPath)
+            this.tagsList.splice(index + 1)
+        },
     }
 })
+
+
+export function initTagsViewStore(route) {
+    const instance = useTagsViewStore()
+
+    // init
+    const localTags = localStorage.getItem(instance.$id)
+    const cacheRoutes = localTags ? JSON.parse(localTags) : [route]
+    instance.initTags(cacheRoutes)
+
+    // 订阅数据变化，变化时存储
+    instance.$subscribe((mutation, state) => {
+        localStorage.setItem(instance.$id, JSON.stringify(state.tagsList))
+    })
+
+    // 在页面关闭或刷新之前，保存数据
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem(instance.$id, JSON.stringify(instance.$state.tagsList))
+    })
+}

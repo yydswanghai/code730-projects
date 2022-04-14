@@ -12,19 +12,17 @@ export default {
         NEmpty,
     },
     setup(){
-        console.log('進重定向');
         const $route = useRoute()
         const $router = useRouter()
         onBeforeMount(() => {
             const { params, query } = $route
             const { path } = params
-            console.log(params, query, $route)
             $router.replace({
-                path: '/' + (Array.isArray(path) ? path.join('/') : path),
+                path: '/' + path,
                 query,
             })
         })
-    }
+    },
 }
 </script>
 

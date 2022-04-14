@@ -19,6 +19,7 @@
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { reloadThePage } from '@/utils/'
 
 import { MenuUnfoldOutlined, MenuFoldOutlined, ReloadOutlined } from '@vicons/antd'
 import Breadcrumb from './Breadcrumb.vue'
@@ -39,9 +40,7 @@ export default {
         const settingStore = useProjectSettingStore()
         // 刷新页面
         function reloadPage() {
-            $router.push({
-                path: '/redirect' + $route.fullPath
-            })
+            reloadThePage($router, $route)
         }
         function changeCollapsed() {
             ctx.emit('update:collapsed', !props.collapsed)

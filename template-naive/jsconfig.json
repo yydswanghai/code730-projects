@@ -8,12 +8,6 @@
             "@/*": ["src/*"]
         }
     },
-    "include": [
-        "src/**/*.js",
-        "src/**/*.jsx",
-        "src/**/*.vue",
-        "vite.config.js"
-    ],
     "exclude": [
         "node_modules",
         "dist",

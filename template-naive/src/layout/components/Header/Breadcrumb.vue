@@ -1,6 +1,6 @@
 <template>
     <NBreadcrumb v-if="crumbsSetting.show">
-        <template v-for="routeItem in breadcrumbList" :key="routeItem.name">
+        <template v-for="routeItem in breadcrumbList" :key="routeItem.name + nanoid()">
             <NBreadcrumbItem>
                 <NDropdown
                     v-if="routeItem.children.length"
@@ -31,6 +31,7 @@
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { nanoid } from 'nanoid'
 
 export default {
     name: 'Breadcrumb',
@@ -68,6 +69,7 @@ export default {
             crumbsSetting: computed(() => settingStore.crumbsSetting),
             breadcrumbList,
             dropdownSelect,
+            nanoid,
         }
     }
 }
