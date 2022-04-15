@@ -9,7 +9,7 @@ export const useUserStore = defineStore({
         userType: getStorage(USER_TYPE),// 1: 普通 2: 普通(2) 3: 后台
         access_token: getStorage(ACCESS_TOKEN),
         refresh_token: getStorage(REFRESH_TOKEN),
-        userInfo: getStorage(CURRENT_USER),
+        userInfo: JSON.parse(localStorage.getItem(CURRENT_USER)),
         permissions: null,// 用户权限
     }),
     actions: {
@@ -35,8 +35,13 @@ export const useUserStore = defineStore({
         },
         setUserInfo(info){// 设置用户信息
             this.userInfo = info
+            if(info === ''){
+                localStorage.removeItem(CURRENT_USER)
+            }else{
+                localStorage.setItem(CURRENT_USER, JSON.stringify(info))
+            }
         },
-        setPermissions(value){
+        setPermissions(value){// 设置用户权限
             this.permissions = value
         },
         async login(params){// 登录
@@ -57,9 +62,9 @@ export const useUserStore = defineStore({
                     const { access_token, refresh_token } = resp.data
                     this.setAccessToken(access_token)
                     this.setRefreshToken(refresh_token)
-                    return Promise.resolve({ msg: resp.msg })
+                    return Promise.resolve({ msg: resp.msg, code: resp.code })
                 }else{
-                    return Promise.resolve({ msg: resp.msg })
+                    return Promise.resolve({ msg: resp.msg, code: resp.code })
                 }
             } catch(e){
                 return Promise.reject(e)
@@ -72,18 +77,18 @@ export const useUserStore = defineStore({
                 let resp = null;
                 if(this.userType === 3){
                     resp = await getInfoByPcManage()
-                    info = resp.data.appUser
+                    info = resp.data.sysOrg
+                    permissions = resp.data.permissions
                 }else if(this.userType === 2){
                     resp = await getInfoByCollective()
                     info = resp.data.appUser
                 }else{
                     resp = await getInfoByPerson()
-                    info = resp.data.sysOrg
-                    permissions = resp.data.permissions
+                    info = resp.data.appUser
                 }
                 if(!resp) return
                 if(info){
-                    this.setUserInfo(data.info)
+                    this.setUserInfo(info)
                 }
                 if(permissions){
                     this.setPermissions(permissions)
@@ -98,8 +103,8 @@ export const useUserStore = defineStore({
                 await logout()
                 this.setAccessToken('')
                 this.setRefreshToken('')
+                this.setUserInfo('')
                 this.setPermissions([])
-                this.setUserInfo(null)
                 return Promise.resolve('')
             } catch (e) {
                 return Promise.reject(e)
@@ -107,3 +112,33 @@ export const useUserStore = defineStore({
         }
     }
 })
+
+export function initUserStore(route) {
+    const instance = useUserStore()
+    // init
+    const stateArr = [USER_TYPE, ACCESS_TOKEN, REFRESH_TOKEN, CURRENT_USER]
+    stateArr.forEach(name => {
+        const value = getStorage(name)
+        if(value){
+            switch (name) {
+                case USER_TYPE:
+                    instance.setUserType(value)
+                    break;
+                case ACCESS_TOKEN:
+                    instance.setAccessToken(value)
+                    break;
+                case REFRESH_TOKEN:
+                    instance.setRefreshToken(value)
+                    break;
+                case CURRENT_USER:
+                    instance.setUserInfo(value)
+                    break;
+            }
+        }
+    })
+
+    // 订阅数据变化，变化时存储
+    instance.$subscribe((mutation, state) => {
+        console.log(state)
+    })
+}

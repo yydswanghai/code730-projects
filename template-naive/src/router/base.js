@@ -1,4 +1,6 @@
 import Layout from "@/layout/index.vue"
+import { renderIcon } from '@/utils/index'
+import { DashboardOutlined } from '@vicons/antd'
 
 // root
 export const RootRoute = {
@@ -6,6 +8,22 @@ export const RootRoute = {
     name: 'Root',
     redirect: '/dashboard',
     meta: { title: 'Root' },
+}
+
+export const DashboardRoute = {
+    path: '/dashboard',
+    name: 'dashboard',
+    redirect: '/dashboard/index',
+    component: Layout,
+    meta: { title: 'Dashboard', icon: renderIcon(DashboardOutlined), sort: 0, hidden: false },
+    children: [
+        {
+            path: 'index',
+            name: `dashboard_index`,
+            meta: { title: '主控台' },
+            component: () => import('@/views/dashboard/index.vue'),
+        },
+    ]
 }
 
 // login
@@ -21,13 +39,13 @@ export const RedirectRoute = {
     path: '/redirect',
     name: 'Redirect',
     component: Layout,
-    meta: { title: 'Redirect', hideBreadcrumb: true },
+    meta: { title: 'Redirect' },
     children: [
         {
             path: '/redirect/:path(.*)',
             name: 'Redirect',
             component: () => import('@/views/redirect/index.vue'),
-            meta: { title: 'Redirect', hideBreadcrumb: true },
+            meta: { title: 'Redirect' },
         },
     ],
 }
@@ -37,13 +55,13 @@ export const ErrorPageRoute = {
     path: '/:path(.*)*',
     name: 'ErrorPage',
     component: Layout,
-    meta: { title: 'ErrorPage', hideBreadcrumb: true },
+    meta: { title: 'ErrorPage' },
     children: [
         {
             path: '/:path(.*)*',
             name: 'ErrorPageSon',
             component: () => import('@/views/error-page/index.vue'),
-            meta: { title: 'ErrorPage', hideBreadcrumb: true }
+            meta: { title: 'ErrorPage' }
         }
     ]
 }

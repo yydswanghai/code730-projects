@@ -16,9 +16,9 @@ export async function loginByPerson(data){
         url: '/auth/oauth/token?grant_type=password&scope=app',
         method: 'post',
         data,
-        transformRequest: [function(data) {
-            return _transformFormData(data)
-        }],
+        // transformRequest: [function(data) {
+        //     return _transformFormData(data)
+        // }],
         headers: {
             Authorization: `Basic ${btoa('app_person_user:50ed7ab5-6a9f-441f-80ea-1e7746007bea')}`,
             ['Content-Type']: 'application/x-www-form-urlencoded'
@@ -31,9 +31,9 @@ export async function loginByCollective(data) {
         url: '/auth/oauth/token?grant_type=password&scope=app',
         method: 'post',
         data,
-        transformRequest: [function(data) {
-            return _transformFormData(data)
-        }],
+        // transformRequest: [function(data) {
+        //     return _transformFormData(data)
+        // }],
         headers: {
             Authorization: `Basic ${btoa('app_collective_user:004ea510-e05b-4fc0-8bc4-e43981956a00')}`,
             ['Content-Type']: 'application/x-www-form-urlencoded'
@@ -46,9 +46,9 @@ export async function loginByPcManage(data) {
         url: '/auth/oauth/token?grant_type=password&scope=server',
         method: 'post',
         data,
-        transformRequest: [function(data) {
-            return _transformFormData(data)
-        }],
+        // transformRequest: [function(data) {
+        //     return _transformFormData(data)
+        // }],
         headers: {
             Authorization: `Basic ${btoa('pc_manage:39f8858c-441d-415e-9385-b1ec602891c2')}`,
             ['Content-Type']: 'application/x-www-form-urlencoded'
@@ -77,14 +77,15 @@ export async function getInfoByPcManage() {
         method: 'get'
     })
 }
-
-export async function getUserMenu() {
-    return []
+// 获取用户菜单
+export async function getUserMenu(params) {
+    return request({
+        url: '/upms/sysMenu/getUserMenu',
+        method: 'get',
+        params
+    })
 }
 
-export async function getUserInfo() {
-    return {}
-}
 // 登出
 export async function logout(){
     return request({

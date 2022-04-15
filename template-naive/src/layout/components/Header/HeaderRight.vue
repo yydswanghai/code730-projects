@@ -61,7 +61,7 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { useUserStore } from '@/store/modules/user'
 import { SearchOutlined, GithubFilled, FullscreenOutlined, FullscreenExitOutlined, UserOutlined, SettingOutlined } from '@vicons/antd'
 import AppSetting from '../AppSetting/index.vue'
 export default {
@@ -76,9 +76,10 @@ export default {
         AppSetting,
     },
     setup(){
-        const router = useRouter()
+        const $router = useRouter()
         const fullscreenIcon = ref('FullscreenOutlined')
         const drawerSetting = ref(null)
+        const userStore = useUserStore()
 
         // 切换全屏图标
         function toggleFullscreenIcon() {
@@ -102,11 +103,13 @@ export default {
             { label: '退出登录', key: 2 },
         ]
 
-        function dropdownSelect(key) {
+        async function dropdownSelect(key) {
             if(key === 1){
-                router.push({ name: 'Setting' })
+                $router.push({ name: 'Setting' })
             }else if(key === 2){
-                console.log('退出登录')
+                // 退出登录
+                await userStore.logout()
+                $router.push('/login')
             }
         }
 

@@ -19,7 +19,6 @@ import { ref, computed, watch, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useAsyncRouteStore } from '@/store/modules/asyncRoute'
-import { getUserInfo } from '@/api/user'
 import { cloneDeep } from 'lodash-es'
 export default {
     name: 'Menu',
@@ -185,13 +184,8 @@ export default {
             return subRouteChildren.includes(key)
         }
 
-        onMounted(async () => {
-            const resp = await getUserInfo()
-            if(resp.code === 200){
-                const info = resp.data
-                await asyncRouteStore.generateRoutes(info)
-                updateMenu()// 生成菜单数据后更新
-            }
+        onMounted(() => {
+            updateMenu()
         })
         return {
             ...toRefs(state),

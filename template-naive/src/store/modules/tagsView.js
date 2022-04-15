@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 
 // 不需要出现在标签页中的路由
-const whiteList = ['Redirect', 'login']
+const whiteList = ['Redirect', 'Login']
 
 export const useTagsViewStore = defineStore({
-    id: 'tags-view',
+    id: 'TAGS-VIEW',
     state: () => ({
         tagsList: [],
     }),

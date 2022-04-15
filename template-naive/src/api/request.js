@@ -11,7 +11,8 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
     const userStore = useUserStore()
-    const { access_token } = userStore
+    const access_token = userStore.access_token
+
     if(access_token){
         config.headers['Authorization'] = `Bearer ${access_token}`
     }
@@ -28,7 +29,7 @@ service.interceptors.response.use(response => {
     // 响应出错
     const res = error.response
     // 424：token 过期
-    if(res.status === 424){
+    if(res.code === 424){
         // todo 退出并提示登录过期
     }
     return res.data

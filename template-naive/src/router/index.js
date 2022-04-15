@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { RootRoute, LoginRoute, RedirectRoute } from '@/router/base'
+import { RootRoute, LoginRoute, RedirectRoute, DashboardRoute } from '@/router/base'
+
 // 自动导入
 const modules = import.meta.globEager('./modules/**/*.js')
 
@@ -15,17 +16,18 @@ Object.keys(modules).forEach((key) => {
 function sortRoute(a, b) {
     return (a.meta?.sort || 0) - (b.meta?.sort || 0)
 }
-
+// 固定的路由 无需验证权限
 routeModuleList.sort(sortRoute)
-//需要验证权限
-export const asyncRoutes = [...routeModuleList]
 
-// 普通路由 无需验证权限
-export const constantRouter = [RootRoute, LoginRoute, RedirectRoute]
+// 固定的路由 无需验证权限
+export const constantRouter = [RootRoute, LoginRoute, RedirectRoute, DashboardRoute]
+
+// 用户端写死的路由，如果不是通过后端请求到的，则就使用这个路由
+export const asyncRouter = [...routeModuleList]
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: constantRouter.concat(...asyncRoutes),
+    routes: constantRouter,
     strict: true,
     scrollBehavior: () => ({ left: 0, top: 0 }),
 })

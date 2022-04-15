@@ -91,7 +91,7 @@ export default {
 
         const tagsScroll = ref(null)// dom
         const tagsWrap = ref(null)// dom
-        const BASE_HOME_REDIRECT = ref('/dashboard/console')
+        const BASE_HOME_REDIRECT = ref('/dashboard/index')
 
         const state = reactive({
             activeKey: $route.fullPath,// 当前页面key
