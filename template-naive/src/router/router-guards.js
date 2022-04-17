@@ -17,13 +17,36 @@ export function createRouterGuards(router){
         Loading && Loading.start()
         // 确定用户是否已登录
         const hasToken = userStore.access_token
-
         if(hasToken){
             if(to.path === '/login'){
                 // 如果已登录，则重定向到主页
                 next({ path: '/' })
                 Loading && Loading.finish()
+            }else{
+                try{
+                    const info = userStore.userInfo
+                    let routes = []
+                    if(!info){// 如果没有用户信息
+                        await userStore.getInfo()
+                        await asyncRouteStore.generateRoutes()
+                        routes = asyncRouteStore.addRoutes
+                        localStorage.setItem('ASYNC-ROUTES', JSON.stringify(routes))
+                    }else{
+                        routes = JSON.parse(localStorage.getItem('ASYNC-ROUTES')) || []
+                    }
+                    // 动态添加可访问路由表
+                    routes.forEach((item) => {
+                        router.addRoute(item);
+                    })
+                    
+                    next()
+                }catch(e){
+                    // 出现错误登出，进入登录页面重新登录
+                    await logout()
+                    next(`/login?redirect=${to.path}`)
+                }
             }
+
         }else{
             if(whiteList.includes(to.path)){
                 // 在免费登录白名单中，直接进入
@@ -35,20 +58,7 @@ export function createRouterGuards(router){
                 Loading && Loading.finish()
             }
         }
-
-        try{
-            await userStore.getInfo()
-            const routes = await asyncRouteStore.generateRoutes()
-            // 动态添加可访问路由表
-            routes.forEach((item) => {
-                router.addRoute(item);
-            })
-            next()
-        }catch(e){
-            // 出现错误登出，进入登录页面重新登录
-            await logout()
-            next(`/login?redirect=${to.path}`)
-        }
+        
     })
 
     router.afterEach((to, _, failure) => {

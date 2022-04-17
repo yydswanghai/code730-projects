@@ -3,6 +3,7 @@ import { getUserMenu } from '@/api/user'
 import { constantRouter, asyncRouter } from '@/router/index'
 import { renderIcon } from '@/utils/'
 import { toRaw } from 'vue'
+import { CheckOutlined } from '@vicons/antd'
 
 /**
  * 动态生成菜单
@@ -19,7 +20,7 @@ function generator(routerMap) {
                 title: item.label,
                 sort: item.sortOrder,
                 keepAlive: item.keepAlive === '1',
-                icon: renderIcon(item.icon) || null
+                icon: renderIcon(CheckOutlined) || null// todo
             }
         }
         if(item.parentId === '-1'){
