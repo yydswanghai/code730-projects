@@ -9,8 +9,7 @@ export const useUserStore = defineStore({
         userType: getStorage(USER_TYPE),// 1: 普通 2: 普通(2) 3: 后台
         access_token: getStorage(ACCESS_TOKEN),
         refresh_token: getStorage(REFRESH_TOKEN),
-        userInfo: JSON.parse(localStorage.getItem(CURRENT_USER)),
-        permissions: null,// 用户权限
+        userInfo: null,
     }),
     actions: {
         setUserType(type){// 设置用户类型
@@ -35,14 +34,11 @@ export const useUserStore = defineStore({
         },
         setUserInfo(info){// 设置用户信息
             this.userInfo = info
-            if(info === ''){
-                localStorage.removeItem(CURRENT_USER)
-            }else{
-                localStorage.setItem(CURRENT_USER, JSON.stringify(info))
-            }
-        },
-        setPermissions(value){// 设置用户权限
-            this.permissions = value
+            // if(info === ''){
+            //     localStorage.removeItem(CURRENT_USER)
+            // }else{
+            //     localStorage.setItem(CURRENT_USER, JSON.stringify(info))
+            // }
         },
         async login(params){// 登录
             try{
@@ -77,21 +73,23 @@ export const useUserStore = defineStore({
                 let resp = null;
                 if(this.userType === 3){
                     resp = await getInfoByPcManage()
-                    info = resp.data.sysOrg
-                    permissions = resp.data.permissions
+                    if(resp.code === 200){
+                        info = resp.data.sysOrg
+                        permissions = resp.data.permissions
+                    }
                 }else if(this.userType === 2){
                     resp = await getInfoByCollective()
-                    info = resp.data.appUser
+                    if(resp.code === 200){
+                        info = resp.data.appUser
+                    }
                 }else{
                     resp = await getInfoByPerson()
-                    info = resp.data.appUser
+                    if(resp.code === 200){
+                        info = resp.data.appUser
+                    }
                 }
-                if(!resp) return
                 if(info){
                     this.setUserInfo(info)
-                }
-                if(permissions){
-                    this.setPermissions(permissions)
                 }
                 return Promise.resolve({ info, permissions })
             } catch (e) {
@@ -103,8 +101,7 @@ export const useUserStore = defineStore({
                 await logout()
                 this.setAccessToken('')
                 this.setRefreshToken('')
-                this.setUserInfo('')
-                this.setPermissions([])
+                this.setUserInfo(null)
                 return Promise.resolve('')
             } catch (e) {
                 return Promise.reject(e)

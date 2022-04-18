@@ -94,15 +94,18 @@ export const useAsyncRouteStore = defineStore({
     state: () => ({
         routes: [],// 用户路由
         addRoutes: [],
+        permissions: null,// 用户权限
     }),
     actions: {
-        // 设置动态路由
-        setRoutes(routers){
+        setRoutes(routers){// 设置动态路由
             this.addRoutes = routers
             this.routes = constantRouter.concat(routers)
         },
-        // 生成路由
-        async generateRoutes(){
+        setPermissions(value){// 设置用户权限
+            this.permissions = value
+        },
+        async generateRoutes(userInfo){// 生成路由
+            this.setPermissions(userInfo.permissions)
             let accessedRouters
             const resp = await getUserMenu()// 用户菜单
             if(resp.code === 200){
