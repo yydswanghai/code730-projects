@@ -14,6 +14,7 @@ import { WalletOutlined } from '@vicons/antd'
  * @param meta.keepAlive 缓存该路由
  * @param meta.sort 排序越小越排前
  * @param meta.disabled 禁用整个菜单
+ * @param meta.affix 保留固定路由
  */
 
 export default [

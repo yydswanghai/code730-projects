@@ -1,7 +1,7 @@
 <template>
-    <div class="logo h-16 leading-normal flex items-center justify-center overflow-hidden whitespace-normal">
-        <img src="~@/assets/images/logo.png" :class="{ 'mr-2': !collapsed }" class="h-8 w-auto" />
-        <h2 v-show="!collapsed" class="mb-0">NaiveUiAdmin</h2>
+    <div class="logo">
+        <img src="~@/assets/images/logo.png" :class="{ 'margin-right': !collapsed }" />
+        <h2 v-show="!collapsed">NaiveUiAdmin</h2>
     </div>
 </template>
 
@@ -13,3 +13,24 @@ export default {
     }
 }
 </script>
+<style lang="less" scoped>
+.logo{
+    height: 4rem;
+    line-height: 1.5;
+    white-space: normal;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+        width: auto;
+        height: 2rem;
+        &.margin-right{
+            margin-right: 0.5rem;
+        }
+    }
+    h2{
+        margin-bottom: 0px;
+    }
+}
+</style>

@@ -163,9 +163,6 @@ export default {
             color: #515a6e;
         }
     }
-    button{
-        background-color: var(--n-color);
-    }
 }
 @media (min-width: 768px) {
     .login-container {

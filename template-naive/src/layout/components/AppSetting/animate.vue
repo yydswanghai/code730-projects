@@ -32,6 +32,7 @@ export default {
             { value: 'fade-bottom', label: '底部消退' },
             { value: 'fade-scale', label: '缩放消退' },
         ]
+
         return {
             settingStore,
             animateOptions,

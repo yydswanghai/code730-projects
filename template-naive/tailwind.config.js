@@ -6,6 +6,9 @@ module.exports = {
   },
   theme: {
     extend: {
+      zIndex: {
+        '-1': '-1',
+      },
       colors: {
         primary: {
           DEFAULT: '#0960bd'

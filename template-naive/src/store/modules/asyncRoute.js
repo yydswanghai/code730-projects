@@ -3,7 +3,7 @@ import { getUserMenu } from '@/api/user'
 import { constantRouter, asyncRouter } from '@/router/index'
 import { renderIcon } from '@/utils/'
 import { toRaw } from 'vue'
-import { CheckOutlined } from '@vicons/antd'
+import * as $icons from '@vicons/antd'
 
 /**
  * 动态生成菜单
@@ -20,7 +20,8 @@ function generator(routerMap) {
                 title: item.label,
                 sort: item.sortOrder,
                 keepAlive: item.keepAlive === '1',
-                icon: renderIcon(CheckOutlined) || null// todo
+                icon: item.icon ? renderIcon($icons[item.icon]) : null
+                // todo https://www.xicons.org/#/ 图标可能有限得换个更好的方式
             }
         }
         if(item.parentId === '-1'){
@@ -92,21 +93,23 @@ function dynamicImport(viewsModules, component) {
 export const useAsyncRouteStore = defineStore({
     id: 'async-route',
     state: () => ({
-        routes: [],// 用户路由
-        addRoutes: [],
-        permissions: null,// 用户权限
+        routes: [],// 用户路由 固定 + 动态
+        menus: [],
+        keepAliveComponents: [],
     }),
     actions: {
         setRoutes(routers){// 设置动态路由
-            this.addRoutes = routers
             this.routes = constantRouter.concat(routers)
         },
-        setPermissions(value){// 设置用户权限
-            this.permissions = value
+        setMenus(menus) {// 设置动态路由
+            this.menus = menus;
         },
-        async generateRoutes(userInfo){// 生成路由
-            this.setPermissions(userInfo.permissions)
+        setKeepAliveComponents(compNames) {// 设置需要缓存的组件
+            this.keepAliveComponents = compNames;
+        },
+        async generateRoutes(data){// 生成路由
             let accessedRouters
+            const permissionsList = data.permissions || []//todo 权限列表
             const resp = await getUserMenu()// 用户菜单
             if(resp.code === 200){
                 try {
@@ -124,6 +127,7 @@ export const useAsyncRouteStore = defineStore({
                 }
             }
             this.setRoutes(accessedRouters)
+            this.setMenus(accessedRouters)
             return toRaw(accessedRouters)
         }
     }

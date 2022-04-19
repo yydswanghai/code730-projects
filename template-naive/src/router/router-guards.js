@@ -12,11 +12,10 @@ export function createRouterGuards(router){
     const asyncRouteStore = useAsyncRouteStore()
     const userStore = useUserStore()
 
-    router.beforeEach(async (to, form, next) => {
+    router.beforeEach(async (to, from, next) => {
         const Loading = window['$loading'] || null
         // 开始进度条
         Loading && Loading.start()
-        // 确定用户是否已登录
         const hasToken = getStorage(ACCESS_TOKEN)
         if(hasToken){
             if(to.path === '/login'){
@@ -26,7 +25,7 @@ export function createRouterGuards(router){
             }else{
                 try{
                     const hasInfo = userStore.userInfo
-                    if(hasInfo){// 如果没有用户信息
+                    if(hasInfo){
                         next()
                     }else{
                         const userInfo = await userStore.getInfo()
@@ -36,7 +35,11 @@ export function createRouterGuards(router){
                             router.addRoute(item)
                         })
                         // 添加404
-                        router.addRoute(ErrorPageRoute)
+                        //添加404
+                        const isErrorPage = router.getRoutes().findIndex((item) => item.name === ErrorPageRoute.name);
+                        if (isErrorPage === -1) {
+                            router.addRoute(ErrorPageRoute)
+                        }
                         next({ ...to, replace: true })
                     }
                 }catch(e){
@@ -51,21 +54,34 @@ export function createRouterGuards(router){
             if(whiteList.includes(to.path)){
                 // 在免费登录白名单中，直接进入
                 next()
-                Loading && Loading.finish()
             }else{
                 // 没有访问权限的其他页面被重定向到登录页面。
                 next(`/login?redirect=${to.path}`)
-                Loading && Loading.finish()
             }
+            Loading && Loading.finish()
         }
-        
     })
 
     router.afterEach((to, _, failure) => {
-        const Loading = window['$loading'] || null
         // 设置标题
         document.title = to?.meta?.title || document.title
-
+        // 在这里设置需要缓存的组件名称
+        const keepAliveComponents = asyncRouteStore.keepAliveComponents
+        // 当前组件名
+        const currentComName = to.matched.find((it) => it.name == to.name)?.name
+        // 如果当前组件不在缓存组件数组里，并且开启 meta.keepAlive
+        if(currentComName && !keepAliveComponents.includes(currentComName) && to.meta?.keepAlive){
+            // 缓存的当前组件名
+            keepAliveComponents.push(currentComName)
+        }else if(!to.meta?.keepAlive || to.name == 'Redirect'){
+            // 不需要缓存的组件
+            const index = asyncRouteStore.keepAliveComponents.findIndex(name => name == currentComName)
+            if (index != -1) {
+                keepAliveComponents.splice(index, 1)
+            }
+        }
+        asyncRouteStore.setKeepAliveComponents(keepAliveComponents)
+        const Loading = window['$loading'] || null
         Loading && Loading.finish()
     })
 

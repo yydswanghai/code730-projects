@@ -1,12 +1,12 @@
 <template>
     <div class="header-left">
         <!-- 菜单收起 -->
-        <div class="ml-1 trigger" @click="changeCollapsed">
+        <div class="left-gap trigger" @click="changeCollapsed">
             <NIcon size="18" v-if="collapsed"><MenuUnfoldOutlined /></NIcon>
             <NIcon size="18" v-else><MenuFoldOutlined /></NIcon>
         </div>
         <!-- 刷新 -->
-        <div class="mr-1 trigger"
+        <div class="left-gap trigger"
             v-if="headerSetting.isReload" @click="reloadPage">
             <NIcon size="18"><ReloadOutlined /></NIcon>
         </div>
@@ -58,5 +58,8 @@ export default {
 .header-left{
     display: flex;
     align-items: center;
+    .left-gap{
+        margin-left: 0.25rem;
+    }
 }
 </style>

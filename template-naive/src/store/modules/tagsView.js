@@ -3,6 +3,10 @@ import { defineStore } from 'pinia'
 // 不需要出现在标签页中的路由
 const whiteList = ['Redirect', 'Login']
 
+function retainAffixRoute(list) {
+    return list.filter(it => it?.meta?.affix ?? false)
+}
+
 export const useTagsViewStore = defineStore({
     id: 'TAGS-VIEW',
     state: () => ({
@@ -33,7 +37,7 @@ export const useTagsViewStore = defineStore({
         },
         // 关闭全部
         closeAllTags(){
-            this.tagsList = []
+            this.tagsList = retainAffixRoute(this.tagsList)
             localStorage.removeItem(this.$id)
         },
         // 关闭左侧-暂时不用

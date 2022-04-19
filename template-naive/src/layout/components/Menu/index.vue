@@ -131,12 +131,11 @@ export default {
         function updateMenu() {
             if(!settingStore.menuSetting.mixMenu){
                 // 不分割菜单
-                // TODO 先写死，后续添加动态路由
-                menus.value = generatorMenu(asyncRouteStore.addRoutes)
+                menus.value = generatorMenu(asyncRouteStore.menus)
             }else{
                 // 分割菜单
                 const firstRouteName = ($route.matched[0].name) || ''
-                menus.value = generatorMenuMix(asyncRouteStore.addRoutes, firstRouteName, props.location)
+                menus.value = generatorMenuMix(asyncRouteStore.menus, firstRouteName, props.location)
                 const activeMenu = $route?.matched[0].meta?.activeMenu
                 headerMenuSelectKey.value = (activeMenu ? activeMenu : firstRouteName) || ''
             }

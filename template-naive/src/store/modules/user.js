@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ACCESS_TOKEN, CURRENT_USER, REFRESH_TOKEN, USER_TYPE, getStorage, setStorage, delStorage } from '@/utils/auth'
 import { loginByPerson, loginByCollective, loginByPcManage, logout } from '@/api/user'
 import { getInfoByPerson, getInfoByCollective, getInfoByPcManage } from '@/api/user'
+import { useTagsViewStore } from './tagsView'
 
 export const useUserStore = defineStore({
     id: 'app-user',
@@ -10,6 +11,7 @@ export const useUserStore = defineStore({
         access_token: getStorage(ACCESS_TOKEN),
         refresh_token: getStorage(REFRESH_TOKEN),
         userInfo: null,
+        permissions: [],// 用户权限
     }),
     actions: {
         setUserType(type){// 设置用户类型
@@ -32,13 +34,11 @@ export const useUserStore = defineStore({
                 setStorage(REFRESH_TOKEN, token)
             }
         },
+        setPermissions(permissions) {
+            this.permissions = permissions;
+        },
         setUserInfo(info){// 设置用户信息
             this.userInfo = info
-            // if(info === ''){
-            //     localStorage.removeItem(CURRENT_USER)
-            // }else{
-            //     localStorage.setItem(CURRENT_USER, JSON.stringify(info))
-            // }
         },
         async login(params){// 登录
             try{
@@ -91,51 +91,24 @@ export const useUserStore = defineStore({
                 if(info){
                     this.setUserInfo(info)
                 }
+                if(permissions){
+                    this.setPermissions(permissions)
+                }
                 return Promise.resolve({ info, permissions })
             } catch (e) {
                 return Promise.reject(e)
             }
         },
         async logout(){// 登出
-            try {
-                await logout()
-                this.setAccessToken('')
-                this.setRefreshToken('')
-                this.setUserInfo(null)
-                return Promise.resolve('')
-            } catch (e) {
-                return Promise.reject(e)
-            }
+            await logout()
+            this.setAccessToken('')
+            this.setRefreshToken('')
+            this.setUserInfo(null)
+            this.setPermissions([])
+            // 清除tags-views
+            const tagsViewStore = useTagsViewStore()
+            tagsViewStore.closeAllTags()
+            return Promise.resolve('')
         }
     }
 })
-
-export function initUserStore(route) {
-    const instance = useUserStore()
-    // init
-    const stateArr = [USER_TYPE, ACCESS_TOKEN, REFRESH_TOKEN, CURRENT_USER]
-    stateArr.forEach(name => {
-        const value = getStorage(name)
-        if(value){
-            switch (name) {
-                case USER_TYPE:
-                    instance.setUserType(value)
-                    break;
-                case ACCESS_TOKEN:
-                    instance.setAccessToken(value)
-                    break;
-                case REFRESH_TOKEN:
-                    instance.setRefreshToken(value)
-                    break;
-                case CURRENT_USER:
-                    instance.setUserInfo(value)
-                    break;
-            }
-        }
-    })
-
-    // 订阅数据变化，变化时存储
-    instance.$subscribe((mutation, state) => {
-        console.log(state)
-    })
-}
