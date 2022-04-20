@@ -43,9 +43,9 @@ export const useUserStore = defineStore({
         async login(params){// 登录
             try{
                 let resp = null;
-                if(this.userType === 3){
+                if(this.userType == 3){
                     resp = await loginByPcManage(params)
-                }else if(this.userType === 2){
+                }else if(this.userType == 2){
                     resp = await loginByCollective(params)
                 }else{
                     resp = await loginByPerson(params)
@@ -71,13 +71,13 @@ export const useUserStore = defineStore({
                 let info = null
                 let permissions = null
                 let resp = null;
-                if(this.userType === 3){
+                if(this.userType == 3){
                     resp = await getInfoByPcManage()
                     if(resp.code === 200){
                         info = resp.data.sysOrg
                         permissions = resp.data.permissions
                     }
-                }else if(this.userType === 2){
+                }else if(this.userType == 2){
                     resp = await getInfoByCollective()
                     if(resp.code === 200){
                         info = resp.data.appUser

@@ -10,61 +10,83 @@
                 </div>
             </div>
             <div class="form">
-                <NForm
-                    ref="formRef"
-                    label-placement="left"
-                    size="large"
-                    :model="formValue"
-                    :rules="rules"
-                    >
-                    <NFormItem path="username">
-                        <NInput v-model:value="formValue.username" placeholder="请输入用户名">
-                            <template #prefix>
-                                <NIcon size="18" color="#808695">
-                                    <PersonOutline />
-                                </NIcon>
-                            </template>
-                        </NInput>
-                    </NFormItem>
-                    <NFormItem path="password">
-                        <NInput v-model:value="formValue.password" type="password" placeholder="请输入密码" showPasswordOn="click">
-                            <template #prefix>
-                                <NIcon size="18" color="#808695">
-                                    <LockClosedOutline />
-                                </NIcon>
-                            </template>
-                        </NInput>
-                    </NFormItem>
-                    <NFormItem class="default-color">
-                        <div class="flex justify-between">
-                            <div class="flex-initial">
-                                <NCheckbox v-model:checked="autoLogin">自动登录</NCheckbox>
+                <NCard>
+                    <NTabs
+                        class="card-tabs"
+                        :default-value="defaultTab"
+                        size="large"
+                        animated
+                        justify-content="space-evenly"
+                        style="margin: 0 -4px"
+                        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
+                        @update:value="handleUpdateTab"
+                        >
+                        <NTabPane v-for="item in tabs" :key="item.id" :name="item.name" :tab="item.tab">
+                        </NTabPane>
+                    </NTabs>
+                    <NForm
+                        ref="formRef"
+                        label-placement="left"
+                        size="large"
+                        :model="formValue"
+                        :rules="rules"
+                        >
+                        <NFormItem path="username">
+                            <NInput v-model:value="formValue.username" placeholder="请输入用户名">
+                                <template #prefix>
+                                    <NIcon size="18" color="#808695">
+                                        <PersonOutline />
+                                    </NIcon>
+                                </template>
+                            </NInput>
+                        </NFormItem>
+                        <NFormItem path="password">
+                            <NInput v-model:value="formValue.password" type="password" placeholder="请输入密码" showPasswordOn="click">
+                                <template #prefix>
+                                    <NIcon size="18" color="#808695">
+                                        <LockClosedOutline />
+                                    </NIcon>
+                                </template>
+                            </NInput>
+                        </NFormItem>
+                        <NFormItem class="default-color flex">
+                            <div class="flex justify-between">
+                                <div class="flex-initial">
+                                    <NCheckbox v-model:checked="autoLogin">自动登录</NCheckbox>
+                                </div>
                             </div>
-                            <div class="flex-initial order-last">
-                                <a href="javascript:">忘记密码</a>
+                        </NFormItem>
+                        <NFormItem class="default-color flex">
+                            <div class="flex justify-between w-full">
+                                <div class="flex-initial">
+                                    <a href="javascript:">忘记密码</a>
+                                </div>
+                                <div class="flex-initial order-last">
+                                    <a href="javascript:">注册</a>
+                                </div>
                             </div>
-                        </div>
-                    </NFormItem>
-                    <NFormItem class="default-color">
-                        <div class="flex justify-between">
-                            <div class="flex-initial">
-                                <span>账号：admin，密码随便填</span>
+                        </NFormItem>
+                        <NFormItem class="default-color">
+                            <div class="flex justify-between">
+                                <div class="flex-initial">
+                                    <span>账号：admin，密码随便填</span>
+                                </div>
                             </div>
-                        </div>
-                    </NFormItem>
-                    <NFormItem>
-                        <NButton type="primary" @click="handleSubmit" size="large" :loading="loading" block>
-                            登录
-                        </NButton>
-                    </NFormItem>
-                </NForm>
+                        </NFormItem>
+                        <NFormItem>
+                            <NButton type="primary" @click="handleSubmit" size="large" :loading="loading" block>
+                                登录
+                            </NButton>
+                        </NFormItem>
+                    </NForm>
+                </NCard>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, onBeforeUpdate } from 'vue'
 import { useMessage } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
@@ -92,6 +114,15 @@ export default {
         }
         const autoLogin = ref(true)
         const loading = ref(false)
+        const tabs = [
+            { id: 'person', name: '1', tab: '普通用户' },
+            { id: 'collective', name: '2', tab: '集体用户' },
+            { id: 'pcManage', name: '3', tab: '后台' }
+        ]
+        const defaultTab = computed({// 默认选择
+            get: () => userStore.userType || '1',
+            set: (val) => userStore.setUserType(val)
+        })
         function handleSubmit(e) {
             e.preventDefault()
             formRef.value?.validate(async (errors) => {
@@ -122,7 +153,14 @@ export default {
                 }
             })
         }
-
+        function handleUpdateTab(tabName) {
+            defaultTab.value = tabName
+        }
+        // 确保在每次更新之前重置ref
+        // onBeforeUpdate(() => {
+        //     formRefs.value = []
+        // })
+        // todo 不同的用户登录 for循环里得到 formDom 然后对应的发送表单请求
         return {
             formRef,
             formValue,
@@ -130,11 +168,21 @@ export default {
             autoLogin,
             loading,
             handleSubmit,
+            tabs,
+            defaultTab,
+            handleUpdateTab,
         }
     }
 }
 </script>
 
+<style lang="less">
+.login-container{
+    .n-form-item-blank{
+        width: 100%;
+    }
+}
+</style>
 <style lang="less" scoped>
 .login-container{
     display: flex;

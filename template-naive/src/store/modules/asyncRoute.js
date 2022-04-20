@@ -3,6 +3,7 @@ import { getUserMenu } from '@/api/user'
 import { constantRouter, asyncRouter } from '@/router/index'
 import { renderIcon } from '@/utils/'
 import { toRaw } from 'vue'
+import { useUserStore } from './user'
 import * as $icons from '@vicons/antd'
 
 /**
@@ -97,6 +98,12 @@ export const useAsyncRouteStore = defineStore({
         menus: [],
         keepAliveComponents: [],
     }),
+    getters: {
+        getUserStore(){
+            const userStore = useUserStore()
+            return userStore
+        }
+    },
     actions: {
         setRoutes(routers){// 设置动态路由
             this.routes = constantRouter.concat(routers)
@@ -110,6 +117,7 @@ export const useAsyncRouteStore = defineStore({
         async generateRoutes(data){// 生成路由
             let accessedRouters
             const permissionsList = data.permissions || []//todo 权限列表
+            console.log(this.getUserStore);
             const resp = await getUserMenu()// 用户菜单
             if(resp.code === 200){
                 try {
