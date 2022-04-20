@@ -14,27 +14,21 @@
 <script>
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useAsyncRouteStore } from '@/store/modules/asyncRoute';
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 
 export default {
     name: 'Main',
     setup(){
-        const projectSettingStore = useProjectSettingStore()
+        const settingStore = useProjectSettingStore()
         const asyncRouteStore = useAsyncRouteStore()
-        const { isPageAnimate, pageAnimateType } = projectSettingStore
         const keepAliveComponents = computed(() => asyncRouteStore.keepAliveComponents)
         const getTransitionName = computed(() => {
-            return isPageAnimate ? pageAnimateType : ''
+            return settingStore.isPageAnimate ? settingStore.pageAnimateType : ''
         })
-        watch(() => projectSettingStore.pageAnimateType, (val) => {
-            console.log(val);
-        })
-        watch(() => projectSettingStore.isPageAnimate, (val) => {
-            console.log(val);
-        })
+
         return {
             keepAliveComponents,
-            getTransitionName
+            getTransitionName,
         }
     }
 }
