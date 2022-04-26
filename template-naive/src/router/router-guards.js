@@ -35,7 +35,6 @@ export function createRouterGuards(router){
                             router.addRoute(item)
                         })
                         // 添加404
-                        //添加404
                         const isErrorPage = router.getRoutes().findIndex((item) => item.name === ErrorPageRoute.name);
                         if (isErrorPage === -1) {
                             router.addRoute(ErrorPageRoute)

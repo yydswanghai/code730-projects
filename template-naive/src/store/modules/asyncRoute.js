@@ -5,6 +5,7 @@ import { renderIcon } from '@/utils/'
 import { toRaw } from 'vue'
 import { useUserStore } from './user'
 import * as $icons from '@vicons/antd'
+import { useMessage } from 'naive-ui'
 
 /**
  * 动态生成菜单
@@ -95,13 +96,15 @@ export const useAsyncRouteStore = defineStore({
     id: 'async-route',
     state: () => ({
         routes: [],// 用户路由 固定 + 动态
-        menus: [],
-        keepAliveComponents: [],
+        menus: [],// 菜单 用于生成侧边栏
+        keepAliveComponents: [],// 缓存组件
     }),
     getters: {
         getUserStore(){
-            const userStore = useUserStore()
-            return userStore
+            return useUserStore()
+        },
+        $message(){
+            return useMessage()
         }
     },
     actions: {
@@ -114,26 +117,30 @@ export const useAsyncRouteStore = defineStore({
         setKeepAliveComponents(compNames) {// 设置需要缓存的组件
             this.keepAliveComponents = compNames;
         },
-        async generateRoutes(data){// 生成路由
+        /**
+         * 生成路由
+         * 判断是否由后台登录，如果是，则请求获取后台的菜单接口得到路由，否则直接使用 asyncRouter
+         */
+        async generateRoutes(data){
             let accessedRouters
-            const permissionsList = data.permissions || []//todo 权限列表
-            console.log(this.getUserStore);
-            const resp = await getUserMenu()// 用户菜单
-            if(resp.code === 200){
-                try {
-                    const routeList = generator(resp.data)
-                    asyncImportRoute(routeList)
-                    accessedRouters = routeList
-                } catch (error) {
-                    console.log(error)
+            const permissionsList = data.permissions || []// todo(暂时没用) 权限列表，我这里直接请求到后台路由，不在这里做权限过滤
+            if(this.getUserStore.userType == 3){
+                const resp = await getUserMenu()// 用户菜单
+                if(resp.code === 200){
+                    try {
+                        const routeList = generator(resp.data)
+                        asyncImportRoute(routeList)
+                        accessedRouters = routeList
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }else{
+                    this.$message.error(resp.msg)
                 }
             }else{
-                try {
-                    accessedRouters = asyncRouter
-                } catch (error) {
-                    console.log(error)
-                }
+                accessedRouters = asyncRouter
             }
+
             this.setRoutes(accessedRouters)
             this.setMenus(accessedRouters)
             return toRaw(accessedRouters)

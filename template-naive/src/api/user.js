@@ -25,7 +25,7 @@ export async function loginByPerson(data){
         }
     })
 }
-// 登录 - 普通用户类型二
+// 登录 - 集体用户
 export async function loginByCollective(data) {
     return request({
         url: '/auth/oauth/token?grant_type=password&scope=app',
@@ -63,7 +63,7 @@ export async function getInfoByPerson() {
         method: 'get'
     })
 }
-// 获取用户信息 - 普通用户类型二
+// 获取用户信息 - 集体用户
 export async function getInfoByCollective() {
     return request({
         url: '/upms/appCollectiveUser/getLoginInfo',

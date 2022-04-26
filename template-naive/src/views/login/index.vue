@@ -6,7 +6,7 @@
                     <img src="~@/assets/images/account-logo.png" alt="" />
                 </div>
                 <div class="desc">
-                    naive-ui-admin 中台前端 **系统
+                    naive-ui 中台前端 **系统
                 </div>
             </div>
             <div class="form">
@@ -21,8 +21,7 @@
                         pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
                         @update:value="handleUpdateTab"
                         >
-                        <NTabPane v-for="item in tabs" :key="item.id" :name="item.name" :tab="item.tab">
-                        </NTabPane>
+                        <NTabPane v-for="item in tabs" :key="item.id" :name="item.name" :tab="item.tab" />
                     </NTabs>
                     <NForm
                         ref="formRef"
@@ -56,7 +55,7 @@
                                 </div>
                             </div>
                         </NFormItem>
-                        <NFormItem class="default-color flex">
+                        <NFormItem class="default-color flex" v-if="defaultTab != 3">
                             <div class="flex justify-between w-full">
                                 <div class="flex-initial">
                                     <a href="javascript:">忘记密码</a>
@@ -86,7 +85,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onBeforeUpdate } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useMessage } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
@@ -112,7 +111,7 @@ export default {
             username: { required: true, message: '请输入用户名', trigger: 'blur' },
             password: { required: true, message: '请输入密码', trigger: 'blur' },
         }
-        const autoLogin = ref(true)
+        const autoLogin = ref(true)// 自动登录
         const loading = ref(false)
         const tabs = [
             { id: 'person', name: '1', tab: '普通用户' },
@@ -156,11 +155,6 @@ export default {
         function handleUpdateTab(tabName) {
             defaultTab.value = tabName
         }
-        // 确保在每次更新之前重置ref
-        // onBeforeUpdate(() => {
-        //     formRefs.value = []
-        // })
-        // todo 不同的用户登录 for循环里得到 formDom 然后对应的发送表单请求
         return {
             formRef,
             formValue,
@@ -202,8 +196,9 @@ export default {
 
         }
         .desc{
-            font-size: 14px;
-            color: #808695;
+            font-size: 18px;
+            color: #fff;
+            text-shadow: 1px 1px 1px rgba(1,1,1,.5);
         }
     }
     .form{
@@ -214,10 +209,10 @@ export default {
 }
 @media (min-width: 768px) {
     .login-container {
-        background-image: url('../../assets/images/login-bg.svg');
+        background-image: url('../../assets/images/background/confetti-doodles.svg');
         background-repeat: no-repeat;
         background-position: 50%;
-        background-size: 100%;
+        background-size: cover;
         .content {
             padding: 32px 0 24px 0;
         }

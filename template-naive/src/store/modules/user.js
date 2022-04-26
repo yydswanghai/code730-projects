@@ -7,7 +7,7 @@ import { useTagsViewStore } from './tagsView'
 export const useUserStore = defineStore({
     id: 'app-user',
     state: () => ({
-        userType: getStorage(USER_TYPE),// 1: 普通 2: 普通(2) 3: 后台
+        userType: getStorage(USER_TYPE),// 1: 普通 2: 集体 3: 后台
         access_token: getStorage(ACCESS_TOKEN),
         refresh_token: getStorage(REFRESH_TOKEN),
         userInfo: null,
@@ -58,9 +58,9 @@ export const useUserStore = defineStore({
                     const { access_token, refresh_token } = resp.data
                     this.setAccessToken(access_token)
                     this.setRefreshToken(refresh_token)
-                    return Promise.resolve({ msg: resp.msg, code: resp.code })
+                    return { msg: resp.msg, code: resp.code }
                 }else{
-                    return Promise.resolve({ msg: resp.msg, code: resp.code })
+                    return { msg: resp.msg, code: resp.code }
                 }
             } catch(e){
                 return Promise.reject(e)
@@ -94,7 +94,7 @@ export const useUserStore = defineStore({
                 if(permissions){
                     this.setPermissions(permissions)
                 }
-                return Promise.resolve({ info, permissions })
+                return { info, permissions }
             } catch (e) {
                 return Promise.reject(e)
             }
