@@ -99,7 +99,7 @@ export const useUserStore = defineStore({
                 if(permissions){
                     this.setPermissions(permissions)
                 }
-                return { info, permissions }// 返回用户信息和用户权限方便在路由鉴权的时候，根据不同的用户类型分配不同的菜单
+                return { info, permissions }
             } catch (e) {
                 return Promise.reject(e)
             }
