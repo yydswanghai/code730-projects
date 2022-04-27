@@ -21,7 +21,9 @@ import { computed, watch } from 'vue'
 import HeaderMenu from './HeaderMenu.vue'
 import HeaderLeft from './HeaderLeft.vue'
 import HeaderRight from './HeaderRight.vue'
-
+/**
+ * 顶部组件
+ */
 export default {
     name: 'Header',
     components: {

@@ -15,14 +15,16 @@
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useAsyncRouteStore } from '@/store/modules/asyncRoute';
 import { computed } from 'vue'
-
+/**
+ * 主内容组件
+ */
 export default {
     name: 'Main',
     setup(){
         const settingStore = useProjectSettingStore()
         const asyncRouteStore = useAsyncRouteStore()
         const keepAliveComponents = computed(() => asyncRouteStore.keepAliveComponents)
-        const getTransitionName = computed(() => {
+        const getTransitionName = computed(() => {// 动画名称：不使用动画设置为 '' 就可以
             return settingStore.isPageAnimate ? settingStore.pageAnimateType : ''
         })
 

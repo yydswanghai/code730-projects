@@ -20,6 +20,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useAsyncRouteStore } from '@/store/modules/asyncRoute'
 import { cloneDeep } from 'lodash-es'
+/**
+ * 菜单组件
+ * 菜单出现的情况：1.默认在左侧栏 2.移动端弹出在左侧 3.出现在顶部栏
+ */
 export default {
     name: 'Menu',
     props: {
@@ -27,14 +31,14 @@ export default {
             type: String,
             default: 'vertical',
         },
-        collapsed: {// 侧边栏菜单是否收起
+        collapsed: {// 侧边栏菜单是否折叠
             type: Boolean
         },
-        location: {//位置
+        location: {// 菜单位置
             type: String,
             default: 'left',
         },
-        inverted: Boolean,
+        inverted: Boolean,// 反转样式
     },
     setup(props, ctx){
         const settingStore = useProjectSettingStore()
@@ -48,11 +52,11 @@ export default {
             return matched && matched.length ? matched.map((it) => it.name) : []
         }
         const state = reactive({
-            openKeys: getOpenKeys()// 展开的子菜单标识符
+            openKeys: getOpenKeys()// 展开的子菜单标识符 Array[]
         })
-        const selectedKeys = ref($route.name)// 当前路由名称
-        const headerMenuSelectKey = ref('')
-        const menus = ref([])   // 菜单
+        const selectedKeys = ref($route.name)// 用于判断`菜单当前的选中值` => 当前路由名称
+        const headerMenuSelectKey = ref('')// 用于判断`菜单当前的选中值` => '' (顶部菜单时的选中值)
+        const menus = ref([])   // 渲染菜单的数据
 
         // 是否是根路由
         function isRootRouter(router) {
@@ -62,7 +66,7 @@ export default {
         function filterHide(routes) {
             return routes.filter(it => (it.meta?.hidden || false) != true)
         }
-        // 递归组装菜单格式
+        // 递归组装菜单格式：根据组件的 MenuOption 配置 详情: https://www.naiveui.com/zh-CN/light/components/menu
         function generatorMenu(routes) {
             return filterHide(routes).map(it => {
                 const isRoot = isRootRouter(it)
@@ -121,13 +125,16 @@ export default {
                 return currentMenu
             })
         }
-        // 菜单当前的选中值
+        /**
+         * 菜单当前的选中值
+         * 菜单在左侧 或 菜单在顶部 且 模式为 horizontal 的选中值为当前$route.name
+         */
         const getSelectedKeys = computed(() => {
             let { location } = props
             return location === 'left' || (location === 'header' && navMode.value === 'horizontal')
             ? selectedKeys.value : headerMenuSelectKey.value
         })
-
+        // 更新菜单
         function updateMenu() {
             if(!settingStore.menuSetting.mixMenu){
                 // 不分割菜单
@@ -140,12 +147,14 @@ export default {
                 headerMenuSelectKey.value = (activeMenu ? activeMenu : firstRouteName) || ''
             }
         }
+        // 监听分割菜单变化：分割与不分割组装菜单的逻辑不通，所以每次切换都要更新
         watch(() => settingStore.menuSetting.mixMenu, () => {
             updateMenu()
             if (props.collapsed) {
                 ctx.emit('update:collapsed', !props.collapsed);
             }
         })
+        // 监听路由地址的变化：需要改变菜单当前的选中值。如果 $route的meta 里设置了选中值就用它，否则就使用 $route.name
         watch(() => $route.fullPath, () => {
             updateMenu()
             state.openKeys = $route.matched.map((item) => item.name)
@@ -163,12 +172,12 @@ export default {
             }
             ctx.emit('clickMenuItem', key)
         }
-        //展开菜单
-        function menuExpanded(openK) {
-            if (!openK) return
-            const latestOpenKey = openK.find((key) => openK.indexOf(key) === -1)
+        //展开菜单 openks 是展开菜单项的 key 的数组
+        function menuExpanded(openks) {
+            if (!openks) return
+            const latestOpenKey = openks.find((key) => openks.indexOf(key) === -1)
             const isExistChildren = findChildrenLen(latestOpenKey)
-            state.openKeys = isExistChildren ? (latestOpenKey ? latestOpenKey : []) : openK
+            state.openKeys = isExistChildren ? (latestOpenKey ? latestOpenKey : []) : openks
         }
 
         //查找是否存在子路由

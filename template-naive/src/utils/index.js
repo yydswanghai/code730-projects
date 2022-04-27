@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import { NIcon } from 'naive-ui'
 /**
- * render 图标
+ * render 图标: 用来生成icon图标
  * @param {Component} icon
  */
 export function renderIcon(icon) {

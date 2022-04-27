@@ -36,6 +36,9 @@ import NavModeSetting from './navMode.vue'
 import NavThemeSetting from './navTheme.vue'
 import OtherSetting from './otherSetting.vue'
 import AnimateSetting from './animate.vue'
+/**
+ * 系统设置组件
+ */
 export default {
     name: 'AppSetting',
     components: {

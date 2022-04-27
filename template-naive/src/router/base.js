@@ -2,6 +2,9 @@ import Layout from "@/layout/index.vue"
 import { renderIcon } from '@/utils/index'
 import { DashboardOutlined } from '@vicons/antd'
 
+/**
+ * 默认固定的路由都写在这
+ */
 // root
 export const RootRoute = {
     path: '/',

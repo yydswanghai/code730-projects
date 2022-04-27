@@ -65,6 +65,12 @@ import Draggable from 'vuedraggable'
 import { useRoute, useRouter } from 'vue-router'
 import { useThemeVars, useMessage } from 'naive-ui'
 import { renderIcon, reloadThePage } from '@/utils/'
+/**
+ * 菜单标签组件
+ * 1.当添加到 tagsScroll容器里的标签超过了这个长度就展示左侧和右侧的滚动箭头按钮
+ * 2.点击左侧按钮向左侧滚动；点击右侧按钮向右侧滚动
+ * 3.鼠标右键菜单显示和最右侧的菜单显示
+ */
 export default {
     name: 'TagsView',
     props: {
@@ -136,8 +142,8 @@ export default {
                 fullPath, hash, meta, name, params, path, query
             }
         }
-
-        initTagsViewStore(getSimpleRoute($route))// 初始化标签页
+        // 初始化标签页
+        initTagsViewStore(getSimpleRoute($route))
 
         const tagsList = computed(() => tagsViewStore.tagsList)
         // 相当于添加新的tag
@@ -185,7 +191,7 @@ export default {
             if (scrollWidth === value) return
             return window.requestAnimationFrame(() => scrollTo(value, amplitude))
         }
-
+        // 向前滚动
         function scrollPrev() {
             const offsetWidth = tagsScroll.value.offsetWidth
             const currentScroll = tagsScroll.value.scrollLeft
@@ -193,6 +199,7 @@ export default {
             const scrollLeft = currentScroll > offsetWidth ? currentScroll - offsetWidth : 0
             scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
         }
+        // 向后滚动
         function scrollNext() {
             const offsetWidth = tagsScroll.value.offsetWidth
             const tagsWidth = tagsScroll.value.scrollWidth

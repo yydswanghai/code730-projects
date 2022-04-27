@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { RootRoute, LoginRoute, RedirectRoute, DashboardRoute } from '@/router/base'
 
-// 自动导入
+// 自动导入 modules目录下所有的.js文件
 const modules = import.meta.globEager('./modules/**/*.js')
 
 const routeModuleList = []

@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import settings from '@/settings/project'
 
+/**
+ * 系统设置相关的状态
+ */
 export const useProjectSettingStore = defineStore({
     id: 'project-setting',
     state: () => ({

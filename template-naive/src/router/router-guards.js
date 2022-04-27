@@ -16,6 +16,7 @@ export function createRouterGuards(router){
         const Loading = window['$loading'] || null
         // 开始进度条
         Loading && Loading.start()
+        // 是否有token
         const hasToken = getStorage(ACCESS_TOKEN)
         if(hasToken){
             if(to.path === '/login'){
@@ -24,6 +25,8 @@ export function createRouterGuards(router){
                 Loading && Loading.finish()
             }else{
                 try{
+                    // 是否有用户信息 userStore没有将userInfo存在本地的原因主要是：
+                    // 把`获取用户信息`和`获取菜单路由`放在一起执行，页面刷新则重新再请求获取
                     const hasInfo = userStore.userInfo
                     if(hasInfo){
                         next()

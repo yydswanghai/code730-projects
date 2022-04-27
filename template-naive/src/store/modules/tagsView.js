@@ -3,10 +3,14 @@ import { defineStore } from 'pinia'
 // 不需要出现在标签页中的路由
 const whiteList = ['Redirect', 'Login']
 
+// 返回所有路由里 meta:{ affix: true } 的 `菜单标签`
 function retainAffixRoute(list) {
     return list.filter(it => it?.meta?.affix ?? false)
 }
 
+/**
+ * 菜单标签
+ */
 export const useTagsViewStore = defineStore({
     id: 'TAGS-VIEW',
     state: () => ({
@@ -37,7 +41,7 @@ export const useTagsViewStore = defineStore({
         },
         // 关闭全部
         closeAllTags(){
-            this.tagsList = retainAffixRoute(this.tagsList)
+            this.tagsList = retainAffixRoute(this.tagsList)// 重新赋值，仅有设置了 meta:{ affix: true } 的保留
             localStorage.removeItem(this.$id)
         },
         // 关闭左侧-暂时不用
@@ -53,7 +57,7 @@ export const useTagsViewStore = defineStore({
     }
 })
 
-
+// 该方法用于监听 `菜单标签` 的变化
 export function initTagsViewStore(route) {
     const instance = useTagsViewStore()
 
