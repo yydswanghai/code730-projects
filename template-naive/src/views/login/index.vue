@@ -3,7 +3,7 @@
         <div class="content">
             <div class="top">
                 <div class="logo">
-                    <img src="~@/assets/images/account-logo.png" alt="" />
+                    <img src="~@/assets/images/logo/logo-1.svg" alt="" />
                 </div>
                 <div class="desc">
                     naive-ui 中台前端 **系统
@@ -193,7 +193,7 @@ export default {
         padding: 32px 0;
         text-align: center;
         .logo{
-
+            img{ margin: 1rem auto }
         }
         .desc{
             font-size: 18px;

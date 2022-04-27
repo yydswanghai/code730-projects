@@ -7,12 +7,41 @@ import { useUserStore } from './user'
 import * as $icons from '@vicons/antd'
 import { useMessage } from 'naive-ui'
 
+const Layout = () => import('@/layout/index.vue')
+const ParentLayout = () => import('@/layout/parentLayout.vue')
+
+/**
+ * 添加子路由
+ * @param routerMap
+ * 通过 parentId:-1 来判断是否是一级路由
+ * 如果是一级路由，且该路由下没有子路由，则默认给该路由添加一个 index 子路由
+ */
+function addChildren(routerMap) {
+    return routerMap.map(item => {
+        if(item.parentId === '-1'){
+            if(!item.children){
+                item.children = [{
+                    id: item.id.substring(0,2) + '10',
+                    name: item.name,
+                    label: item.label,
+                    keepAlive: item.keepAlive,
+                    icon: null,
+                    parentId: item.id,
+                    path: item.path + '/index',
+                    routeName: item.routeName + '-index',
+                    sortOrder: item.sortOrder,
+                    type: item.type,
+                    permission: item.permission,
+                }]
+            }
+        }
+        return item
+    })
+}
 /**
  * 动态生成菜单
  * @param routerMap
  */
-const Layout = () => import('@/layout/index.vue')
-const ParentLayout = () => import('@/layout/parentLayout.vue')
 function generator(routerMap) {
     return routerMap.map((item) => {
         const currentRouter = {
@@ -28,25 +57,9 @@ function generator(routerMap) {
         }
         if(item.parentId === '-1'){
             currentRouter.component = 'LAYOUT'
-            if(!item.children){
-                currentRouter.children = generator([{
-                    id: item.id.substring(0,2) + '10',
-                    name: item.name,
-                    label: item.label,
-                    keepAlive: item.keepAlive,
-                    icon: null,
-                    parentId: item.id,
-                    path: item.path + '/index',
-                    routeName: item.routeName + '-index',
-                    sortOrder: item.sortOrder,
-                    type: item.type,
-                    permission: item.permission,
-                }])
-            }
         }else{
             currentRouter.component = item.path// /commend-management/add
         }
-
         if(item.children && item.children.length > 0){
             currentRouter.children = generator(item.children)
         }
@@ -111,7 +124,7 @@ export const useAsyncRouteStore = defineStore({
         setRoutes(routers){// 设置动态路由
             this.routes = constantRouter.concat(routers)
         },
-        setMenus(menus) {// 设置动态路由
+        setMenus(menus) {// 设置菜单
             this.menus = menus;
         },
         setKeepAliveComponents(compNames) {// 设置需要缓存的组件
@@ -119,17 +132,24 @@ export const useAsyncRouteStore = defineStore({
         },
         /**
          * 生成路由
-         * 判断是否由后台登录，如果是，则请求获取后台的菜单接口得到路由，否则直接使用 asyncRouter
+         * 后台用户：请求获取后台的菜单接口得到路由
+         * 普通用户：asyncRouter 通过 permissions 过滤路由
+         * 集体用户：asyncRouter 通过 permissions 过滤路由
          */
         async generateRoutes(data){
             let accessedRouters
-            const permissionsList = data.permissions || []// todo(暂时没用) 权限列表，我这里直接请求到后台路由，不在这里做权限过滤
+            const permissionsList = data.permissions || []// todo 权限列表，这里仅做了一级路由的权限来控制包含它以及它的子路由
             if(this.getUserStore.userType == 3){
                 const resp = await getUserMenu()// 用户菜单
                 if(resp.code === 200){
                     try {
-                        const routeList = generator(resp.data)
-                        asyncImportRoute(routeList)
+                        const hasChildRouteList = addChildren(resp.data)
+
+                        const routeList = generator(hasChildRouteList)
+                        console.log(routeList);
+
+                        asyncImportRoute(routeList)// 生成组件
+
                         accessedRouters = routeList
                     } catch (error) {
                         console.log(error)
@@ -138,7 +158,10 @@ export const useAsyncRouteStore = defineStore({
                     this.$message.error(resp.msg)
                 }
             }else{
-                accessedRouters = asyncRouter
+                // 用 permissionsList 来过滤掉 asyncRouter 里哪些路由是该用户的
+                accessedRouters = permissionsList.length ?
+                asyncRouter.filter(it => permissionsList.includes(it.name))
+                : asyncRouter
             }
 
             this.setRoutes(accessedRouters)

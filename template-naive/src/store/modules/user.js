@@ -81,11 +81,13 @@ export const useUserStore = defineStore({
                     resp = await getInfoByCollective()
                     if(resp.code === 200){
                         info = resp.data.appUser
+                        permissions = resp.data.permissions
                     }
                 }else{
                     resp = await getInfoByPerson()
                     if(resp.code === 200){
                         info = resp.data.appUser
+                        permissions = resp.data.permissions
                     }
                 }
                 if(info){

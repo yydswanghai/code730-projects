@@ -109,7 +109,7 @@ export default [
                             updateTime: "2022-04-01 10:51:31",
                             userId: "14",
                         },
-                        permissions: null
+                        permissions: ['Form']
                     },
                     msg: 'OK'
                 })

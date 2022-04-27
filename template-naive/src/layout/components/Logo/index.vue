@@ -1,7 +1,7 @@
 <template>
     <div class="logo">
-        <img src="~@/assets/images/logo.png" :class="{ 'margin-right': !collapsed }" />
-        <h2 v-show="!collapsed">NaiveUiAdmin</h2>
+        <img src="~@/assets/images/logo/logo-2.svg" :class="{ 'margin-right': !collapsed }" />
+        <h2 v-show="!collapsed">vueNaiveAdmin</h2>
     </div>
 </template>
 
