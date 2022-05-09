@@ -132,7 +132,9 @@ export const useAsyncRouteStore = defineStore({
             this.routes = constantRouter.concat(routers)
         },
         setMenus(menus) {// 设置菜单
-            this.menus = menus;
+            // 添加控制台
+            const DashboardRoute = constantRouter.find(it => it.name === 'dashboard')
+            this.menus = [DashboardRoute, ...menus]
         },
         setKeepAliveComponents(compNames) {// 设置需要缓存的组件
             this.keepAliveComponents = compNames;
@@ -170,8 +172,8 @@ export const useAsyncRouteStore = defineStore({
                 : asyncRouter
             }
 
-            this.setRoutes(accessedRouters)
             this.setMenus(accessedRouters)
+            this.setRoutes(accessedRouters)
             return toRaw(accessedRouters)
         }
     }

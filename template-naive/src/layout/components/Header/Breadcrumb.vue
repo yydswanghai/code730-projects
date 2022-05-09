@@ -41,8 +41,8 @@ export default {
         const settingStore = useProjectSettingStore()
 
         // 生成面包屑
-        function generator(routes) {
-            return routes.map(it => {
+        function generator(routerMap) {
+            return routerMap.map(it => {
                 const currentMenu = {
                     ...it,
                     label: it.meta.title,
