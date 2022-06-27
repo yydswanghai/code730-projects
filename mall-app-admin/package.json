@@ -1,0 +1,30 @@
+{
+  "name": "mall-admin-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:Layout": "vue serve ./src/components/Layout/test.vue"
+  },
+  "dependencies": {
+    "ant-design-vue": "^1.2.4",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "echarts": "^4.9.0",
+    "js-cookie": "^3.0.0",
+    "v-charts": "^1.19.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.5.2",
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.0.0-beta.3"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "vue-cli-plugin-ant-design": "~1.0.1",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
