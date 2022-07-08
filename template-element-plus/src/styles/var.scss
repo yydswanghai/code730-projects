@@ -1,0 +1,32 @@
+
+$header-height: 64px;
+$footer-height: 70px;
+
+/* 主题色 */
+$primary-color: #D53C49;
+$success-color: #21ba45;
+$waring-color: #FF9043;
+$danger-color: #db2828;
+$error-color: #db2828;
+$info-color: #589ef8;
+$hover-color: #FF7070;
+$pressed-color: #FF7070;
+$pass-color: #28E4C0;
+$blue-color: #567BFF;
+
+
+:export {
+    headerHeight: $header-height;
+    footerHeight: $footer-height;
+
+    primaryColor: $primary-color;
+    successColor: $success-color;
+    waringColor: $waring-color;
+    dangerColor: $danger-color;
+    errorColor: $error-color;
+    infoColor: $info-color;
+    hoverColor: $hover-color;
+    pressedColor: $pressed-color;
+    passColor: $pass-color;
+    blueColor: $blue-color;
+}

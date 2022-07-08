@@ -1,0 +1,34 @@
+
+// 我们可以将其添加到自定义命名空间，默认值为“el” 自定义主题
+@forward "element-plus/theme-chalk/src/mixins/config.scss" with (
+    $namespace: "ep"
+);
+
+@use "../var.scss" as variable;
+$primary-color: variable.$primary-color;
+$success-color: variable.$success-color;
+$waring-color: variable.$waring-color;
+$danger-color: variable.$danger-color;
+$error-color: variable.$error-color;
+$info-color: variable.$info-color;
+// You should use them in scss, because we calculate it by sass.
+// comment next lines to use default color
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+    $colors: (
+        "primary": ("base": $primary-color,),
+        "success": ("base": $success-color,),
+        "warning": ("base": $waring-color,),
+        "danger": ("base": $danger-color,),
+        "error": ("base": $error-color,),
+        "info": ("base": $info-color,),
+    ),
+);
+
+// if you want to import all
+// @use "element-plus/theme-chalk/src/index.scss" as *;
+
+// 自定义暗色变量
+@use "./dark.scss";
+// 引入暗黑主题
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+
