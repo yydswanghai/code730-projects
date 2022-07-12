@@ -1,13 +1,23 @@
-<template>
-    <div>redirect</div>
-</template>
-
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onBeforeMount, h } from "vue"
+import { ElEmpty } from "element-plus"
+import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
-    
+    name: "Redirect",
+    setup(){
+        const $route = useRoute();
+        const $router = useRouter();
+        onBeforeMount(() => {
+            console.log(1)
+            const { params, query } = $route;
+            const { path } = params;
+            $router.replace({
+                path: '/' + (Array.isArray(path) ? path.join('/') : path),
+                query,
+            });
+            console.log(2)
+        })
+        return () => h(ElEmpty)
+    }
 })
 </script>
-<style lang="scss" scoped>
-    
-</style>

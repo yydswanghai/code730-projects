@@ -5,6 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import svgLoader from "vite-svg-loader"
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir);
@@ -54,6 +55,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     plugins: [
       vue(),
       vueJsx(),
+      svgLoader(),
       Components({
         // allow auto load markdown components under `./src/components/`
         extensions: ['vue', 'md'],

@@ -1,17 +1,12 @@
 <template>
   <el-config-provider namespace="ep">
-      <Layout />
-      <el-button>dadad</el-button>
-      <el-button type="primary">dadad</el-button>
-      <el-button type="info">dadad</el-button>
-      <el-button type="warning">dadad</el-button>
-      <el-button type="danger" @click="toggleDark()">dadad</el-button>
+      <router-view />
   </el-config-provider>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import { toggleDark } from "@/composables/"
+import { defineComponent, provide, unref } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import Layout from "@/Layout/index.vue"
 
 export default defineComponent({
@@ -19,8 +14,13 @@ export default defineComponent({
     Layout,
   },
   setup(){
+    const $route = useRoute();
+    const $router = useRouter();
+    /* 全局刷新 */
+    provide("reload", () => {
+      $router.push({ path: "/redirect" + unref($route).fullPath });
+    });
     return {
-      toggleDark
     }
   }
 })

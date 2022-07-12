@@ -1,27 +1,38 @@
 <template>
     <el-container class="layout">
+        <!-- 侧边栏 -->
         <el-aside
             v-if="showAside"
             class="layout-aside"
             :style="asideStyles"
-        >
+            >
             <Logo :collapsed="collapsed" />
-            <el-button @click="collapsed = !collapsed">切换</el-button>
-            <Menu :collapsed="collapsed"  >
-
-            </Menu>
+            <AsideMenu :collapsed="collapsed" />
         </el-aside>
-
+        <!-- 手机端侧边栏 -->
         <el-drawer
             direction="ltr"
             :with-header="false"
             v-model="showSideDrawder"
-        >
+            size="100"
+            custom-class="layout-drawer"
+            >
             <Logo :collapsed="collapsed" />
-            <Menu :collapsed="collapsed"  >
-
-            </Menu>
+            <AsideMenu :collapsed="collapsed" :style="asideStyles" />
         </el-drawer>
+        <el-container>
+            <!-- 头部 -->
+            <el-header>
+                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" />
+            </el-header>
+            <!-- 内容区 -->
+            <el-main>
+                <div>
+                    <!-- 菜单标签 -->
+                    <Main class="layout-main"  />
+                </div>
+            </el-main>
+        </el-container>
     </el-container>
 </template>
 
@@ -30,15 +41,19 @@ import { defineComponent, ref, computed, onMounted } from "vue"
 import { useRoute } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { Logo } from "./components/Logo/"
-import { Menu } from "./components/Menu/"
+import { Menu as AsideMenu } from "./components/Menu/"
+import { Header } from "./components/Header/"
+import { Main } from "./components/Main/"
 
 export default defineComponent({
     name: "Layout",
     components: {
         Logo,
-        Menu,
+        AsideMenu,
+        Header,
+        Main
     },
-    setup(){
+    setup(props, ctx){
         const collapsed = ref(false);
         const settingStore = useProjectSettingStore();
         const $route = useRoute();
@@ -74,49 +89,66 @@ export default defineComponent({
         });
         /* 控制显示或隐藏移动端侧边栏 */
         const showSideDrawder = computed({
-            get: () => isMobile.value && collapsed.value,
+            get: () => isMobile.value,
             set: (val) => (collapsed.value = val)
         });
+        function changeCollapsed() {
+            collapsed.value = !collapsed.value;
+        }
         /* 判断是否触发移动端模式 */
         function checkMobileMode() {
             const { mobileWidth } = settingStore.menuSetting;
             if(document.body.clientWidth <= mobileWidth){
                 isMobile.value = true;
+                collapsed.value = false;
             }else{
                 isMobile.value = false;
             }
-            collapsed.value = false;
         }
         /* 监听屏幕宽度改变 */
         function watchScreenWidth() {
-            const { mobileWidth } = settingStore.menuSetting;
-            if(document.body.clientWidth <= mobileWidth){
-                collapsed.value = true
+            if(document.body.clientWidth <= 950){
+                collapsed.value = true;
             }else{
-                collapsed.value = false
+                collapsed.value = false;
             }
-            // checkMobileMode()
+            checkMobileMode()
         }
 
         onMounted(() => {
             checkMobileMode()
             window.addEventListener('resize', watchScreenWidth)
-        })
+        });
 
         return {
             collapsed,
             asideStyles,
             showAside,
-            showSideDrawder
+            showSideDrawder,
+            changeCollapsed,
         }
     }
 })
 </script>
 <style lang="scss" scoped>
+@import "@/styles/var.scss";
 .layout{
-    
+    height: 100%;
+    .ep-header{
+        padding-right: 0;
+    }
 }
 .layout-aside{
-    transition: width .6s;
+    transition: width .36s;
+    background-color: $aside-color;
+}
+</style>
+<style lang="scss">
+@import "@/styles/var.scss";
+.layout-drawer{
+    background-color: $aside-color;
+    .ep-drawer__body{
+        padding: 0;
+    }
 }
 </style>

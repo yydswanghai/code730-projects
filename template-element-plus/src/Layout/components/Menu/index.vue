@@ -1,45 +1,28 @@
 <template>
     <el-menu
-        default-active="2"
+        class="aside-menu"
+        :default-active="defaultActive"
         :collapse="collapsed"
         :mode="mode"
+        :background-color="styles.asideColor"
+        :text-color="styles.menuTextColor"
+        :active-text-color="styles.primaryColor"
         >
-        <el-sub-menu index="1">
-            <template #title>
-                <el-icon><location /></el-icon>
-                <span>Navigator One</span>
-            </template>
-            <el-menu-item-group>
-                <template #title><span>Group One</span></template>
-                <el-menu-item index="1-1">item one</el-menu-item>
-                <el-menu-item index="1-2">item two</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="Group Two">
-                <el-menu-item index="1-3">item three</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-                <template #title><span>item four</span></template>
-                <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
-        </el-sub-menu>
-        <el-menu-item index="2">
-            <el-icon><icon-menu /></el-icon>
-            <template #title>Navigator Two</template>
-        </el-menu-item>
-        <el-menu-item index="3" disabled>
-            <el-icon><document /></el-icon>
-            <template #title>Navigator Three</template>
-        </el-menu-item>
-        <el-menu-item index="4">
-            <el-icon><setting /></el-icon>
-            <template #title>Navigator Four</template>
-        </el-menu-item>
+        <MenuItem
+            v-for="route in asyncRouteStore"
+            :key="route.name"
+            :option="route"
+            :base-path="route.path"
+            />
     </el-menu>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue"
+import { defineComponent, PropType, computed, ref } from "vue"
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
+import styles from "@/styles/var.module.scss"
+import { asyncRouteStore } from "@/utils/routes"
+import MenuItem from "./MenuItem.vue"
 import {
     Document,
     Menu as IconMenu,
@@ -52,7 +35,8 @@ export default defineComponent({
         Document,
         IconMenu,
         Location,
-        Setting
+        Setting,
+        MenuItem,
     },
     props: {
         collapsed: {// 侧边栏菜单是否折叠
@@ -70,9 +54,55 @@ export default defineComponent({
     setup(props, ctx){
         const settingStore = useProjectSettingStore();
         const navMode = computed(() => settingStore.navMode);
+        const menus = ref([]);
+        const defaultActive = ref('');
+        return {
+            styles,
+            defaultActive,
+            asyncRouteStore,
+        }
     }
 })
 </script>
 <style lang="scss" scoped>
-    
+@import "@/styles/var.scss";
+.aside-menu{
+    border-right: 0;
+    :deep(.ep-menu-item-group__title){
+        padding: 0;
+    }
+    :deep(.ep-sub-menu__title){
+        &:hover{
+            color: $menu-text-hover !important;
+            background-color: unset;
+        }
+    }
+    :deep(.ep-menu-item){
+        &:hover{
+            color: $menu-text-hover !important;
+            background-color: unset;
+        }
+        &.is-active{
+            color: $menu-text-hover;
+            background-color: $primary-color;
+        }
+    }
+}
+</style>
+<style lang="scss">
+@import "@/styles/var.scss";
+
+.ep-menu.ep-menu--popup{
+    padding-top: 0;
+    padding-bottom: 0;
+    .ep-menu-item-group__title{
+        padding: 0;
+    }
+    .ep-menu-item{
+        &.is-active{
+            color: $menu-text-hover;
+            background-color: $primary-color;
+        }
+    }
+}
 </style>
