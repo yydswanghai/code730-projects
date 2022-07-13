@@ -1,3 +1,4 @@
+/* 系统设置 */
 export interface IProject {
     navMode: string
     navTheme: string
@@ -12,19 +13,19 @@ export interface IProject {
     isPageAnimate: boolean
     pageAnimateType: string
 }
-
+/* 顶部 */
 export interface IHeaderSetting {
     bgColor: string
     fixed: boolean
     isReload: boolean
 }
-
+/* 标签 */
 export interface IMultiTabsSetting{
     bgColor: string
     show: boolean
     fixed: boolean
 }
-
+/* 菜单 */
 export interface IMenuSetting{
     minMenuWidth: number
     menuWidth: number
@@ -32,7 +33,7 @@ export interface IMenuSetting{
     mixMenu: boolean
     mobileWidth: number
 }
-
+/* 面包屑 */
 export interface ICrumbsSetting{
     show: boolean
     showIcon: boolean

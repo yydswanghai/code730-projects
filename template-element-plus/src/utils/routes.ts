@@ -1,16 +1,16 @@
-import { IRouteRecordRaw } from "@/router/types"
-import { renderIcon } from "@/utils/index"
+import { IRouteRecordRaw } from '@/router/types'
+import { renderIcon } from '@/utils/index'
 import { Document, Menu, Location, DataAnalysis } from '@element-plus/icons-vue'
 
 export const asyncRouteStore: IRouteRecordRaw[] = [
     {
-        path: '/test-menus/',
+        path: '/test-menus',
         name: 'test-menus',
         component: () => import('@/Layout/index.vue'),
         meta: { title: '一级菜单', icon: renderIcon(Document)() },
         children: [
             {
-                path: '1/',
+                path: '1',
                 name: 'test-menus-1',
                 component: () => import('@/views/menus/test-menus/index.vue'),
                 meta: { title: '二级菜单' },
@@ -35,19 +35,18 @@ export const asyncRouteStore: IRouteRecordRaw[] = [
         path: '/dashboard',
         name: 'dashboard',
         component: () => import('@/Layout/index.vue'),
-        redirect: '/dashboard/index',
-        meta: { title: '控制台', icon: renderIcon(Menu)(), sort: 0, alwaysShow: true  },
+        meta: { title: '控制台', icon: renderIcon(Menu)(), sort: 0  },
         children: [
             {
-                path: 'index',
+                path: '',
                 name: 'dashboard-index',
                 component: () => import('@/views/dashboard/index.vue'),
-                meta: { title: '主控台' }
+                meta: { title: '控制台' }
             }
         ]
     },
     {
-        path: '/commend-management/',
+        path: '/commend-management',
         name: 'commend-management',
         component: () => import('@/Layout/index.vue'),
         meta: {
@@ -89,7 +88,7 @@ export const asyncRouteStore: IRouteRecordRaw[] = [
         ]
     },
     {
-        path: '/organization/',
+        path: '/organization',
         name: 'organization',
         component: () => import('@/Layout/index.vue'),
         meta: {

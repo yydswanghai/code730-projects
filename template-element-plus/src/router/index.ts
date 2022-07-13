@@ -1,6 +1,6 @@
-import { RouteRecordRaw } from "vue-router"
+import { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { RootRoute, DashboardRoute, RedirectRoute, ErrorPageRoute } from "./base"
+import { RootRoute, DashboardRoute, RedirectRoute, ErrorPageRoute } from './base'
 
 /* 加载modules目录下的所有文件 */
 const modules = import.meta.globEager('./modules/**/*.ts');

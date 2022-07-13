@@ -18,24 +18,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue"
+import { defineComponent, PropType, computed, ref } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import styles from "@/styles/var.module.scss"
-import { asyncRouteStore } from "@/utils/routes"
-import MenuItem from "./MenuItem.vue"
-import {
-    Document,
-    Menu as IconMenu,
-    Location,
-    Setting, } from '@element-plus/icons-vue'
+import styles from '@/styles/var.module.scss'
+import { asyncRouteStore } from '@/utils/routes'
+import MenuItem from './MenuItem.vue'
 
 export default defineComponent({
-    name: "Menu",
+    name: 'Menu',
     components: {
-        Document,
-        IconMenu,
-        Location,
-        Setting,
         MenuItem,
     },
     props: {
@@ -43,7 +34,7 @@ export default defineComponent({
             type: Boolean
         },
         mode: {// 菜单模式
-            type: String as PropType<"vertical" | "horizontal">,
+            type: String as PropType<'vertical' | 'horizontal'>,
             default: 'vertical',
         },
         location: {// 菜单位置

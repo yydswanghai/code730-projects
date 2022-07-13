@@ -27,31 +27,32 @@
             </el-header>
             <!-- 内容区 -->
             <el-main>
-                <div>
-                    <!-- 菜单标签 -->
-                    <Main class="layout-main"  />
-                </div>
+                <TagsView />
+                <!-- 菜单标签 -->
+                <Main class="layout-main"  />
             </el-main>
         </el-container>
     </el-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from "vue"
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { Logo } from "./components/Logo/"
-import { Menu as AsideMenu } from "./components/Menu/"
-import { Header } from "./components/Header/"
-import { Main } from "./components/Main/"
+import { Logo } from './components/Logo/'
+import { Menu as AsideMenu } from './components/Menu/'
+import { Header } from './components/Header/'
+import { Main } from './components/Main/'
+import { TagsView } from './components/TagsView/'
 
 export default defineComponent({
-    name: "Layout",
+    name: 'Layout',
     components: {
         Logo,
         AsideMenu,
         Header,
-        Main
+        TagsView,
+        Main,
     },
     setup(props, ctx){
         const collapsed = ref(false);
@@ -134,13 +135,20 @@ export default defineComponent({
 @import "@/styles/var.scss";
 .layout{
     height: 100%;
+    .layout-aside{
+        transition: width .36s;
+        background-color: $aside-color;
+    }
+    .ep-container{
+        background: #F5F7F9;
+    }
     .ep-header{
         padding-right: 0;
     }
-}
-.layout-aside{
-    transition: width .36s;
-    background-color: $aside-color;
+    .ep-main{
+        padding-right: 0;
+        padding-top: 12px;
+    }
 }
 </style>
 <style lang="scss">

@@ -23,4 +23,5 @@ export interface Meta extends RouteMeta {
     hidden?: boolean // 是否隐藏
     alwaysShow?: boolean // 是否始终显示全部菜单
     keepAlive?: boolean // 是否缓存
+    affix?: boolean // 是否固定标签
 }

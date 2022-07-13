@@ -1,10 +1,10 @@
-import styles from "@/styles/var.module.scss";
-import { IProject } from "./types"
+import styles from '@/styles/var.module.scss'
+import { IProject } from './types'
 
 const settings: IProject = {
     //导航模式:
     navMode: 'vertical',
-    navTheme: "dark",
+    navTheme: 'dark',
     //是否处于移动端模式
     isMobile: false,
     //是否为深色主题

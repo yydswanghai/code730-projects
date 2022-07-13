@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, computed, watch } from "vue"
+import { defineComponent, inject, computed, watch } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { Fold, Expand, RefreshRight } from "@element-plus/icons-vue"
-import { Breadcrumb } from "../Breadcrumb/"
+import { Fold, Expand, RefreshRight } from '@element-plus/icons-vue'
+import { Breadcrumb } from '../Breadcrumb/'
 
 export default defineComponent({
-    name: "HeaderLeft",
+    name: 'HeaderLeft',
     components: {
         Fold,
         Expand,

@@ -1,6 +1,6 @@
-import { IRouteRecordRaw } from "./types"
-import Layout from "@/Layout/index.vue"
-import { renderIcon } from "@/utils/"
+import { IRouteRecordRaw } from './types'
+import Layout from '@/Layout/index.vue'
+import { renderIcon } from '@/utils/'
 import { Menu } from '@element-plus/icons-vue'
 
 export const RootRoute: IRouteRecordRaw = {

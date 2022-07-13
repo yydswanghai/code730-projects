@@ -12,10 +12,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, computed } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 export default defineComponent({
-    name: "Main",
+    name: 'Main',
     setup(){
         const settingStore = useProjectSettingStore();
         const getTransitionName = computed(() => {// 动画名称：不使用动画设置为 '' 就可以

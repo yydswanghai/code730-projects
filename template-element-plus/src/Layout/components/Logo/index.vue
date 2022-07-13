@@ -8,10 +8,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import AsideLogo from "@/assets/images/logo/logo-2.svg?component"
+import { defineComponent } from 'vue'
+import AsideLogo from '@/assets/images/logo/logo-2.svg?component'
 export default defineComponent({
-    name: "Logo",
+    name: 'Logo',
     props: {
         collapsed: Boolean
     },

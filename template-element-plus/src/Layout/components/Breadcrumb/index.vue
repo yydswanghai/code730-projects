@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, computed } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useRoute, useRouter } from 'vue-router'
 import { nanoid } from 'nanoid'
 
 export default defineComponent({
-    name: "Breadcrumb",
+    name: 'Breadcrumb',
     setup(){
         const $route = useRoute();
         const $router = useRouter();
@@ -42,7 +42,6 @@ export default defineComponent({
         const breadcrumbList = computed(() => {
             return generator($route.matched)
         });
-        console.log(breadcrumbList)
         /* 下拉选择对应的面包屑 */
         function dropdownSelect(key: string) {
             $router.push({ name: key })

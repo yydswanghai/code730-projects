@@ -1,0 +1,1 @@
+export { default as TagsView } from './index.vue'

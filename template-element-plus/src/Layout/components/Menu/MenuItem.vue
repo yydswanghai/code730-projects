@@ -1,11 +1,11 @@
 <script lang="tsx">
-import { defineComponent, PropType } from "vue"
-import { IRouteRecordRaw } from "@/router/types"
-import { ElMenuItem, ElSubMenu, ElIcon } from "element-plus"
-import { isExternal } from "@/utils/"
-import { resolve } from "path-browserify"
+import { defineComponent, PropType } from 'vue'
+import { IRouteRecordRaw } from '@/router/types'
+import { ElMenuItem, ElSubMenu } from 'element-plus'
+import { isExternal } from '@/utils/'
+import { resolve } from 'path-browserify'
 const MenuItem = defineComponent({
-    name: "MenuItem",
+    name: 'MenuItem',
     props: {
         option: {
             type: Object as PropType<IRouteRecordRaw>,
@@ -66,12 +66,12 @@ const MenuItem = defineComponent({
                                 v-slots={{ 'title': () => {
                                     return (<><span>{currentRouter.meta?.title}</span></>)
                                 } }}>
-                            {currentRouter.meta?.icon && <ElIcon class="aside-menu-icon">{ currentRouter.meta?.icon }</ElIcon>}
+                            {currentRouter.meta?.icon && currentRouter.meta?.icon}
                         </ElMenuItem>
                 }else{
                     return <ElSubMenu index={resolvePath(currentRouter.path)} v-slots={{ 'title': () => {
                         return (<>
-                            {currentRouter.meta?.icon && <ElIcon class="aside-menu-icon">{ currentRouter.meta?.icon }</ElIcon>}
+                            {currentRouter.meta?.icon && currentRouter.meta?.icon}
                             <span>{currentRouter.meta?.title}</span>
                         </>)
                     } }}>

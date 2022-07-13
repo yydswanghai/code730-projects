@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, unref } from "vue"
-import { useRoute, useRouter } from "vue-router"
-import Layout from "@/Layout/index.vue"
+import { defineComponent, provide, unref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Layout from '@/Layout/index.vue'
 
 export default defineComponent({
   components: {
@@ -17,8 +17,8 @@ export default defineComponent({
     const $route = useRoute();
     const $router = useRouter();
     /* 全局刷新 */
-    provide("reload", () => {
-      $router.push({ path: "/redirect" + unref($route).fullPath });
+    provide('reload', () => {
+      $router.push({ path: '/redirect' + unref($route).fullPath });
     });
     return {
     }

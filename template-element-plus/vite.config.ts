@@ -5,7 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import svgLoader from "vite-svg-loader"
+import svgLoader from 'vite-svg-loader'
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir);
@@ -30,7 +30,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "@/styles/element/index.scss" as *;`,
+          additionalData: `@use '@/styles/element/index.scss' as *;`,
         },
       }
     },
@@ -49,7 +49,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       }
     },
     build: {
-      minify: "esbuild",
+      minify: 'esbuild',
       brotliSize: false
     },
     plugins: [

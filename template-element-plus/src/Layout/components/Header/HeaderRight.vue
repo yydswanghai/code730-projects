@@ -43,16 +43,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue"
+import { defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Search } from "@element-plus/icons-vue"
-import Github from "@/icons/github.svg?component"
-import Fullscreen from "@/icons/fullscreen.svg?component"
-import FullscreenExit from "@/icons/fullscreen-exit.svg?component"
-import Settings from "@/icons/settings-outline.svg?component"
+import { Search } from '@element-plus/icons-vue'
+import Github from '@/icons/github.svg?component'
+import Fullscreen from '@/icons/fullscreen.svg?component'
+import FullscreenExit from '@/icons/fullscreen-exit.svg?component'
+import Settings from '@/icons/settings-outline.svg?component'
 
 export default defineComponent({
-    name: "HeaderLeft",
+    name: 'HeaderLeft',
     components: {
         Search,
         Github,

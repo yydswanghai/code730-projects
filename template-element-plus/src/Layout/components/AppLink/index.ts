@@ -1,1 +1,1 @@
-export { default as AppLink } from "./index.vue"
+export { default as AppLink } from './index.vue'

@@ -12,15 +12,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, computed } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { Logo } from "../Logo/"
-import { Menu as AsideMenu } from "../Menu/"
-import HeaderLeft from "./HeaderLeft.vue"
-import HeaderRight from "./HeaderRight.vue"
+import { Logo } from '../Logo/'
+import { Menu as AsideMenu } from '../Menu/'
+import HeaderLeft from './HeaderLeft.vue'
+import HeaderRight from './HeaderRight.vue'
 
 export default defineComponent({
-    name: "Header",
+    name: 'Header',
     components: {
         Logo,
         AsideMenu,
@@ -43,6 +43,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "@/styles/var.scss";
 .layout-header{
+    background: #FFF;
     display: flex;
     justify-content: space-between;
     align-items: center;

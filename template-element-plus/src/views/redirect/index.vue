@@ -1,9 +1,9 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, h } from "vue"
-import { ElEmpty } from "element-plus"
+import { ElEmpty } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
-    name: "Redirect",
+    name: 'Redirect',
     setup(){
         const $route = useRoute();
         const $router = useRouter();
