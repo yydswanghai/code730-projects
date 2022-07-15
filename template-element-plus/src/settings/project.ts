@@ -68,7 +68,7 @@ const settings: IProject = {
         //是否显示
         show: true,
         //显示图标
-        showIcon: false,
+        showIcon: true,
     },
     //是否开启路由动画
     isPageAnimate: true,

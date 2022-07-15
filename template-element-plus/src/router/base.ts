@@ -1,44 +1,44 @@
+import { Layout, ErrorPage } from '@/router/constant'
 import { IRouteRecordRaw } from './types'
-import Layout from '@/Layout/index.vue'
 import { renderIcon } from '@/utils/'
 import { Menu } from '@element-plus/icons-vue'
+import { PageEnum } from '@/enums/pageEnum'
 
 export const RootRoute: IRouteRecordRaw = {
     path: '/',
     name: 'Root',
-    redirect: '/dashboard',
-    meta: { title: 'Root' },
+    redirect: PageEnum.HOME,
+    meta: { title: 'root' },
 }
 
 // 控制台
 export const DashboardRoute: IRouteRecordRaw = {
-    path: '/dashboard',
-    name: 'dashboard',
+    path:  PageEnum.HOME,
+    name: PageEnum.HOME_NAME,
     component: Layout,
-    redirect: '/dashboard/index',
-    meta: { title: '控制台', icon: renderIcon(Menu)(), sort: 0, alwaysShow: true  },
+    meta: { title: '控制台', icon: renderIcon(Menu), sort: 0 },
     children: [
         {
-            path: 'index',
-            name: `dashboard_index`,
-            meta: { title: '主控台' },
-            component: () => import('@/views/dashboard/index.vue'),
+            path: '',
+            name: `${PageEnum.HOME_NAME}Index`,
+            meta: { title: '' },
+            component: () => import('@/views/menus/dashboard/index.vue'),
         },
     ]
 }
 
-// redirect
+// 刷新
 export const RedirectRoute: IRouteRecordRaw = {
-    path: '/redirect',
-    name: 'Redirect',
+    path: PageEnum.REDIRECT,
+    name: PageEnum.REDIRECT_NAME,
     component: Layout,
-    meta: { title: 'Redirect' },
+    meta: { title: '刷新' },
     children: [
         {
             path: '/redirect/:path(.*)',
-            name: 'Redirect',
+            name: `${PageEnum.REDIRECT_NAME}Index`,
             component: () => import('@/views/redirect/index.vue'),
-            meta: { title: '刷新' },
+            meta: { title: '' },
         },
     ],
 }
@@ -46,20 +46,20 @@ export const RedirectRoute: IRouteRecordRaw = {
 // 404
 export const ErrorPageRoute: IRouteRecordRaw = {
     path: '/:path(.*)*',
-    name: 'ErrorPage',
+    name: PageEnum.ERROR_NAME,
     component: Layout,
     meta: { title: 'ErrorPage' },
     children: [
         {
             path: '/:path(.*)*',
-            name: 'ErrorPageSon',
-            component: () => import('@/views/error-page/index.vue'),
-            meta: { title: '错误' }
+            name: `${PageEnum.ERROR_NAME}Index`,
+            component: ErrorPage,
+            meta: { title: '' }
         }
     ]
 }
 
-// login
+// 登录
 export const LoginRoute: IRouteRecordRaw = {
     path: '/login',
     name: 'Login',

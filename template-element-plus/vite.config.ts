@@ -13,7 +13,7 @@ function pathResolve(dir: string) {
 
 export default ({ command, mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
-  console.log(env, process.env.NODE_ENV)
+  console.log(env, process.env.NODE_ENV);// todo
 
   return {
     base: env.VITE_BASE_PATH,

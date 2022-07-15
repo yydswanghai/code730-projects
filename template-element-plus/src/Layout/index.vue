@@ -118,7 +118,7 @@ export default defineComponent({
 
         onMounted(() => {
             checkMobileMode()
-            window.addEventListener('resize', watchScreenWidth)
+            window.addEventListener('resize', watchScreenWidth);
         });
 
         return {

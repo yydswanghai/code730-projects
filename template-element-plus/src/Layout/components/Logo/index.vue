@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AsideLogo from '@/assets/images/logo/logo-2.svg?component'
+import { Logo2 as AsideLogo } from '@/icons/'
 export default defineComponent({
     name: 'Logo',
     props: {

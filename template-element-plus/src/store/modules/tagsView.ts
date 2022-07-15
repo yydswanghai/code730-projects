@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { RouteLocationNormalized } from 'vue-router'
+import { PageEnum } from '@/enums/pageEnum'
 
 export type RouteItem = Partial<RouteLocationNormalized> & {
     fullPath: string
@@ -11,7 +12,7 @@ export type ITagsViewState = {
 }
 
 /* 不需要出现在标签页中的路由 */
-const whiteList = ['Redirect', 'Login'];
+const whiteList: string[] = [PageEnum.REDIRECT_NAME, PageEnum.LOGIN_NAME];
 
 function retainAffixRoute(list: RouteItem[]) {
     return list.filter(it => it?.meta?.affix ?? false);
@@ -46,8 +47,8 @@ export const useTagsViewStore = defineStore({
         /* 关闭全部 */
         closeAllTags(){
             // 重新赋值，仅有设置了 meta:{ affix: true } 的保留
-            this.tagsList = retainAffixRoute(this.tagsList)
-            localStorage.removeItem(this.$id)
+            this.tagsList = retainAffixRoute(this.tagsList);
+            localStorage.removeItem(this.$id);
         },
     }
 });

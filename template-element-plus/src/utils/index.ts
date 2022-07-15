@@ -13,3 +13,25 @@ export function renderIcon(icon: any) {
 export function isExternal(path: string) {
     return /http(s)?:/.test(path);
 }
+/**
+ * 获取icons目录下的文件
+ */
+export function getIconsFile(url: string = '') {
+    return new URL(`../icons/${url}`, import.meta.url).href;
+}
+/**
+ * 获取assets目录静态资源
+ */
+export function getAssetsFile(url: string = '') {
+    return new URL(`../assets/${url}`, import.meta.url).href
+}
+/**
+ * 延迟加载
+ */
+export function delay(duration: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(true);
+        }, duration);
+    })
+}

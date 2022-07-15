@@ -37,14 +37,8 @@ import { defineComponent, reactive, toRefs, nextTick, ref } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { useTagsViewStore, initTagsViewStore } from '@/store/modules/tagsView'
 import { useRoute, useRouter } from 'vue-router'
-import CloseRound from '@/icons/close-round.svg?component'
-import ReloadBlod from '@/icons/reload-blod.svg?component'
-import ColumnWidthOutline from '@/icons/column-width-outline.svg?component'
-import MinusBaseline from '@/icons/minus-baseline.svg?component'
-import ArrowDownOutline from '@/icons/arrow-down-outline.svg?component'
-import ArrowLeftOutline from '@/icons/arrow-left-outline.svg?component'
-import ArrowRightOutline from '@/icons/arrow-right-outline.svg?component'
-import Document from '@/icons/menu/document.svg?component'
+import { CloseRound, ReloadBlod, ColumnWidthOutline, MinusBaseline,
+ArrowDownOutline, ArrowLeftOutline, ArrowRightOutline, Document } from '@/icons/'
 
 export default defineComponent({
     name: 'TagsView',

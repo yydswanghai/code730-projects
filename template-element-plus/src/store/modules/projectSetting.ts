@@ -12,19 +12,19 @@ export const useProjectSettingStore = defineStore({
     actions: {
         // 设置导航模式
         setNavMode(value: string){
-            this.navMode = value
+            this.navMode = value;
         },
         // 设置导航栏风格
         setNavTheme(value: string){
-            this.navTheme = value
+            this.navTheme = value;
         },
         // 设置手机端
         setIsMobile(value: boolean){
-            this.isMobile = value
+            this.isMobile = value;
         },
         // 设置系统主题
         setAppTheme(value: string){
-            this.appTheme = value
+            this.appTheme = value;
         }
     }
 })

@@ -7,22 +7,26 @@
         :background-color="styles.asideColor"
         :text-color="styles.menuTextColor"
         :active-text-color="styles.primaryColor"
+        @select="handleSelect"
         >
         <MenuItem
-            v-for="route in asyncRouteStore"
+            v-for="route in menus"
             :key="route.name"
             :option="route"
-            :base-path="route.path"
             />
     </el-menu>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
+import { useAsyncRouteStore } from '@/store/modules/asyncRoute'
 import styles from '@/styles/var.module.scss'
-import { asyncRouteStore } from '@/utils/routes'
 import MenuItem from './MenuItem.vue'
+import { PageEnum } from '@/enums/pageEnum'
+import { resolve } from 'path-browserify'
+import { isExternal } from '@/utils/'
 
 export default defineComponent({
     name: 'Menu',
@@ -42,15 +46,27 @@ export default defineComponent({
             default: 'left',
         },
     },
-    setup(props, ctx){
+    setup(){
+        const $router = useRouter();
         const settingStore = useProjectSettingStore();
+        const asyncRouteStore = useAsyncRouteStore();
+        const defaultActive = ref<string>(PageEnum.HOME);
+        const menus = ref(asyncRouteStore.menus);
         const navMode = computed(() => settingStore.navMode);
-        const menus = ref([]);
-        const defaultActive = ref('');
+        /* 菜单切换栏目跳转对应的路由 */
+        function handleSelect(index: string, indexPath: string[]) {
+            if(isExternal(index)){
+                console.log(true)
+            }
+            console.log(index)
+            const path = resolve(...indexPath);
+            $router.push(path);
+        }
         return {
             styles,
             defaultActive,
-            asyncRouteStore,
+            menus,
+            handleSelect,
         }
     }
 })

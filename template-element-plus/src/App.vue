@@ -7,12 +7,8 @@
 <script lang="ts">
 import { defineComponent, provide, unref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import Layout from '@/Layout/index.vue'
 
 export default defineComponent({
-  components: {
-    Layout,
-  },
   setup(){
     const $route = useRoute();
     const $router = useRouter();

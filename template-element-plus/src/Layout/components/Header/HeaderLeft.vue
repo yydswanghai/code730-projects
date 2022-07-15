@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, computed, watch } from 'vue'
+import { defineComponent, inject, computed } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { Fold, Expand, RefreshRight } from '@element-plus/icons-vue'
 import { Breadcrumb } from '../Breadcrumb/'
@@ -32,19 +32,14 @@ export default defineComponent({
         collapsed: Boolean
     },
     setup(props, ctx){
-        watch(()=> props.collapsed ,(val) => {
-            console.log(val)
-        })
         const settingStore = useProjectSettingStore();
-        const isReload = computed(() => settingStore.headerSetting.isReload)
         /* 刷新 */
-        const reload = inject<() => void>('reload');
         const changeCollapsed = ctx.attrs.changeCollapsed as () => void
 
         return {
             changeCollapsed,
-            reload,
-            isReload,
+            reload: inject<() => void>('reload'),
+            isReload: computed(() => settingStore.headerSetting.isReload),
         }
     }
 })

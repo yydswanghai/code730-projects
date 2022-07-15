@@ -1,14 +1,12 @@
 <template>
     <el-breadcrumb v-if="crumbsSetting.show" separator="/" class="breadcrumb">
         <transition-group name="page">
-            <el-breadcrumb-item
-                v-for="item in breadcrumbList"
-                :key="item.name + nanoid()"
-                :to="{ name: item.name }"
-                >
-                <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
-                {{ item.meta.title }}
-            </el-breadcrumb-item>
+            <template v-for="item in breadcrumbList" :key="item.name + nanoid()">
+                <el-breadcrumb-item v-if="item.meta.title" :to="{ name: item.name }">
+                    <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
+                    <span>{{ item.meta.title }}</span>
+                </el-breadcrumb-item>
+            </template>
         </transition-group>
     </el-breadcrumb>
 </template>
@@ -33,18 +31,18 @@ export default defineComponent({
                 }
                 // 是否有子菜单，并递归处理
                 if(it.children && it.children.length > 0){
-                    currentMenu.children = generator(it.children)
+                    currentMenu.children = generator(it.children);
                 }
                 return currentMenu;
             })
         }
         /* 当前面包屑数组 */
         const breadcrumbList = computed(() => {
-            return generator($route.matched)
+            return generator($route.matched);
         });
         /* 下拉选择对应的面包屑 */
         function dropdownSelect(key: string) {
-            $router.push({ name: key })
+            $router.push({ name: key });
         }
         return {
             crumbsSetting: computed(() => settingStore.crumbsSetting),
@@ -74,6 +72,13 @@ export default defineComponent({
     }
     .page-leave-active {
         position: absolute;
+    }
+    :deep(.ep-breadcrumb__inner){
+        display: flex;
+        align-items: center;
+        span{
+            margin-left: 2px;
+        }
     }
 }
 </style>

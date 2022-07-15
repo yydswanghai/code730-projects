@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, VNode, ref } from 'vue'
 import { IRouteRecordRaw } from '@/router/types'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
-import { isExternal } from '@/utils/'
-import { resolve } from 'path-browserify'
+
 const MenuItem = defineComponent({
     name: 'MenuItem',
     props: {
@@ -15,10 +14,6 @@ const MenuItem = defineComponent({
             type: Boolean,
             default: true
         },
-        basePath: {// 基础路径
-            type: String,
-            default: ''
-        }
     },
     setup(props, ctx){
         const currentRouter = props.option!;// 当前路由
@@ -47,37 +42,25 @@ const MenuItem = defineComponent({
             }
             return false;
         }
-        /**
-         * 处理路径跳转
-         */
-        function resolvePath(routePath: string) {
-            if(isExternal(routePath)){
-                return routePath;
-            }
-            if(isExternal(props.basePath)){
-                return props.basePath;
-            }
-            return resolve(props.basePath, routePath);
-        }
         return () => {
             if(!currentRouter.meta?.hidden){
                 if(isRootRouter(currentRouter)){
-                    return <ElMenuItem index={resolvePath(currentRouter.path)}
+                    return <ElMenuItem index={currentRouter.path}
                                 v-slots={{ 'title': () => {
                                     return (<><span>{currentRouter.meta?.title}</span></>)
                                 } }}>
-                            {currentRouter.meta?.icon && currentRouter.meta?.icon}
+                            {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
                         </ElMenuItem>
                 }else{
-                    return <ElSubMenu index={resolvePath(currentRouter.path)} v-slots={{ 'title': () => {
+                    return <ElSubMenu index={currentRouter.path} v-slots={{ 'title': () => {
                         return (<>
-                            {currentRouter.meta?.icon && currentRouter.meta?.icon}
+                            {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
                             <span>{currentRouter.meta?.title}</span>
                         </>)
                     } }}>
                         {
                             currentRouter.children?.map(child => {
-                                return <MenuItem option={child} isRoot={false} basePath={resolvePath(child.path)} />
+                                return <MenuItem option={child} isRoot={false}  />
                             })
                         }
                     </ElSubMenu>
