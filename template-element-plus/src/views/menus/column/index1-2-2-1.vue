@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-button type="primary">一级菜单</el-button>
-        <router-view />
+        <el-button type="info">栏目1-2-2-1</el-button>
     </div>
 </template>
 

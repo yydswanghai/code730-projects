@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, PropType, VNode, ref } from 'vue'
+import { defineComponent, PropType, VNode } from 'vue'
 import { IRouteRecordRaw } from '@/router/types'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
 
@@ -72,5 +72,3 @@ const MenuItem = defineComponent({
 
 export default MenuItem;
 </script>
-<style lang="scss" scoped>
-</style>

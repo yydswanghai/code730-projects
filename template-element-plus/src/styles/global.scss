@@ -9,10 +9,11 @@ body {
     font-family: "Source Han Sans CN", "PingFang SC", Helvetica Neue, Helvetica, Hiragino Sans GB,
     Microsoft YaHei, "微软雅黑", Arial, sans-serif;
     line-height: 1.5;
-    color: #343434;
+    color: #353535;
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
 }
 p,h1,h3,h4,h5,h6,h2,li,ul{
     margin: 0;
@@ -55,7 +56,7 @@ a:hover {
 
 /* 滚动条凹槽的颜色，还可以设置边框属性 */
 *::-webkit-scrollbar-track-piece {
-    background-color: #f8f8f8;
+    background-color: transparent;
     -webkit-border-radius: 2em;
     -moz-border-radius: 2em;
     border-radius: 2em;

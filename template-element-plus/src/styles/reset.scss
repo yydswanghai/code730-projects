@@ -1,0 +1,20 @@
+.i-dropdown-menu{
+    padding: 8px 4px;
+    .i-dropdown-menu-item{
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        list-style: none;
+        line-height: 22px;
+        padding: 5px 16px;
+        margin: 0;
+        font-size: 14px;
+        color: #606266;
+        cursor: pointer;
+        outline: none;
+        &:hover{
+            background-color: #fbeced !important;
+            color: $primary-color;
+        }
+    }
+}

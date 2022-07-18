@@ -1,5 +1,6 @@
 import { h } from 'vue'
 import { ElIcon } from 'element-plus'
+import { IRouteRecordRaw } from '@/router/types'
 
 /**
  * render 图标

@@ -1,12 +1,15 @@
 <template>
     <el-menu
         class="aside-menu"
+        ref="AsideMenu"
+        :unique-opened="true"
         :default-active="defaultActive"
         :collapse="collapsed"
         :mode="mode"
         :background-color="styles.asideColor"
         :text-color="styles.menuTextColor"
         :active-text-color="styles.primaryColor"
+        :collapse-transition="false"
         @select="handleSelect"
         >
         <MenuItem
@@ -47,6 +50,7 @@ export default defineComponent({
         },
     },
     setup(){
+        const AsideMenu = ref<any>(null);
         const $router = useRouter();
         const settingStore = useProjectSettingStore();
         const asyncRouteStore = useAsyncRouteStore();
@@ -55,14 +59,16 @@ export default defineComponent({
         const navMode = computed(() => settingStore.navMode);
         /* 菜单切换栏目跳转对应的路由 */
         function handleSelect(index: string, indexPath: string[]) {
+            let path;
             if(isExternal(index)){
-                console.log(true)
+                path = index.replace(/(^\/*)|(\/*$)/g, '');// 去除字符串最前面的'/’
+                window.open(path);
             }
-            console.log(index)
-            const path = resolve(...indexPath);
+            path = resolve(...indexPath);
             $router.push(path);
         }
         return {
+            AsideMenu,
             styles,
             defaultActive,
             menus,

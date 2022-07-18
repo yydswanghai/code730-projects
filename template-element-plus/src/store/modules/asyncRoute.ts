@@ -8,9 +8,9 @@ import { userEnum } from '@/enums/userEnum'
 import { useUserStore } from './user'
 import { getUserMenu } from '@/api/user'
 import { Layout } from '@/router/constant'
-
 import { renderIcon } from '@/utils/'
 import * as $icons from '@/icons/'
+import { isExternal } from '@/utils/'
 
 export type IState = {
     routes: IRouteRecordRaw[]
@@ -103,6 +103,9 @@ async function fetchMenu(){
 function addChildrenRouter(resData: any[]) {
     return resData.map(it => {
         const { path, name, id, parentId, permission, sortOrder, type, meta } = it;
+        if(isExternal(it.path)){// 外部链接
+            it.path = `/${path}`;
+        }
         if(parentId === '-1' && !it.children){
             it.children = [];
             it.children.unshift({

@@ -1,6 +1,7 @@
 import { IRouteRecordRaw } from './types'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { RootRoute, DashboardRoute, RedirectRoute, ErrorPageRoute, LoginRoute } from './base'
+import { isExternal } from '@/utils/'
 
 /* 加载modules目录下的所有文件 */
 const modules = import.meta.globEager('./modules/**/*.ts');
@@ -8,6 +9,11 @@ const routeModuleList: IRouteRecordRaw[] = [];
 Object.keys(modules).forEach((key) => {
     const mod = modules[key].default || {};
     const modList = Array.isArray(mod) ? [...mod] : [mod];
+    modList.forEach(it => {
+        if(isExternal(it.path)){// 外部链接
+            it.path = `/${it.path}`;
+        }
+    });
     routeModuleList.push(...modList);
 });
 /* 按照 meta.sort 排序 */

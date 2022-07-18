@@ -6,20 +6,11 @@
             class="layout-aside"
             :style="asideStyles"
             >
-            <Logo :collapsed="collapsed" />
-            <AsideMenu :collapsed="collapsed" />
+            <el-scrollbar>
+                <Logo :collapsed="collapsed" />
+                <AsideMenu :collapsed="collapsed" />
+            </el-scrollbar>
         </el-aside>
-        <!-- 手机端侧边栏 -->
-        <el-drawer
-            direction="ltr"
-            :with-header="false"
-            v-model="showSideDrawder"
-            size="100"
-            custom-class="layout-drawer"
-            >
-            <Logo :collapsed="collapsed" />
-            <AsideMenu :collapsed="collapsed" :style="asideStyles" />
-        </el-drawer>
         <el-container>
             <!-- 头部 -->
             <el-header>
@@ -88,36 +79,20 @@ export default defineComponent({
                     settingStore.menuSetting.menuWidth) + 'px'
             }
         });
-        /* 控制显示或隐藏移动端侧边栏 */
-        const showSideDrawder = computed({
-            get: () => isMobile.value,
-            set: (val) => (collapsed.value = val)
-        });
         function changeCollapsed() {
             collapsed.value = !collapsed.value;
         }
-        /* 判断是否触发移动端模式 */
-        function checkMobileMode() {
-            const { mobileWidth } = settingStore.menuSetting;
-            if(document.body.clientWidth <= mobileWidth){
-                isMobile.value = true;
-                collapsed.value = false;
-            }else{
-                isMobile.value = false;
-            }
-        }
         /* 监听屏幕宽度改变 */
         function watchScreenWidth() {
-            if(document.body.clientWidth <= 950){
+            const { mobileWidth } = settingStore.menuSetting;
+            if(document.body.clientWidth <= mobileWidth){
                 collapsed.value = true;
             }else{
                 collapsed.value = false;
             }
-            checkMobileMode()
         }
 
         onMounted(() => {
-            checkMobileMode()
             window.addEventListener('resize', watchScreenWidth);
         });
 
@@ -125,7 +100,6 @@ export default defineComponent({
             collapsed,
             asideStyles,
             showAside,
-            showSideDrawder,
             changeCollapsed,
         }
     }
@@ -134,9 +108,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "@/styles/var.scss";
 .layout{
+    width: 100%;
     height: 100%;
     .layout-aside{
-        transition: width .36s;
+        transition: all .3s;
         background-color: $aside-color;
     }
     .ep-container{

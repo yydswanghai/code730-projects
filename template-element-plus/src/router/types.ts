@@ -19,10 +19,9 @@ export interface IRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
 export interface IMeta extends RouteMeta {
     title: string // 名称
     icon?: string | null | (() => VNode)  // 图标
-    sort?: number // 排序
+    sort?: number // 排序(升序)
     hidden?: boolean // 是否隐藏
     alwaysShow?: boolean // 是否始终显示全部菜单
     keepAlive?: boolean // 是否缓存
     affix?: boolean // 是否固定标签
-    externalLink?: string// 外链跳转地址
 }

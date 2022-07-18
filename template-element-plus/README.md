@@ -1,12 +1,30 @@
 ## element-plus vue3 + ts 中后台模版
 
-1. 使用按需引入组件，自动生成的目录在`src`下的`components.d.ts`
+1. 路由配置说明：
 
-2. 暗色模式：调用`composables/index`目录里的`toggleDark`方法就可以切换
+```ts
+{
+    path: string // 
+    name: string // 必填
+    meta: {      // 必填
+        title: string // 名称
+        icon?: string | null | (() => VNode)  // 图标
+        sort?: number // 排序
+        hidden?: boolean // 是否在菜单栏中隐藏
+        alwaysShow?: boolean // 它就会忽略之前定义的规则，一直显示根路由
+        keepAlive?: boolean // 是否缓存
+        affix?: boolean // 是否固定标签
+    }
+}
+```
 
-3. 主题色：组件库颜色被`styles/element/index.scss`重置，颜色变量在`var.scss`，暗主题色一样
+2. 使用按需引入组件，自动生成的目录在`src`下的`components.d.ts`
 
-4. icon组件的使用：
+3. 暗色模式：调用`composables/index`目录里的`toggleDark`方法就可以切换
+
+4. 主题色：组件库颜色被`styles/element/index.scss`重置，颜色变量在`var.scss`，暗主题色一样
+
+5. icon组件的使用：
 
 注意：`icons`目录下生成组件，并统一导出时命名都是大驼峰式命名法（首字母也要大写）
 后台接口请求到的`icon`实际是一个字符串，转换为组件后也要跟这个命名保持一致才会正确加载。
@@ -38,7 +56,7 @@ export default defineComponent({
 </script>
 ```
 
-5. 关于在src目录下使用node的`path`模块，因为vite源码中设定了不允许在客户端代码中访问内置模块代码。
+6. 关于在src目录下使用node的`path`模块，因为vite源码中设定了不允许在客户端代码中访问内置模块代码。
 所以这里使用一个实现了`path`模块的`path-browserify`
 
 ```sh

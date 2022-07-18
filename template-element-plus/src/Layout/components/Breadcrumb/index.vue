@@ -1,13 +1,27 @@
 <template>
     <el-breadcrumb v-if="crumbsSetting.show" separator="/" class="breadcrumb">
-        <transition-group name="page">
             <template v-for="item in breadcrumbList" :key="item.name + nanoid()">
-                <el-breadcrumb-item v-if="item.meta.title" :to="{ name: item.name }">
-                    <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
-                    <span>{{ item.meta.title }}</span>
+                <el-breadcrumb-item v-if="item.meta.title">
+                    <el-dropdown v-if="item.children.length">
+                        <div class="link">
+                            <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
+                            <span>{{ item.meta.title }}</span>
+                        </div>
+                        <template #dropdown>
+                            <div class="i-dropdown-menu"
+                                v-for="child in item.children"
+                                :key="item.name + nanoid()"
+                                @click="dropdownSelect(child.name)">
+                                <div class="i-dropdown-menu-item">{{ child.meta.title }}</div>
+                            </div>
+                        </template>
+                    </el-dropdown>
+                    <div class="link color" v-else>
+                        <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
+                        <span>{{ item.meta.title }}</span>
+                    </div>
                 </el-breadcrumb-item>
             </template>
-        </transition-group>
     </el-breadcrumb>
 </template>
 
@@ -54,6 +68,7 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
+@import "@/styles/var.scss";
 .breadcrumb{
     display: flex;
     padding: 0 12px;
@@ -73,12 +88,19 @@ export default defineComponent({
     .page-leave-active {
         position: absolute;
     }
-    :deep(.ep-breadcrumb__inner){
+    .link{
         display: flex;
         align-items: center;
+        color: $sub-text-color;
+        .ep-icon{
+            font-size: 18px;
+        }
         span{
             margin-left: 2px;
         }
+    }
+    .color{
+        color: $text-color;
     }
 }
 </style>

@@ -16,12 +16,12 @@ export const DashboardRoute: IRouteRecordRaw = {
     path:  PageEnum.HOME,
     name: PageEnum.HOME_NAME,
     component: Layout,
-    meta: { title: '控制台', icon: renderIcon(Menu), sort: 0 },
+    meta: { title: 'Dashboard', icon: renderIcon(Menu), sort: 0 },
     children: [
         {
             path: '',
             name: `${PageEnum.HOME_NAME}Index`,
-            meta: { title: '' },
+            meta: { title: '控制台' },
             component: () => import('@/views/menus/dashboard/index.vue'),
         },
     ]
@@ -32,13 +32,13 @@ export const RedirectRoute: IRouteRecordRaw = {
     path: PageEnum.REDIRECT,
     name: PageEnum.REDIRECT_NAME,
     component: Layout,
-    meta: { title: '刷新' },
+    meta: { title: 'Redirect' },
     children: [
         {
             path: '/redirect/:path(.*)',
             name: `${PageEnum.REDIRECT_NAME}Index`,
             component: () => import('@/views/redirect/index.vue'),
-            meta: { title: '' },
+            meta: { title: '刷新' },
         },
     ],
 }
@@ -54,7 +54,7 @@ export const ErrorPageRoute: IRouteRecordRaw = {
             path: '/:path(.*)*',
             name: `${PageEnum.ERROR_NAME}Index`,
             component: ErrorPage,
-            meta: { title: '' }
+            meta: { title: 'ErrorPage' }
         }
     ]
 }

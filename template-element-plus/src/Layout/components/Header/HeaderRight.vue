@@ -215,7 +215,6 @@ export default defineComponent({
     }
 }
 .i-dropdown-menu{
-    padding: 8px;
     .type{
         font-size: 13px;
         color: rgb(24,25,28);
@@ -231,23 +230,6 @@ export default defineComponent({
     .line{
         margin: 6px 0;
         border-top: 1px solid #ebeef5;
-    }
-    .i-dropdown-menu-item{
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-        list-style: none;
-        line-height: 22px;
-        padding: 5px 16px;
-        margin: 0;
-        font-size: 14px;
-        color: #606266;
-        cursor: pointer;
-        outline: none;
-        &:hover{
-            background-color: #fbeced;
-            color: $primary-color;
-        }
     }
 }
 @keyframes wave {
