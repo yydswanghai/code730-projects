@@ -29,13 +29,12 @@ export default defineComponent({
         Breadcrumb,
     },
     props: {
-        collapsed: Boolean
+        collapsed: Boolean,
     },
     setup(props, ctx){
         const settingStore = useProjectSettingStore();
         /* 刷新 */
         const changeCollapsed = ctx.attrs.changeCollapsed as () => void
-
         return {
             changeCollapsed,
             reload: inject<() => void>('reload'),

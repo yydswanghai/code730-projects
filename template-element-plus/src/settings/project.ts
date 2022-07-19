@@ -2,78 +2,44 @@ import styles from '@/styles/var.module.scss'
 import { IProject } from './types'
 
 const settings: IProject = {
-    //导航模式:
-    navMode: 'vertical',
+    navMode: 'vertical',// 导航模式
     navTheme: 'dark',
-    //是否处于移动端模式
-    isMobile: false,
-    //是否为深色主题
-    isDarkTheme: false,
-    //系统主题色
-    appTheme: styles.primaryColor,
-    //置主题色列表
-    appThemeList: [
-        '#2d8cf0',
-        '#0960bd',
-        '#0084f4',
-        '#009688',
-        '#536dfe',
-        '#ff5c93',
-        '#ee4f12',
-        '#0096c7',
-        '#9c27b0',
-        '#ff9800',
-        '#FF3D68',
-        '#00C1D4',
-        '#71EFA3',
-        '#171010',
-        '#78DEC7',
-        '#1768AC',
-        '#FB9300',
-        '#FC5404',
-    ],
-    //顶部
-    headerSetting: {
-        //背景色
-        bgColor: '#fff',
-        //固定顶部
-        fixed: true,
-        //显示刷新按钮
-        isReload: true,
+    isMobile: false,// 是否处于移动端模式
+    darkColor: styles.darkBgColor,
+    themeSetting: {
+        primary: styles.primaryColor,// 系统主题色
+        isDark: false,// 是否为深色主题
+        colorList: [// 内置主题色列表
+            '#2d8cf0', '#0960bd', '#0084f4', '#009688', '#536dfe', '#ff5c93',
+            '#ee4f12', '#0096c7', '#9c27b0', '#ff9800', '#FF3D68', '#00C1D4',
+            '#71EFA3', '#171010', '#78DEC7', '#1768AC', '#FB9300', '#FC5404',
+        ]
     },
-    //多标签 viewtags
-    multiTabsSetting: {
-        //背景色
-        bgColor: '#fff',
-        //是否显示
-        show: true,
-        //固定多标签
-        fixed: true,
+    headerSetting: {// 顶部设置
+        bgColor: '#fff',// 背景色
+        fixed: true,// 是否固定顶部
+        isReload: true,// 是否显示刷新按钮
     },
-    //菜单
-    menuSetting: {
-        //最小宽度
-        minMenuWidth: 64,
-        //菜单宽度
-        menuWidth: 200,
-        //固定菜单
-        fixed: true,
-        //分割菜单
-        mixMenu: false,
-        //触发移动端侧边栏的宽度
-        mobileWidth: 800,
+    tagsViewSetting: {// 标签设置
+        show: true,// 是否显示
+        fixed: true,// 固定多标签
     },
-    //面包屑
-    crumbsSetting: {
-        //是否显示
-        show: true,
-        //显示图标
-        showIcon: true,
+    menuSetting: {// 菜单设置
+        bgColor: styles.asideColor,
+        minMenuWidth: 64,// 最小宽度
+        menuWidth: 200,// 菜单宽度
+        fixed: true,// 是否固定菜单
+        splitMenu: false,// 是否拆分菜单
+        mobileWidth: 800,// 触发移动端侧边栏的宽度
     },
-    //是否开启路由动画
-    isPageAnimate: true,
-    //路由动画类型
-    pageAnimateType: 'zoom-fade',
+    crumbsSetting: {// 面包屑设置
+        show: true,// 是否显示
+        showIcon: true,// 显示图标
+    },
+    animateSetting: {// 路由动画设置
+        open: true,// 是否开启动画
+        type: 'zoom-fade'// 动画类型
+    }
 }
 
 export default settings

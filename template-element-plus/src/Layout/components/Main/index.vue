@@ -19,7 +19,7 @@ export default defineComponent({
     setup(){
         const settingStore = useProjectSettingStore();
         const getTransitionName = computed(() => {// 动画名称：不使用动画设置为 '' 就可以
-            return settingStore.isPageAnimate ? settingStore.pageAnimateType : '';
+            return settingStore.animateSetting.open ? settingStore.animateSetting.type : '';
         })
         // todo
         const keepAliveComponents = ['/', '404'];

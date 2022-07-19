@@ -1,5 +1,5 @@
 <template>
-    <div class="tags-view-container" :class="classObj" :style="styleObj">
+    <div class="tags-view-container" :class="classObj">
         <div class="tags-view-main">
             <div ref="tagsWrapRef" class="tags" :class="{ 'tags-scrollable': scrollable }">
                 <span class="tags-prev" :class="{ 'tags-hide': !scrollable }" @click="scrollPrev">
@@ -26,56 +26,43 @@
                 </div>
             </div>
             <!-- 下拉菜单 -->
-            <el-dropdown class="tags-close">
-                <el-icon :size="20" class="tags-close-icon"><ArrowDownOutline /></el-icon>
-                <template #dropdown>
-                    <div class="i-dropdown-menu">
-                        <div class="i-dropdown-menu-item" v-for="item in contextMenuOptions" :key="item.key"
-                            @click="selectContextMenu(item.key, item.disabled)" :class="{ disabled: item.disabled }">
-                            <component v-if="item.icon" :is="item.icon" />{{ item.label }}
-                        </div>
-                    </div>
-                </template>
-            </el-dropdown>
-            <teleport to="body">
-                <div class="i-dropdown-menu context-menu" ref="contextMenuRef" :style="{ top: dropdownY + 'px', left: dropdownX + 'px' }" v-show="showDropdown">
-                    <div class="i-dropdown-menu-item" v-for="item in contextMenuOptions" :key="item.key"
-                        @click="selectContextMenu(item.key, item.disabled)" :class="{ disabled: item.disabled }">
-                        <component v-if="item.icon" :is="item.icon" />{{ item.label }}
-                    </div>
-                </div>
-            </teleport>
+            <ContextMenu
+                ref="contextMenuRef"
+                v-model:showDropdown="showDropdown"
+                v-model:activeKey="activeKey"
+                :top="contextMenuY"
+                :left="contextMenuX"
+                :isCurrent="isCurrent"
+                :tagsList="tagsList"
+                @update-nav="updateNavScroll()"
+                />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, nextTick, ref, computed, watch, inject, onMounted } from 'vue'
+import { defineComponent, reactive, toRefs, nextTick, ref, computed, watch } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
-import { useTagsViewStore, initTagsViewStore, RouteItem } from '@/store/modules/tagsView'
+import { useTagsViewStore, initTagsViewStore, IRouteItem } from '@/store/modules/tagsView'
 import { useRoute, useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
-import { CloseRound, ReloadBlod, ColumnWidthOutline, MinusBaseline,
-ArrowDownOutline, ArrowLeftOutline, ArrowRightOutline } from '@/icons/'
+import { CloseRound, ArrowLeftOutline, ArrowRightOutline } from '@/icons/'
 import { PageEnum } from '@/enums/pageEnum'
-import { ElMessage } from 'element-plus'
-import { isExternal, renderIcon } from '@/utils/'
+import { isExternal } from '@/utils/'
+import ContextMenu from './ContextMenu.vue'
 
 export default defineComponent({
     name: 'TagsView',
     components: {
         Draggable,
+        ContextMenu,
         CloseRound,
-        ReloadBlod,
-        ColumnWidthOutline,
-        MinusBaseline,
-        ArrowDownOutline,
         ArrowLeftOutline,
         ArrowRightOutline,
     },
     props: {
         collapsed: Boolean,
-        isMixMenuNoneSub: Boolean,
+        isNotMixMenu: Boolean,
     },
     setup(props, ctx){
         const $route = useRoute();
@@ -88,35 +75,35 @@ export default defineComponent({
         const state = reactive({
             activeKey: $route.fullPath,// 当前页面key
             scrollable: false,// 是否可滚动
-            dropdownX: 0,
-            dropdownY: 0,
+            contextMenuX: 0,// contextMenu的X坐标
+            contextMenuY: 0,// contextMenu的Y坐标
             showDropdown: false,// 下拉菜单
             isCurrent: false,
             isMultiHeaderFixed: false,
         });
         const classObj = computed(() => ({
-            'tags-view-fix': settingStore.multiTabsSetting.fixed,
+            'tags-view-fix': settingStore.tagsViewSetting.fixed,
             'tags-view-fixed-header': state.isMultiHeaderFixed,
-            'tags-view-default-background': settingStore.isDarkTheme === false,
-            'tags-view-dark-background': settingStore.isDarkTheme === true
+            'tags-view-default-background': settingStore.themeSetting.isDark === false,
+            'tags-view-dark-background': settingStore.themeSetting.isDark === true
         }));
         const styleObj = computed(() => {
-            const { collapsed, isMixMenuNoneSub } = props;
-            const { navMode, menuSetting: { minMenuWidth, menuWidth }, multiTabsSetting: { fixed } } = settingStore;
+            const { collapsed, isNotMixMenu } = props;
+            const { navMode, menuSetting: { minMenuWidth, menuWidth }, tagsViewSetting: { fixed } } = settingStore;
             const mWidth = collapsed ? `${minMenuWidth}px` : `${menuWidth}px`;
-            let lenNum = navMode === 'horizontal' || !isMixMenuNoneSub ? '0px' : mWidth;
+            let lenNum = navMode === 'horizontal' || !isNotMixMenu ? '0px' : mWidth;
             if(settingStore.isMobile){
                 return { left: '0px', width: '100%' };
             }
             return { left: lenNum, width: `calc(100% - ${!fixed ? '0px' : lenNum})` };
-        })
+        });
         // 获取简易路由对象，添加addTags的时候容易出现重复标签被添加的bug
-        function getSimpleRoute(route: RouteItem) {
+        function getSimpleRoute(route: IRouteItem) {
             const { fullPath, hash, meta, name, params, path, query } = route;
             return { fullPath, hash, meta, name, params, path, query };
         }
         // 初始化标签页
-        initTagsViewStore(getSimpleRoute($route as RouteItem));
+        initTagsViewStore(getSimpleRoute($route as IRouteItem));
 
         const tagsList = computed(() => tagsViewStore.tagsList);
 
@@ -124,12 +111,13 @@ export default defineComponent({
         watch(() => $route.fullPath, (to) => {
             if(!isExternal(to) && !to.includes(PageEnum.REDIRECT)){// 跳过外部链接、刷新不添加
                 state.activeKey = to;
-                tagsViewStore.addTags(getSimpleRoute($route as RouteItem));
+                tagsViewStore.addTags(getSimpleRoute($route as IRouteItem));
                 updateNavScroll(true);
             }
         }, { immediate: true });
         /* 是否开启滚动功能 */
         async function updateNavScroll(autoScroll?: boolean) {
+            console.log('运行内')
             await nextTick();
             if(!tagsScrollRef.value) return;
             const offsetWidth = tagsScrollRef.value.offsetWidth;// 元素本身的宽度 width+padding+border
@@ -184,117 +172,27 @@ export default defineComponent({
             scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20);
         }
         /* 切换到对应的页面 */
-        function handleToPage(element: RouteItem) {
+        function handleToPage(element: IRouteItem) {
             const { fullPath } = element;
             if(fullPath === $route.fullPath) return;
             state.activeKey = fullPath;
             $router.push({ path: fullPath });
         }
         /* 右键菜单 */
-        function handleContextMenu(event: MouseEvent, element: RouteItem) {
+        function handleContextMenu(event: MouseEvent, element: IRouteItem) {
             event.preventDefault();
             state.isCurrent = PageEnum.HOME === element.path;
             state.showDropdown = false;
             nextTick().then(() => {
                 state.showDropdown = true;
-                state.dropdownX = event.clientX;
-                state.dropdownY = event.clientY;
+                state.contextMenuX = event.clientX;
+                state.contextMenuY = event.clientY;
             });
         }
-        onMounted(() => {
-            // 点击除了菜单以外的位置关闭该右键菜单
-            document.addEventListener('click', function (e: Event){
-                if(!contextMenuRef.value.contains(e.target)){
-                    state.showDropdown = false;
-                }
-            });
-        });
-        /* 关闭标签 */
-        function handleCloseTagItem(element: RouteItem) {
+        /* 关闭当前标签 */
+        function handleCloseTagItem(element: IRouteItem) {
             const route = tagsList.value.find(it => it.fullPath === element.fullPath);
-            route && _removeTab(route);
-        }
-        /* 关闭当前页面 */
-        function _removeTab(route: RouteItem) {
-            if(tagsList.value.length === 1){
-                return ElMessage.warning('这已经是最后一页，不能再关闭了！');
-            }
-            tagsViewStore.closeCurrentTag(route);
-            // 如果关闭是的当前页，则当前页自动变成上一个
-            if (state.activeKey === route.fullPath) {
-                const currentRoute = tagsList.value[Math.max(0, tagsList.value.length -1)];
-                state.activeKey = currentRoute.fullPath;
-                $router.push(currentRoute);
-            }
-            updateNavScroll()
-        }
-        /* 刷新 */
-        const reload = inject<() => void>('reload');
-        /* 关闭其他 */
-        function _closeOther(route: RouteItem) {
-            tagsViewStore.closeOtherTags(route);
-            state.activeKey = route.fullPath;
-            $router.replace(route.fullPath);
-            updateNavScroll();
-        }
-        /* 关闭全部 */
-        function _closeAll() {
-            tagsViewStore.closeAllTags();
-            $router.replace(PageEnum.HOME);
-            updateNavScroll();
-        }
-        enum contextMenuEnum {
-            刷新当前,
-            关闭当前,
-            关闭其他,
-            关闭全部
-        }
-        /* 下拉菜单 */
-        const contextMenuOptions = computed(() => {
-            const isDisabled = tagsList.value.length <= 1;
-            return [
-                {
-                    label: '刷新当前',
-                    key: contextMenuEnum.刷新当前,
-                    disabled: false,
-                    icon: renderIcon(CloseRound),
-                },
-                {
-                    label: '关闭当前',
-                    key: contextMenuEnum.关闭当前,
-                    disabled: state.isCurrent || isDisabled,
-                    icon: renderIcon(ReloadBlod),
-                },
-                {
-                    label: '关闭其他',
-                    key: contextMenuEnum.关闭其他,
-                    disabled: isDisabled,
-                    icon: renderIcon(ColumnWidthOutline),
-                },
-                {
-                    label: '关闭全部',
-                    key: contextMenuEnum.关闭全部,
-                    disabled: isDisabled,
-                    icon: renderIcon(MinusBaseline),
-                },
-            ]
-        })
-        /* 操作右键菜单 */
-        function selectContextMenu(key: number, disabled: boolean) {
-            if(disabled){
-                return;
-            }
-            if(key === contextMenuEnum.刷新当前){
-                reload && reload();
-            }else if(key === contextMenuEnum.关闭当前){
-                _removeTab($route as RouteItem);
-            }else if(key === contextMenuEnum.关闭其他){
-                _closeOther($route as RouteItem)
-            }else if(key === contextMenuEnum.关闭全部){
-                _closeAll();
-            }
-            updateNavScroll();
-            state.showDropdown = false;
+            route && contextMenuRef.value?.removeTab(route);
         }
         return {
             ...toRefs(state),
@@ -305,13 +203,12 @@ export default defineComponent({
             classObj,
             styleObj,
             tagsList,
-            contextMenuOptions,
+            updateNavScroll,
             scrollPrev,
             scrollNext,
             handleToPage,
             handleContextMenu,
             handleCloseTagItem,
-            selectContextMenu,
         }
     }
 })
@@ -411,38 +308,11 @@ export default defineComponent({
             }
         }
     }
-    .tags-close{
-        min-width: 32px;
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
-        text-align: center;
-        background: var(--color);
-        border-radius: 2px;
-        cursor: pointer;
-        .tags-close-icon {
-            color: var(--color);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    }
 }
-.context-menu{
-    position: absolute;
-    z-index: 100;
-    background: #fff;
-}
-.i-dropdown-menu-item.disabled{
-    cursor: not-allowed;
-    opacity: .5;
-}
-
 .tags-view-fix {
     // position: fixed;
     z-index: 5;
-    padding: 6px 0 6px 0;
+    padding: 6px 0 6px 6px;
     left: 200px;
 }
 .tags-view-fixed-header {

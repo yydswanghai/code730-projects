@@ -2,20 +2,20 @@ import { defineStore } from 'pinia'
 import { RouteLocationNormalizedLoaded } from 'vue-router'
 import { PageEnum } from '@/enums/pageEnum'
 
-export type RouteItem = Partial<RouteLocationNormalizedLoaded> & {
+export type IRouteItem = Partial<RouteLocationNormalizedLoaded> & {
     fullPath: string
     name: string
 }
 
 export type ITagsViewState = {
-    tagsList: RouteItem[]// 标签页
+    tagsList: IRouteItem[]// 标签页
 }
 
 /* 不需要出现在标签页中的路由 */
 const whiteList: string[] = [PageEnum.REDIRECT_NAME, PageEnum.LOGIN_NAME];
 
 /* 返回所有路由里 meta:{ affix: true } 的 `标签` */
-function retainAffixRoute(list: RouteItem[]) {
+function retainAffixRoute(list: IRouteItem[]) {
     return list.filter(it => it?.meta?.affix ?? false);
 }
 
@@ -29,11 +29,11 @@ export const useTagsViewStore = defineStore({
     }),
     actions: {
         /* 初始化标签页 */
-        initTags(routes: RouteItem[]){
+        initTags(routes: IRouteItem[]){
             this.tagsList = routes;
         },
         /* 添加标签页 */
-        addTags(route: RouteItem){
+        addTags(route: IRouteItem){
             if (whiteList.includes(route.name)) return false;
             const isExists = this.tagsList.some(it => it.fullPath == route.fullPath);
             if (!isExists) {// 不存在则添加
@@ -42,11 +42,11 @@ export const useTagsViewStore = defineStore({
             return true;
         },
         /* 关闭其他 */
-        closeOtherTags(route: RouteItem){
+        closeOtherTags(route: IRouteItem){
             this.tagsList = this.tagsList.filter(it => it.fullPath == route.fullPath);
         },
         // 关闭当前页
-        closeCurrentTag(route: RouteItem){
+        closeCurrentTag(route: IRouteItem){
             const index = this.tagsList.findIndex(it => it.fullPath == route.fullPath);
             this.tagsList.splice(index, 1);
         },
@@ -59,12 +59,12 @@ export const useTagsViewStore = defineStore({
     }
 });
 
-export function initTagsViewStore(route: RouteItem) {
+export function initTagsViewStore(route: IRouteItem) {
     const instance = useTagsViewStore();
 
     // 初始化
     const localTags = localStorage.getItem(instance.$id);
-    const cacheRoutes: RouteItem[] = localTags ? JSON.parse(localTags) : [route];
+    const cacheRoutes: IRouteItem[] = localTags ? JSON.parse(localTags) : [route];
     instance.initTags(cacheRoutes);
 
     // 订阅数据变化，变化时存储

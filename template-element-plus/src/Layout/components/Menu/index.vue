@@ -6,7 +6,7 @@
         :default-active="defaultActive"
         :collapse="collapsed"
         :mode="mode"
-        :background-color="styles.asideColor"
+        :background-color="inverted ? styles.darkBgColor : styles.asideColor"
         :text-color="styles.menuTextColor"
         :active-text-color="styles.primaryColor"
         :collapse-transition="false"
@@ -48,6 +48,7 @@ export default defineComponent({
             type: String,
             default: 'left',
         },
+        inverted: Boolean// 样式反转
     },
     setup(){
         const AsideMenu = ref<any>(null);
@@ -81,16 +82,16 @@ export default defineComponent({
 @import "@/styles/var.scss";
 .aside-menu{
     border-right: 0;
-    :deep(.ep-menu-item-group__title){
+    :deep(.el-menu-item-group__title){
         padding: 0;
     }
-    :deep(.ep-sub-menu__title){
+    :deep(.el-sub-menu__title){
         &:hover{
             color: $menu-text-hover !important;
             background-color: unset;
         }
     }
-    :deep(.ep-menu-item){
+    :deep(.el-menu-item){
         &:hover{
             color: $menu-text-hover !important;
             background-color: unset;
@@ -105,13 +106,13 @@ export default defineComponent({
 <style lang="scss">
 @import "@/styles/var.scss";
 
-.ep-menu.ep-menu--popup{
+.el-menu.el-menu--popup{
     padding-top: 0;
     padding-bottom: 0;
-    .ep-menu-item-group__title{
+    .el-menu-item-group__title{
         padding: 0;
     }
-    .ep-menu-item{
+    .el-menu-item{
         &.is-active{
             color: $menu-text-hover;
             background-color: $primary-color;

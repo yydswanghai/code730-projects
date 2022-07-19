@@ -1,0 +1,1 @@
+export { default as AppSetting } from './index.vue'

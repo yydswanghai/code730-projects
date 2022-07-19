@@ -8,19 +8,19 @@
             >
             <el-scrollbar>
                 <Logo :collapsed="collapsed" />
-                <AsideMenu :collapsed="collapsed" />
+                <AsideMenu :collapsed="collapsed" :inverted="asideInverted" />
             </el-scrollbar>
         </el-aside>
         <el-container>
             <!-- 头部 -->
-            <el-header>
-                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" />
+            <el-header class="i-header">
+                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" :inverted="asideInverted" />
             </el-header>
             <!-- 内容区 -->
-            <el-main>
-                <TagsView />
+            <el-main class="i-main">
                 <!-- 菜单标签 -->
-                <Main class="layout-main"  />
+                <TagsView v-if="showTagsView" :collapsed="collapsed" :isNotMixMenu="isNotMixMenu" />
+                <Main class="layout-main" :class="{ 'main-fixed': fixedTagsView, 'no-tags-view' : !showTagsView }" />
             </el-main>
         </el-container>
     </el-container>
@@ -58,17 +58,11 @@ export default defineComponent({
             get: () => settingStore.isMobile,
             set: (val) => settingStore.setIsMobile(val)
         });
-        /* 混合菜单模式并开启分割菜单且没有子路由 */
-        const isMixMenuNoneSub = computed(() => {
-            const { mixMenu } = settingStore.menuSetting;// 分割菜单
-            if(navMode.value === 'horizontal-mix' && mixMenu && $route.meta.isRoot){
-                return false
-            }
-            return true
-        });
+        /* 非混合菜单模式 */
+        const isNotMixMenu = computed(() => navMode.value !== 'horizontal-mix');
         /* 显示侧边栏 */
         const showAside = computed(() => {
-            return !isMobile.value && isMixMenuNoneSub.value &&
+            return !isMobile.value && isNotMixMenu.value &&
             (navMode.value === 'vertical' || navMode.value === 'horizontal-mix')
         });
         /* 侧边栏样式 */
@@ -76,9 +70,14 @@ export default defineComponent({
             return {
                 width: (collapsed.value ?
                     settingStore.menuSetting.minMenuWidth :
-                    settingStore.menuSetting.menuWidth) + 'px'
+                    settingStore.menuSetting.menuWidth) + 'px',
+                backgroundColor: asideInverted.value ? settingStore.darkColor : settingStore.menuSetting.bgColor
             }
         });
+        /* 侧边栏反转样式 */
+        const asideInverted = computed(() => settingStore.themeSetting.isDark);
+        const headerInverted = computed(() => ['light', 'header-dark'].includes(navTheme.value));
+
         function changeCollapsed() {
             collapsed.value = !collapsed.value;
         }
@@ -100,6 +99,11 @@ export default defineComponent({
             collapsed,
             asideStyles,
             showAside,
+            isNotMixMenu,
+            showTagsView: computed(() => settingStore.tagsViewSetting.show),
+            fixedTagsView: computed(() => settingStore.tagsViewSetting.fixed),
+            asideInverted,
+            headerInverted,
             changeCollapsed,
         }
     }
@@ -112,26 +116,22 @@ export default defineComponent({
     height: 100%;
     .layout-aside{
         transition: all .3s;
-        background-color: $aside-color;
     }
-    .ep-container{
-        background: #F5F7F9;
-    }
-    .ep-header{
+    .i-header{
         padding-right: 0;
     }
-    .ep-main{
+    .i-main{
         padding-right: 0;
-        padding-top: 12px;
+        padding-top: 0;
     }
-}
-</style>
-<style lang="scss">
-@import "@/styles/var.scss";
-.layout-drawer{
-    background-color: $aside-color;
-    .ep-drawer__body{
-        padding: 0;
+    .layout-main{
+        &.main-fixed{
+            padding-top: 44px;
+        }
+        &.no-tags-view{
+            padding-top: 0;
+            margin-top: 0.75rem;
+        }
     }
 }
 </style>

@@ -16,7 +16,7 @@
                             </div>
                         </template>
                     </el-dropdown>
-                    <div class="link color" v-else>
+                    <div class="link light" v-else>
                         <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
                         <span>{{ item.meta.title }}</span>
                     </div>
@@ -33,7 +33,7 @@ import { nanoid } from 'nanoid'
 
 export default defineComponent({
     name: 'Breadcrumb',
-    setup(){
+    setup(props){
         const $route = useRoute();
         const $router = useRouter();
         const settingStore = useProjectSettingStore();
@@ -91,16 +91,12 @@ export default defineComponent({
     .link{
         display: flex;
         align-items: center;
-        color: $sub-text-color;
-        .ep-icon{
+        .el-icon{
             font-size: 18px;
         }
         span{
             margin-left: 2px;
         }
-    }
-    .color{
-        color: $text-color;
     }
 }
 </style>

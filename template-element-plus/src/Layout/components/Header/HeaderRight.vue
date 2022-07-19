@@ -15,7 +15,7 @@
         </div>
         <div class="trigger">
             <el-tooltip placement="bottom">
-                <a href="https://github.com/" target="_blank">
+                <a href="https://github.com/" target="_blank" style="color: inherit;">
                     <el-icon :size="18"><Github /></el-icon>
                 </a>
                 <template #content>
@@ -67,6 +67,7 @@
                 </template>
             </el-tooltip>
         </div>
+        <AppSetting ref="appSettingRef" />
     </div>
 </template>
 
@@ -79,6 +80,7 @@ import { Github, Fullscreen, FullscreenExit, SettingsOutline, Avatar1, Avatar2, 
 import { getIconsFile } from '@/utils/'
 import { userEnum } from '@/enums/userEnum'
 import { PageEnum } from '@/enums/pageEnum'
+import { AppSetting } from '@/Layout/components/AppSetting/'
 
 export default defineComponent({
     name: 'HeaderLeft',
@@ -91,6 +93,7 @@ export default defineComponent({
         Avatar1,
         Avatar2,
         Avatar3,
+        AppSetting,
     },
     setup(){
         const $router = useRouter();
@@ -149,14 +152,14 @@ export default defineComponent({
             document.addEventListener('fullscreenchange', toggleFullscreenIcon);
         });
         /* 设置 */
-        const drawerSettingRef = ref(null);
+        const appSettingRef = ref();
         // 打开设置
         function openSetting() {
-            // drawerSettingRef.value.openDrawer()
+            appSettingRef.value?.openSetting();
         }
 
         return {
-            drawerSettingRef,
+            appSettingRef,
             fullscreenIcon,
             inputVal,
             showInput,

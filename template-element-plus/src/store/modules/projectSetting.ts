@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import settings from '@/settings/project'
+import { INavMode } from '@/settings/types'
 
 /**
  * 系统设置
@@ -11,7 +12,7 @@ export const useProjectSettingStore = defineStore({
     }),
     actions: {
         // 设置导航模式
-        setNavMode(value: string){
+        setNavMode(value: INavMode){
             this.navMode = value;
         },
         // 设置导航栏风格
@@ -24,7 +25,7 @@ export const useProjectSettingStore = defineStore({
         },
         // 设置系统主题
         setAppTheme(value: string){
-            this.appTheme = value;
+            this.themeSetting.primary = value;
         }
     }
 })

@@ -1,17 +1,22 @@
 /* 系统设置 */
 export interface IProject {
-    navMode: string
+    navMode: INavMode
     navTheme: string
     isMobile: boolean
-    isDarkTheme: boolean
-    appTheme: string
-    appThemeList: string[]
+    darkColor: string
+    themeSetting: IThemeSetting
     headerSetting: IHeaderSetting
-    multiTabsSetting: IMultiTabsSetting
+    tagsViewSetting: ITagsViewSetting
     menuSetting: IMenuSetting
     crumbsSetting: ICrumbsSetting
-    isPageAnimate: boolean
-    pageAnimateType: string
+    animateSetting: IAnimateSetting
+}
+/* 导航模式 */
+export type INavMode = 'vertical' | 'horizontal' | 'horizontal-mix'
+export interface IThemeSetting {
+    primary: string
+    isDark: boolean
+    colorList: string[]
 }
 /* 顶部 */
 export interface IHeaderSetting {
@@ -20,21 +25,25 @@ export interface IHeaderSetting {
     isReload: boolean
 }
 /* 标签 */
-export interface IMultiTabsSetting{
-    bgColor: string
+export interface ITagsViewSetting{
     show: boolean
     fixed: boolean
 }
 /* 菜单 */
 export interface IMenuSetting{
+    bgColor: string
     minMenuWidth: number
     menuWidth: number
     fixed: boolean
-    mixMenu: boolean
+    splitMenu: boolean
     mobileWidth: number
 }
 /* 面包屑 */
 export interface ICrumbsSetting{
     show: boolean
     showIcon: boolean
+}
+export interface IAnimateSetting {
+    open: boolean,
+    type: string
 }

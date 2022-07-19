@@ -1,8 +1,8 @@
 
 // 我们可以将其添加到自定义命名空间，默认值为“el” 自定义主题
-@forward "element-plus/theme-chalk/src/mixins/config.scss" with (
-    $namespace: "ep"
-);
+// @forward "element-plus/theme-chalk/src/mixins/config.scss" with (
+//     $namespace: "ep"
+// );
 
 @use "../var.scss" as variable;
 $primary-color: variable.$primary-color;

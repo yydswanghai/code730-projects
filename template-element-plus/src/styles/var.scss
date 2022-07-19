@@ -14,12 +14,11 @@ $pressed-color: #FF7070;
 $pass-color: #28E4C0;
 $blue-color: #567BFF;
 
+$dark-bg-color: #18181C;
 $aside-color: #001428;
+
 $menu-text-color: #BBB;
 $menu-text-hover: #FFF;
-
-$text-color: #353535;
-$sub-text-color: #767C82;
 
 :export {
     headerHeight: $header-height;
@@ -36,7 +35,9 @@ $sub-text-color: #767C82;
     passColor: $pass-color;
     blueColor: $blue-color;
 
+    darkBgColor: $dark-bg-color;
     asideColor: $aside-color;
+
     menuTextColor: $menu-text-color;
     menuTextHover: $menu-text-hover;
 }

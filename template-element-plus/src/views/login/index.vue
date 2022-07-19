@@ -173,7 +173,7 @@ export default defineComponent({
         padding: 32px 0;
         text-align: center;
         .logo{
-            .ep-icon{
+            .el-icon{
                 margin: 1rem auto;
             }
         }

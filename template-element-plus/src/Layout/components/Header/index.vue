@@ -1,10 +1,9 @@
 <template>
     <div class="layout-header">
         <div class="header-menu"
-            v-if="navMode === 'horizontal' || (navMode === 'horizontal-mix' && mixMenu)"
-            >
+            v-if="navMode === 'horizontal' || navMode === 'horizontal-mix'">
             <Logo class="logo-h" :collapsed="collapsed" />
-            <AsideMenu mode="horizontal" :collapsed="collapsed" />
+            <AsideMenu mode="horizontal" :collapsed="collapsed" :inverted="inverted" />
         </div>
         <HeaderLeft v-else :collapsed="collapsed" v-bind="$attrs" />
         <HeaderRight />
@@ -29,13 +28,14 @@ export default defineComponent({
     },
     props: {
         collapsed: Boolean,
+        inverted: Boolean,
     },
     setup(){
         const settingStore = useProjectSettingStore();
 
         return {
+            settingStore,
             navMode: computed(() => settingStore.navMode),// 导航栏模式
-            mixMenu: computed(() => settingStore.menuSetting.mixMenu),// 分割菜单
         }
     }
 })
@@ -43,7 +43,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "@/styles/var.scss";
 .layout-header{
-    background: #FFF;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -73,7 +72,7 @@ export default defineComponent({
         text-align: center;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
-        .ep-icon {
+        .el-icon {
             display: flex;
             align-items: center;
             height: $header-height;
@@ -84,7 +83,7 @@ export default defineComponent({
         }
     }
 }
-.ep-popper{
+.el-popper{
     a{
         color: inherit;
     }
