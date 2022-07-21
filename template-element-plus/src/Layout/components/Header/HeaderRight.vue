@@ -7,7 +7,7 @@
         </div>
         <div class="trigger">
             <el-tooltip placement="bottom">
-                <el-icon :size="18" @click="showInput = !showInput"><Search /></el-icon>
+                <el-icon :size="18" @click="showInput = !showInput" class="i-icon"><Search /></el-icon>
                 <template #content>
                     <span>搜索</span>
                 </template>
@@ -16,7 +16,7 @@
         <div class="trigger">
             <el-tooltip placement="bottom">
                 <a href="https://github.com/" target="_blank" style="color: inherit;">
-                    <el-icon :size="18"><Github /></el-icon>
+                    <el-icon :size="18" class="i-icon"><Github /></el-icon>
                 </a>
                 <template #content>
                     <span>github</span>
@@ -25,7 +25,7 @@
         </div>
         <div class="trigger">
             <el-tooltip placement="bottom">
-                <el-icon :size="18">
+                <el-icon :size="18" class="i-icon">
                     <component :is="fullscreenIcon" @click="toggleFullScreen" />
                 </el-icon>
                 <template #content>
@@ -59,7 +59,7 @@
         </div>
         <div class="trigger" @click="openSetting">
             <el-tooltip placement="bottom-end">
-                <el-icon :size="18">
+                <el-icon :size="18" class="i-icon">
                     <SettingsOutline />
                 </el-icon>
                 <template #content>

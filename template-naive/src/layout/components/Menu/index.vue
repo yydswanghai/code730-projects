@@ -143,6 +143,7 @@ export default {
                 // 分割菜单
                 const firstRouteName = ($route.matched[0].name) || ''
                 menus.value = generatorMenuMix(asyncRouteStore.menus, firstRouteName, props.location)
+                console.log(menus.value)
                 const activeMenu = $route?.matched[0].meta?.activeMenu
                 headerMenuSelectKey.value = (activeMenu ? activeMenu : firstRouteName) || ''
             }

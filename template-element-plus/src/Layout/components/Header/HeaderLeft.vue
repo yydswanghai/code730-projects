@@ -2,12 +2,12 @@
     <div class="header-left">
         <!-- 菜单收起 -->
         <div class="left-gap trigger" @click="changeCollapsed">
-            <el-icon :size="18" v-if="collapsed"><Fold /></el-icon>
-            <el-icon :size="18" v-else><Expand /></el-icon>
+            <el-icon :size="18" v-if="collapsed" class="i-icon"><Fold /></el-icon>
+            <el-icon :size="18" v-else class="i-icon"><Expand /></el-icon>
         </div>
         <!-- 刷新 -->
         <div class="left-gap trigger" v-if="isReload" @click="reload">
-            <el-icon :size="18"><RefreshRight /></el-icon>
+            <el-icon :size="18" class="i-icon"><RefreshRight /></el-icon>
         </div>
         <!-- 面包屑 -->
         <Breadcrumb />

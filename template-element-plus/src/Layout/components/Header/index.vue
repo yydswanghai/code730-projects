@@ -1,11 +1,13 @@
 <template>
     <div class="layout-header">
-        <div class="header-menu"
-            v-if="navMode === 'horizontal' || navMode === 'horizontal-mix'">
-            <Logo class="logo-h" :collapsed="collapsed" />
-            <AsideMenu mode="horizontal" :collapsed="collapsed" :inverted="inverted" />
+        <div class="header-menu" v-if="navMode === 'horizontal'">
+            <Logo class="logo-h" v-if="navMode === 'horizontal'" :collapsed="collapsed" />
+            <AsideMenu mode="horizontal" :inverted="inverted" location="header" />
         </div>
-        <HeaderLeft v-else :collapsed="collapsed" v-bind="$attrs" />
+        <div class="header-menu" v-if=" navMode === 'horizontal-mix'">
+            <AsideMenu mode="horizontal" :inverted="inverted" location="header" />
+        </div>
+        <HeaderLeft v-else v-if="navMode === 'vertical'" :collapsed="collapsed" v-bind="$attrs" />
         <HeaderRight />
     </div>
 </template>
@@ -52,12 +54,15 @@ export default defineComponent({
     transition: all 0.2s ease-in-out;
     width: 100%;
     z-index: 11;
-}
-.header-menu{
-    display: flex;
-    align-items: center;
-    .logo-h{
-        padding-left: 10px;
+    background-color: var(--i-head-bg-color);
+    .header-menu{
+        display: flex;
+        align-items: center;
+        height: 100%;
+        .logo-h{
+            padding-left: 10px;
+            padding-right: 10px;
+        }
     }
 }
 </style>
@@ -72,20 +77,19 @@ export default defineComponent({
         text-align: center;
         cursor: pointer;
         transition: all 0.2s ease-in-out;
-        .el-icon {
+        .i-icon {
             display: flex;
             align-items: center;
             height: $header-height;
             line-height: $header-height;
+            color: var(--i-head-primary-color);
         }
         &:hover {
             background: hsla(0, 0%, 100%, 0.08);
         }
     }
 }
-.el-popper{
-    a{
-        color: inherit;
-    }
+.el-popper a{
+    color: inherit;
 }
 </style>

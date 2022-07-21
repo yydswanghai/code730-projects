@@ -5,10 +5,10 @@ const settings: IProject = {
     navMode: 'vertical',// 导航模式
     navTheme: 'dark',
     isMobile: false,// 是否处于移动端模式
-    darkColor: styles.darkBgColor,
     themeSetting: {
         primary: styles.primaryColor,// 系统主题色
         isDark: false,// 是否为深色主题
+        dark: styles.darkColor,
         colorList: [// 内置主题色列表
             '#2d8cf0', '#0960bd', '#0084f4', '#009688', '#536dfe', '#ff5c93',
             '#ee4f12', '#0096c7', '#9c27b0', '#ff9800', '#FF3D68', '#00C1D4',
@@ -16,7 +16,8 @@ const settings: IProject = {
         ]
     },
     headerSetting: {// 顶部设置
-        bgColor: '#fff',// 背景色
+        bgColor: styles.whiteTheme,// 默认背景
+        invertedBgColor: styles.blackTheme,// 反转背景
         fixed: true,// 是否固定顶部
         isReload: true,// 是否显示刷新按钮
     },
@@ -25,7 +26,8 @@ const settings: IProject = {
         fixed: true,// 固定多标签
     },
     menuSetting: {// 菜单设置
-        bgColor: styles.asideColor,
+        bgColor: styles.blackTheme,// 默认背景
+        invertedBgColor: styles.whiteTheme,// 反转背景
         minMenuWidth: 64,// 最小宽度
         menuWidth: 200,// 菜单宽度
         fixed: true,// 是否固定菜单

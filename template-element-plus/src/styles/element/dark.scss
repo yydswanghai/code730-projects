@@ -7,8 +7,6 @@ $error-color: variable.$error-color;
 $info-color: variable.$info-color;
 @forward "element-plus/theme-chalk/src/dark/var.scss" with (
     $colors: (
-        "primary": (
-            "base": $primary-color,
-        ),
+        "primary": ("base": $primary-color ),
     )
 );

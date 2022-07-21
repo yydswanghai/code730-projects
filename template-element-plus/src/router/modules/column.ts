@@ -23,66 +23,66 @@ const routes: Array<IRouteRecordRaw> = [
         name: 'Column',
         component: Layout,
         meta: {
-            title: '栏目',
+            title: '多级栏目',
             icon: renderIcon(Github),
         },
         children: [
             {
-                path: 'col1-1',
-                name: 'Column1-1',
+                path: 'col-a',
+                name: 'Column-a',
                 component: () => import('@/views/menus/column/index.vue'),
                 meta: {
-                    title: '栏目1-1'
+                    title: '栏目A'
                 },
                 children: [
                     {
-                        path: 'col1-1-1',
-                        name: 'Column1-1-1',
+                        path: 'col-a-1',
+                        name: 'Column-a-1',
                         component: () => import('@/views/menus/column/index1-1-1.vue'),
                         meta: {
-                            title: '栏目1-1-1'
+                            title: '栏目A-1'
                         }
                     },
                     {
-                        path: 'col1-1-2',
-                        name: 'Column1-1-2',
+                        path: 'col-a-2',
+                        name: 'Column-a-2',
                         component: () => import('@/views/menus/column/index1-1-2.vue'),
                         meta: {
-                            title: '栏目1-1-2'
+                            title: '栏目A-2'
                         }
                     },
                 ]
             },
             {
-                path: 'col1-2',
-                name: 'Column1-2',
+                path: 'col-b',
+                name: 'Column-b',
                 component: () => import('@/views/menus/column/index1-2.vue'),
                 meta: {
-                    title: '栏目1-2'
+                    title: '栏目B'
                 },
                 children: [
                     {
-                        path: 'col1-2-1',
-                        name: 'Column1-2-1',
+                        path: 'col-b-1',
+                        name: 'Column-b-1',
                         component: () => import('@/views/menus/column/index1-2-1.vue'),
                         meta: {
-                            title: '栏目1-2-1'
+                            title: '栏目B-1'
                         }
                     },
                     {
-                        path: 'col1-2-2',
-                        name: 'Column1-2-2',
+                        path: 'col-b-2',
+                        name: 'Column-b-2',
                         component: () => import('@/views/menus/column/index1-2-2.vue'),
                         meta: {
-                            title: '栏目1-2-2'
+                            title: '栏目B-2'
                         },
                         children: [
                             {
-                                path: 'col1-2-2-1',
-                                name: 'Column1-2-2-1',
+                                path: 'col-b-2-1',
+                                name: 'Column-b-2-1',
                                 component: () => import('@/views/menus/column/index1-2-2-1.vue'),
                                 meta: {
-                                    title: '栏目1-2-2-1'
+                                    title: '栏目B-2-1'
                                 }
                             },
                         ]
@@ -90,11 +90,11 @@ const routes: Array<IRouteRecordRaw> = [
                 ]
             },
             {
-                path: 'col1-3',
-                name: 'Column1-3',
+                path: 'col-c',
+                name: 'Column-c',
                 component: () => import('@/views/menus/column/index1-3.vue'),
                 meta: {
-                    title: '栏目1-3'
+                    title: '栏目C'
                 }
             }
         ]

@@ -1,22 +1,24 @@
 <template>
-    <el-dropdown class="tags-close">
-        <el-icon :size="20" class="tags-close-icon"><ArrowDownOutline /></el-icon>
+    <el-dropdown class="tags-dropdown">
+        <el-icon :size="20" class="tags-dropdown-icon"><ArrowDownOutline /></el-icon>
         <template #dropdown>
             <div class="i-dropdown-menu">
                 <div class="i-dropdown-menu-item" v-for="item in contextMenuOptions" :key="item.key"
                     @click="selectContextMenu(item.key, item.disabled)" :class="{ disabled: item.disabled }">
-                    <component v-if="item.icon" :is="item.icon" />{{ item.label }}
+                    <component v-if="item.icon" :is="item.icon" class="i-icon" />{{ item.label }}
                 </div>
             </div>
         </template>
     </el-dropdown>
     <teleport to="body">
-        <div class="i-dropdown-menu context-menu" ref="contextMenuRef" :style="{ top: top + 'px', left: left + 'px' }" v-show="showDropdown">
-            <div class="i-dropdown-menu-item" v-for="item in contextMenuOptions" :key="item.key"
-                @click="selectContextMenu(item.key, item.disabled)" :class="{ disabled: item.disabled }">
-                <component v-if="item.icon" :is="item.icon" />{{ item.label }}
+        <el-dropdown :style="{ top: top + 'px', left: left + 'px', position: 'absolute' }" v-show="showDropdown">
+            <div class="i-dropdown-menu context-menu" ref="contextMenuRef" >
+                <div class="i-dropdown-menu-item" v-for="item in contextMenuOptions" :key="item.key"
+                    @click="selectContextMenu(item.key, item.disabled)" :class="{ disabled: item.disabled }">
+                    <component v-if="item.icon" :is="item.icon" class="i-icon" />{{ item.label }}
+                </div>
             </div>
-        </div>
+        </el-dropdown>
     </teleport>
 </template>
 
@@ -151,17 +153,15 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-.tags-close{
+.tags-dropdown{
     min-width: 32px;
     width: 32px;
     height: 32px;
     line-height: 32px;
     text-align: center;
-    background: var(--color);
     border-radius: 2px;
     cursor: pointer;
-    .tags-close-icon {
-        color: var(--color);
+    .tags-dropdown-icon {
         height: 100%;
         display: flex;
         align-items: center;
@@ -171,11 +171,16 @@ export default defineComponent({
 .context-menu{
     position: absolute;
     z-index: 100;
-    background: #fff;
+    background: var(--el-bg-color-overlay);
     box-shadow: 0px 0px 12px rgb(0 0 0 / 12%);
 }
-.i-dropdown-menu-item.disabled{
-    cursor: not-allowed;
-    opacity: .5;
+.i-dropdown-menu-item{
+    &.disabled{
+        cursor: not-allowed;
+        opacity: .5;
+    }
+    .i-icon{
+        color: inherit;
+    }
 }
 </style>

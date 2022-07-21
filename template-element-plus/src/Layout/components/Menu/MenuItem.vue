@@ -1,7 +1,10 @@
 <script lang="tsx">
-import { defineComponent, PropType, VNode } from 'vue'
+import { defineComponent, PropType, VNode, computed } from 'vue'
 import { IRouteRecordRaw } from '@/router/types'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
+import { resolve } from 'path-browserify'
+import { isExternal } from '@/utils/'
+import { useProjectSettingStore } from '@/store/modules/projectSetting'
 
 const MenuItem = defineComponent({
     name: 'MenuItem',
@@ -14,9 +17,17 @@ const MenuItem = defineComponent({
             type: Boolean,
             default: true
         },
+        basePath: String,
     },
-    setup(props, ctx){
-        const currentRouter = props.option!;// 当前路由
+    setup(props){
+        const settingStore = useProjectSettingStore();
+        const navIsHead = computed(() => {
+            if(settingStore.navMode === 'horizontal' || settingStore.navMode === 'horizontal-mix'){
+                return true;
+            }
+            return false;
+        });
+        let currentRouter = props.option!;// 当前路由
         /**
          * 一级路由确定有children，子路由不确定有children
          * 1. 一级路由，设置了"alwaysShow"，有children（1个或0个）渲染：<el-menu-item>
@@ -42,30 +53,40 @@ const MenuItem = defineComponent({
             }
             return false;
         }
-        return () => {
-            if(!currentRouter.meta?.hidden){
-                if(isRootRouter(currentRouter)){
-                    return <ElMenuItem index={currentRouter.path}
-                                v-slots={{ 'title': () => {
-                                    return (<><span>{currentRouter.meta?.title}</span></>)
-                                } }}>
-                            {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
-                        </ElMenuItem>
-                }else{
-                    return <ElSubMenu index={currentRouter.path} v-slots={{ 'title': () => {
-                        return (<>
-                            {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
-                            <span>{currentRouter.meta?.title}</span>
-                        </>)
-                    } }}>
-                        {
-                            currentRouter.children?.map(child => {
-                                return <MenuItem option={child} isRoot={false}  />
-                            })
-                        }
-                    </ElSubMenu>
-                }
+        function getIndex(path: string) {
+            if(isExternal(path)){
+                const url = path.replace(/(^\/*)|(\/*$)/g, '');// 去除字符串最前面的'/’
+                return url;
             }
+            if(props.isRoot){
+                return resolve(props.basePath!)
+            }else{
+                return resolve(props.basePath!, path)
+            }
+        }
+        return () => {
+            if(isRootRouter(currentRouter)){
+                return <ElMenuItem data-url={getIndex(currentRouter.path)} index={getIndex(currentRouter.path)}
+                            v-slots={{ 'title': () => {
+                                return (<><span>{currentRouter.meta?.title}</span></>)
+                            } }}>
+                        {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
+                    </ElMenuItem>
+            }else{
+                return <ElSubMenu class="i-menu" popperClass={navIsHead.value ? 'i-popper-head-menu i-popper-menu': 'i-popper-menu'} data-url={getIndex(currentRouter.path)} index={getIndex(currentRouter.path)} v-slots={{ 'title': () => {
+                    return (<>
+                        {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
+                        <span>{currentRouter.meta?.title}</span>
+                    </>)
+                } }}>
+                    {
+                        currentRouter.children?.map(child => {
+                            return <MenuItem option={child} isRoot={false} basePath={getIndex(currentRouter.path)} />
+                        })
+                    }
+                </ElSubMenu>
+            }
+
         }
     }
 })

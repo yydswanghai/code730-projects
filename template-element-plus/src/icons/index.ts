@@ -8,7 +8,6 @@ import Fullscreen from "./fullscreen.svg?component"
 import Github from "./github.svg?component"
 import MinusBaseline from "./minus-baseline.svg?component"
 import ReloadBlod from "./reload-blod.svg?component"
-import Reload from "./reload.svg?component"
 import SettingsOutline from "./settings-outline.svg?component"
 import Document from "./menu/document.svg?component"
 import Organization from "./menu/organization.svg?component"
@@ -24,7 +23,7 @@ import EyeOffOutline from './eye-off-outline.svg?component'
 export {
     ArrowDownOutline, ArrowLeftOutline, ArrowRightOutline, CloseRound,
     ColumnWidthOutline, FullscreenExit, Fullscreen, Github,
-    MinusBaseline, ReloadBlod, Reload, SettingsOutline,
+    MinusBaseline, ReloadBlod, SettingsOutline,
     Document, Organization, Tree,
     Logo1, Logo2, Avatar1, Avatar2, Avatar3,
     EyeOutline, EyeOffOutline

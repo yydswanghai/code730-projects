@@ -8,18 +8,18 @@
             >
             <el-scrollbar>
                 <Logo :collapsed="collapsed" />
-                <AsideMenu :collapsed="collapsed" :inverted="asideInverted" />
+                <AsideMenu :collapsed="collapsed" :inverted="inverted" />
             </el-scrollbar>
         </el-aside>
         <el-container>
             <!-- 头部 -->
-            <el-header class="i-header">
-                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" :inverted="asideInverted" />
+            <el-header class="layout-header" :class="{ 'padding-left' : asideIsTop }" >
+                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" :inverted="headerInverted" />
             </el-header>
             <!-- 内容区 -->
             <el-main class="i-main">
                 <!-- 菜单标签 -->
-                <TagsView v-if="showTagsView" :collapsed="collapsed" :isNotMixMenu="isNotMixMenu" />
+                <TagsView v-if="showTagsView" :collapsed="collapsed" :isMixMenuNoneSub="isMixMenuNoneSub" />
                 <Main class="layout-main" :class="{ 'main-fixed': fixedTagsView, 'no-tags-view' : !showTagsView }" />
             </el-main>
         </el-container>
@@ -27,14 +27,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, ref, computed, onMounted, unref } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { Logo } from './components/Logo/'
 import { Menu as AsideMenu } from './components/Menu/'
 import { Header } from './components/Header/'
 import { Main } from './components/Main/'
 import { TagsView } from './components/TagsView/'
+import useAddTheme from '@/hooks/useAddTheme'
 
 export default defineComponent({
     name: 'Layout',
@@ -45,38 +45,39 @@ export default defineComponent({
         TagsView,
         Main,
     },
-    setup(props, ctx){
+    setup(){
         const collapsed = ref(false);
         const settingStore = useProjectSettingStore();
-        const $route = useRoute();
         /* 导航栏模式 */
         const navMode = computed(() => settingStore.navMode);
-        /* 导航栏风格 */
-        const navTheme = computed(() => settingStore.navTheme);
         /* 是否为手机端 */
         const isMobile = computed({
             get: () => settingStore.isMobile,
             set: (val) => settingStore.setIsMobile(val)
         });
-        /* 非混合菜单模式 */
-        const isNotMixMenu = computed(() => navMode.value !== 'horizontal-mix');
+        /* 混合菜单模式并开启分割菜单且没有子路由 */
+        const isMixMenuNoneSub = computed(() => {
+            const { splitMenu } = settingStore.menuSetting;
+            if(navMode.value !== 'horizontal-mix') return true;
+            if(navMode.value === 'horizontal-mix' && splitMenu){
+                return false
+            }
+            return true;
+        });
         /* 显示侧边栏 */
         const showAside = computed(() => {
-            return !isMobile.value && isNotMixMenu.value &&
-            (navMode.value === 'vertical' || navMode.value === 'horizontal-mix')
+            return !isMobile.value && (navMode.value === 'vertical' || navMode.value === 'horizontal-mix')
         });
+        const asideIsTop = computed(() => navMode.value === 'horizontal' || navMode.value === 'horizontal-mix');
         /* 侧边栏样式 */
         const asideStyles = computed(() => {
             return {
                 width: (collapsed.value ?
                     settingStore.menuSetting.minMenuWidth :
                     settingStore.menuSetting.menuWidth) + 'px',
-                backgroundColor: asideInverted.value ? settingStore.darkColor : settingStore.menuSetting.bgColor
             }
         });
-        /* 侧边栏反转样式 */
-        const asideInverted = computed(() => settingStore.themeSetting.isDark);
-        const headerInverted = computed(() => ['light', 'header-dark'].includes(navTheme.value));
+        const { inverted, headerInverted } = useAddTheme();
 
         function changeCollapsed() {
             collapsed.value = !collapsed.value;
@@ -99,11 +100,12 @@ export default defineComponent({
             collapsed,
             asideStyles,
             showAside,
-            isNotMixMenu,
+            isMixMenuNoneSub,
+            asideIsTop,
+            inverted,
+            headerInverted,
             showTagsView: computed(() => settingStore.tagsViewSetting.show),
             fixedTagsView: computed(() => settingStore.tagsViewSetting.fixed),
-            asideInverted,
-            headerInverted,
             changeCollapsed,
         }
     }
@@ -116,9 +118,15 @@ export default defineComponent({
     height: 100%;
     .layout-aside{
         transition: all .3s;
+        background-color: var(--i-menu-bg-color);
+        box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
     }
-    .i-header{
+    .layout-header{
         padding-right: 0;
+        height: $header-height;
+        &.padding-left{
+            padding-left: 0;
+        }
     }
     .i-main{
         padding-right: 0;

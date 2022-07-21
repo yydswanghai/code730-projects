@@ -9,12 +9,12 @@
         padding: 5px 16px;
         margin: 0;
         font-size: 14px;
-        color: var(--ep-text-color-regular);
+        color: var(--el-text-color-regular);
         cursor: pointer;
         outline: none;
         &:hover{
-            background-color: var(--ep-dropdown-menuItem-hover-fill) !important;
-            color: $primary-color;
+            background-color: var(--el-dropdown-menuItem-hover-fill) !important;
+            color: var(--el-color-primary);
         }
     }
 }

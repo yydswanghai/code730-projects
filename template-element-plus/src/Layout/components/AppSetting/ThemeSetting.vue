@@ -7,7 +7,7 @@
                 v-model="settingStore.themeSetting.isDark"
                 :active-icon="Sunny"
                 :inactive-icon="Moon"
-                style="--ep-switch-on-color: #ffd93b; --ep-switch-off-color: #000E1C;"
+                style="--el-switch-on-color: #ffd93b; --el-switch-off-color: #000E1C;"
                 inline-prompt
             />
             <template #content>
@@ -27,6 +27,7 @@ export default defineComponent({
     setup(){
         const settingStore = useProjectSettingStore();
         watch(() => settingStore.themeSetting.isDark, (val) => {
+            settingStore.setDark(val);
             toggleDark(val);// 切换主题
         });
 

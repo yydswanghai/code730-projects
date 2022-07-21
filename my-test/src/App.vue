@@ -5,28 +5,41 @@ const collapsed = ref(false)
 function changeCollapsed() {
   collapsed.value = !collapsed.value
 }
-const handleCommand = (command: string | number | object) => {
-  console.log(`click on item ${command}`)
-}
-function handleSelect(key: string, keypath: string) {
-  console.log(key, keypath)
-}
+const show = ref(false);
 </script>
 
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <el-dropdown @command="handleCommand" trigger="click">
-    <span class="el-dropdown-link">
-      Dropdown List
-    </span>
-    <template #dropdown>
-      
-    </template>
-  </el-dropdown>
   <div>
     collapsed: {{ collapsed }}
   </div>
   <Children :change="changeCollapsed" :collapsed="collapsed" />
+  <el-button @click="show = !show">切换</el-button>
+  <el-menu
+    :default-active="'1'"
+    class="el-menu-demo"
+    mode="horizontal"
+    :unique-opened="false"
+    :collapse="false"
+  >
+    <template v-if="show">
+      <el-menu-item index="1">Processing Center</el-menu-item>
+      <el-sub-menu index="2">
+        <template #title>Workspace</template>
+        <el-menu-item index="2-1">item one</el-menu-item>
+        <el-menu-item index="2-2">item two</el-menu-item>
+        <el-menu-item index="2-3">item three</el-menu-item>
+        <el-sub-menu index="2-4">
+          <template #title>item four</template>
+          <el-menu-item index="2-4-1">item one</el-menu-item>
+          <el-menu-item index="2-4-2">item two</el-menu-item>
+          <el-menu-item index="2-4-3">item three</el-menu-item>
+        </el-sub-menu>
+      </el-sub-menu>
+      <el-menu-item index="3" disabled>Info</el-menu-item>
+      <el-menu-item index="4">Orders</el-menu-item>
+    </template>
+  </el-menu>
 </template>
 <style lang="scss">
 .el-dropdown-menu-item{

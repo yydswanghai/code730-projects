@@ -48,7 +48,7 @@ export function createRouterGuards(router: Router) {
                 });
                 // 添加404
                 const isErrorPage = router.getRoutes().findIndex(it => it.name === PageEnum.ERROR_NAME);
-                if(isErrorPage !== -1){
+                if(isErrorPage === -1){
                     router.addRoute(ErrorPageRoute);
                 }
                 next({ ...to, replace: true });

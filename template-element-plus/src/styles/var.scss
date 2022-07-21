@@ -14,11 +14,12 @@ $pressed-color: #FF7070;
 $pass-color: #28E4C0;
 $blue-color: #567BFF;
 
-$dark-bg-color: #18181C;
-$aside-color: #001428;
+$white-theme: #FFFFFF;   // 亮色
+$black-theme: #001428;// 暗色
 
-$menu-text-color: #BBB;
-$menu-text-hover: #FFF;
+$menu-white-text: #BBBBBB;
+$menu-black-text: #001428;
+$dark: #18181C;
 
 :export {
     headerHeight: $header-height;
@@ -35,9 +36,9 @@ $menu-text-hover: #FFF;
     passColor: $pass-color;
     blueColor: $blue-color;
 
-    darkBgColor: $dark-bg-color;
-    asideColor: $aside-color;
-
-    menuTextColor: $menu-text-color;
-    menuTextHover: $menu-text-hover;
+    whiteTheme: $white-theme;
+    blackTheme: $black-theme;
+    menuWhiteText: $menu-white-text;
+    menuBlackText: $menu-black-text;
+    darkColor: $dark;
 }

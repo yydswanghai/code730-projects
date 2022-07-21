@@ -11,16 +11,16 @@
                 <div ref="tagsScrollRef" class="tags-scroll">
                     <Draggable :list="tagsList" animation="300" item-key="fullPath" class="tags-draggable">
                         <template #item="{ element }">
-                            <div
+                            <el-button text
                                 class="tags-scroll-item"
                                 :class="{'active-item': activeKey === element.fullPath}"
                                 :id="`tag${element.fullPath.split('/').join('\/')}`"
                                 @click.stop="handleToPage(element)"
                                 @contextmenu="handleContextMenu($event, element)"
                                 >
-                                <span>{{ element.meta.title }}</span>
-                                <el-icon v-if="element.path !== PageEnum.HOME" :size="15" class="item-icon" @click.stop="handleCloseTagItem(element)"><CloseRound/></el-icon>
-                            </div>
+                                    <span>{{ element.meta.title }}</span>
+                                    <el-icon v-if="element.path !== PageEnum.HOME" :size="15" class="item-icon" @click.stop="handleCloseTagItem(element)"><CloseRound/></el-icon>
+                            </el-button>
                         </template>
                     </Draggable>
                 </div>
@@ -62,7 +62,7 @@ export default defineComponent({
     },
     props: {
         collapsed: Boolean,
-        isNotMixMenu: Boolean,
+        isMixMenuNoneSub: Boolean,
     },
     setup(props, ctx){
         const $route = useRoute();
@@ -88,10 +88,10 @@ export default defineComponent({
             'tags-view-dark-background': settingStore.themeSetting.isDark === true
         }));
         const styleObj = computed(() => {
-            const { collapsed, isNotMixMenu } = props;
+            const { collapsed, isMixMenuNoneSub } = props;
             const { navMode, menuSetting: { minMenuWidth, menuWidth }, tagsViewSetting: { fixed } } = settingStore;
             const mWidth = collapsed ? `${minMenuWidth}px` : `${menuWidth}px`;
-            let lenNum = navMode === 'horizontal' || !isNotMixMenu ? '0px' : mWidth;
+            let lenNum = navMode === 'horizontal' || !isMixMenuNoneSub ? '0px' : mWidth;
             if(settingStore.isMobile){
                 return { left: '0px', width: '100%' };
             }
@@ -117,7 +117,6 @@ export default defineComponent({
         }, { immediate: true });
         /* 是否开启滚动功能 */
         async function updateNavScroll(autoScroll?: boolean) {
-            console.log('运行内')
             await nextTick();
             if(!tagsScrollRef.value) return;
             const offsetWidth = tagsScrollRef.value.offsetWidth;// 元素本身的宽度 width+padding+border
@@ -267,12 +266,12 @@ export default defineComponent({
                 display: flex;
             }
             .tags-scroll-item{
-                background: #FFF;
-                color: #353535;
+                background: var(--el-button-bg-color);
+                color: var(--el-button-text-color);
                 height: 32px;
-                padding: 6px 16px 4px;
-                border-radius: 3px;
+                padding: 6px 12px 6px;
                 margin-right: 6px;
+                margin-left: 0;
                 cursor: pointer;
                 display: inline-block;
                 position: relative;
@@ -283,27 +282,24 @@ export default defineComponent({
                     vertical-align: middle;
                 }
                 .item-icon {
-                    height: 22px;
-                    width: 21px;
+                    height: 18px;
+                    width: 18px;
                     margin-right: -6px;
                     position: relative;
                     top: -2px;
                     vertical-align: middle;
                     text-align: center;
-                    color: #808695;
-                    &:hover {
-                        color: #515a6e !important;
-                    }
+                    color: var(--el-button-text-color);
                     svg {
-                        height: 21px;
+                        height: 20px;
                         display: inline-block;
                     }
                 }
                 &:hover {
-                    color: #515a6e;
+                    color: var(--el-color-primary);
                 }
                 &.active-item{
-                    color: $primary-color;
+                    color: var(--el-color-primary);
                 }
             }
         }

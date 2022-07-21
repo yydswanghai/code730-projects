@@ -4,20 +4,22 @@
                 <el-breadcrumb-item v-if="item.meta.title">
                     <el-dropdown v-if="item.children.length">
                         <div class="link">
-                            <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
+                            <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" class="i-icon" />
                             <span>{{ item.meta.title }}</span>
                         </div>
                         <template #dropdown>
-                            <div class="i-dropdown-menu"
-                                v-for="child in item.children"
-                                :key="item.name + nanoid()"
-                                @click="dropdownSelect(child.name)">
-                                <div class="i-dropdown-menu-item">{{ child.meta.title }}</div>
+                            <div class="i-dropdown-menu">
+                                <div class="i-dropdown-menu-item"
+                                    v-for="child in item.children"
+                                    :key="item.name + nanoid()"
+                                    @click="dropdownSelect(child.name)">
+                                    {{ child.meta.title }}
+                                </div>
                             </div>
                         </template>
                     </el-dropdown>
                     <div class="link light" v-else>
-                        <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" />
+                        <component v-if="crumbsSetting.showIcon && item.meta.icon" :is="item.meta.icon" class="i-icon" />
                         <span>{{ item.meta.title }}</span>
                     </div>
                 </el-breadcrumb-item>
@@ -33,7 +35,7 @@ import { nanoid } from 'nanoid'
 
 export default defineComponent({
     name: 'Breadcrumb',
-    setup(props){
+    setup(){
         const $route = useRoute();
         const $router = useRouter();
         const settingStore = useProjectSettingStore();
@@ -91,11 +93,13 @@ export default defineComponent({
     .link{
         display: flex;
         align-items: center;
-        .el-icon{
+        .i-icon{
             font-size: 18px;
+            color: var(--i-head-primary-color);
         }
         span{
             margin-left: 2px;
+            color: var(--i-head-primary-color);
         }
     }
 }

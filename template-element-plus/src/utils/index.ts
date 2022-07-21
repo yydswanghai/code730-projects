@@ -1,6 +1,5 @@
 import { h } from 'vue'
 import { ElIcon } from 'element-plus'
-import { IRouteRecordRaw } from '@/router/types'
 
 /**
  * render 图标
@@ -35,4 +34,16 @@ export function delay(duration: number): Promise<boolean> {
             resolve(true);
         }, duration);
     })
+}
+// 颜色辅助函数
+function addLight(color: string, amount: number) {
+    const cc = parseInt(color, 16) + amount;// 转16进制
+    const c = cc > 255 ? 255 : cc;
+    return c.toString(16).length > 1 ? c.toString(16) : `0${c.toString(16)}`;
+}
+// 颜色辅助函数
+export function lighten(color: string, amount: number) {
+    color = color.includes('#') ? color.substring(1, color.length) : color;// 去除#
+    amount = Math.trunc((255 * amount) / 100);
+    return `#${addLight(color.substring(0, 2), amount)}${addLight(color.substring(2, 4),amount)}${addLight(color.substring(4, 6), amount)}`
 }

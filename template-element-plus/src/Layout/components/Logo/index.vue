@@ -3,7 +3,7 @@
         <el-icon :size="32" class="icon" :class="{ 'margin-right': !collapsed }">
             <AsideLogo />
         </el-icon>
-        <h2 v-show="!collapsed">vueElementPlus</h2>
+        <div class="title" v-show="!collapsed">vueElementPlus</div>
     </div>
 </template>
 
@@ -13,7 +13,7 @@ import { Logo2 as AsideLogo } from '@/icons/'
 export default defineComponent({
     name: 'Logo',
     props: {
-        collapsed: Boolean
+        collapsed: Boolean,
     },
     components: {
         AsideLogo
@@ -29,6 +29,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--i-menu-bg-color);
     .icon{
         width: auto;
         height: 2rem;
@@ -36,10 +37,10 @@ export default defineComponent({
             margin-right: 0.5rem;
         }
     }
-    h2{
+    .title{
         margin-bottom: 0px;
         font-size: 16px;
-        color: #FFF;
+        color: var(--i-menu-primary-color);
     }
 }
 </style>
