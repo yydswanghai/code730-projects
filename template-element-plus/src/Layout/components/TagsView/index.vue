@@ -105,7 +105,7 @@ export default defineComponent({
 
         // 路由改变时候添加新的tag
         watch(() => $route.fullPath, (to) => {
-            if(!isExternal(to) && !to.includes(PageEnum.REDIRECT)){// 跳过外部链接、刷新不添加
+            if(!isExternal(to)){// 跳过外部链接、刷新不添加
                 state.activeKey = to;
                 tagsViewStore.addTags(getSimpleRoute($route as IRouteItem));
                 updateNavScroll(true);

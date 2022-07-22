@@ -12,7 +12,7 @@ export type ITagsViewState = {
 }
 
 /* 不需要出现在标签页中的路由 */
-const whiteList: string[] = [PageEnum.REDIRECT_NAME, PageEnum.LOGIN_NAME];
+const whiteList: string[] = [`${PageEnum.REDIRECT_NAME}Index`, PageEnum.LOGIN_NAME];
 
 /* 返回所有路由里 meta:{ affix: true } 的 `标签` */
 function retainAffixRoute(list: IRouteItem[]) {
@@ -34,6 +34,7 @@ export const useTagsViewStore = defineStore({
         },
         /* 添加标签页 */
         addTags(route: IRouteItem){
+            console.log(route.name)
             if (whiteList.includes(route.name)) return false;
             const isExists = this.tagsList.some(it => it.fullPath == route.fullPath);
             if (!isExists) {// 不存在则添加
