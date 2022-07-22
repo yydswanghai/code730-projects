@@ -4,7 +4,7 @@
 
 ```ts
 {
-    path: string // 
+    path: string // 根路由都是以'/'开头，子路由不要再加'/'防止menu到index路径拼接错误
     name: string // 必填
     meta: {      // 必填
         title: string // 名称
@@ -17,6 +17,8 @@
     }
 }
 ```
+
+`所有的菜单栏目统一放在views/menus目录下`
 
 2. 使用按需引入组件，自动生成的目录在`src`下的`components.d.ts`
 
@@ -63,3 +65,11 @@ export default defineComponent({
 npm i path-browserify
 npm install --save @types/path-browserify
 ```
+
+7. 颜色配置修改
+
+使用`scss`变量替换了`element-plus/theme-chalk/src/common/var.scss`的主题色
+
+直接修改`styles/var.scss`的对应变量即可
+
+暗色模式只替换了`primary`其他需要的自行添加即可

@@ -34,7 +34,6 @@ export const useTagsViewStore = defineStore({
         },
         /* 添加标签页 */
         addTags(route: IRouteItem){
-            console.log(route)
             if (whiteList.includes(route.name)) return false;
             const isExists = this.tagsList.some(it => it.fullPath == route.fullPath);
             if (!isExists) {// 不存在则添加

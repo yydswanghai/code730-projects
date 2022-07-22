@@ -16,9 +16,6 @@ $blue-color: #567BFF;
 
 $white-theme: #FFFFFF;   // 亮色
 $black-theme: #001428;// 暗色
-
-$menu-white-text: #BBBBBB;
-$menu-black-text: #001428;
 $dark: #18181C;
 
 :export {
@@ -38,7 +35,5 @@ $dark: #18181C;
 
     whiteTheme: $white-theme;
     blackTheme: $black-theme;
-    menuWhiteText: $menu-white-text;
-    menuBlackText: $menu-black-text;
     darkColor: $dark;
 }

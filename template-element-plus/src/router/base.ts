@@ -16,7 +16,7 @@ export const DashboardRoute: IRouteRecordRaw = {
     path:  PageEnum.HOME,
     name: PageEnum.HOME_NAME,
     component: Layout,
-    meta: { title: 'Dashboard', icon: renderIcon(Menu), sort: 0 },
+    meta: { title: '控制台', icon: renderIcon(Menu), sort: 0 },
     children: [
         {
             path: '',
