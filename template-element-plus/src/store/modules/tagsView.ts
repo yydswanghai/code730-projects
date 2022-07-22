@@ -43,7 +43,12 @@ export const useTagsViewStore = defineStore({
         },
         /* 关闭其他 */
         closeOtherTags(route: IRouteItem){
-            this.tagsList = this.tagsList.filter(it => it.fullPath == route.fullPath);
+            this.tagsList = this.tagsList.filter(it => {
+                if(it.fullPath === PageEnum.HOME || it.fullPath === route.fullPath){
+                    return true;
+                }
+                return false;
+            });
         },
         // 关闭当前页
         closeCurrentTag(route: IRouteItem){
