@@ -24,7 +24,6 @@ export function createRouterGuards(router: Router) {
         if(!hasToken){// 没有token
             // 不在白名单中
             if(!whiteList.includes(to.path)){
-                console.log(1)
                 next(`${PageEnum.LOGIN}?redirect=${to.path}`);
                 return;
             }else{
