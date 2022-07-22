@@ -1,5 +1,5 @@
 <template>
-    <div class="tags-view-container" :class="classObj">
+    <div class="tags-view-container" :style="styleObj">
         <div class="tags-view-main">
             <div ref="tagsWrapRef" class="tags" :class="{ 'tags-scrollable': scrollable }">
                 <span class="tags-prev" :class="{ 'tags-hide': !scrollable }" @click="scrollPrev">
@@ -62,7 +62,6 @@ export default defineComponent({
     },
     props: {
         collapsed: Boolean,
-        isMixMenuNoneSub: Boolean,
     },
     setup(props, ctx){
         const $route = useRoute();
@@ -81,22 +80,19 @@ export default defineComponent({
             isCurrent: false,
             isMultiHeaderFixed: false,
         });
-        const classObj = computed(() => ({
-            'tags-view-fix': settingStore.tagsViewSetting.fixed,
-            'tags-view-fixed-header': state.isMultiHeaderFixed,
-            'tags-view-default-background': settingStore.themeSetting.isDark === false,
-            'tags-view-dark-background': settingStore.themeSetting.isDark === true
-        }));
         const styleObj = computed(() => {
-            const { collapsed, isMixMenuNoneSub } = props;
-            const { navMode, menuSetting: { minMenuWidth, menuWidth }, tagsViewSetting: { fixed } } = settingStore;
-            const mWidth = collapsed ? `${minMenuWidth}px` : `${menuWidth}px`;
-            let lenNum = navMode === 'horizontal' || !isMixMenuNoneSub ? '0px' : mWidth;
-            if(settingStore.isMobile){
-                return { left: '0px', width: '100%' };
+            const { navMode } = settingStore;
+            if(navMode === 'horizontal'){
+                return {
+                    width: `100%`,
+                    left: '0'
+                }
+            }else{
+                return {
+                    width: `calc(100% - var(--menu-width) - var(--gap))`
+                }
             }
-            return { left: lenNum, width: `calc(100% - ${!fixed ? '0px' : lenNum})` };
-        });
+        })
         // 获取简易路由对象，添加addTags的时候容易出现重复标签被添加的bug
         function getSimpleRoute(route: IRouteItem) {
             const { fullPath, hash, meta, name, params, path, query } = route;
@@ -199,9 +195,8 @@ export default defineComponent({
             tagsWrapRef,
             tagsScrollRef,
             contextMenuRef,
-            classObj,
-            styleObj,
             tagsList,
+            styleObj,
             updateNavScroll,
             scrollPrev,
             scrollNext,
@@ -218,6 +213,7 @@ export default defineComponent({
     width: 100%;
     padding: 6px 0;
     display: flex;
+    box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
     transition: all 0.2s ease-in-out;
     .tags-view-main{
         height: 32px;
@@ -304,21 +300,5 @@ export default defineComponent({
             }
         }
     }
-}
-.tags-view-fix {
-    // position: fixed;
-    z-index: 5;
-    padding: 6px 0 6px 6px;
-    left: 200px;
-}
-.tags-view-fixed-header {
-    top: 0;
-}
-.tags-view-default-background {
-    background: #f5f7f9;
-}
-
-.tags-view-dark-background {
-    background: #101014;
 }
 </style>

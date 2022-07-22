@@ -1,34 +1,34 @@
 <template>
-    <div class="setting-item">
+    <div class="i-setting">
         <el-divider class="i-divider">导航栏模式</el-divider>
 
-        <div class="nav-mode-container">
-            <div class="nav-mode-item">
+        <div class="i-container">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-theme-dark.svg?url" @click="togNavMode('vertical')" />
                     <template #content>
                         <span>左侧菜单模式</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navMode === 'vertical'" />
+                <el-badge type="primary" is-dot v-show="navMode === 'vertical'" />
             </div>
-            <div class="nav-mode-item">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-horizontal.svg?url" @click="togNavMode('horizontal')" />
                     <template #content>
-                        <span>顶部菜单模式</span>
+                        <span>顶栏菜单模式</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navMode === 'horizontal'" />
+                <el-badge type="primary" is-dot v-show="navMode === 'horizontal'" />
             </div>
-            <div class="nav-mode-item">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-horizontal-mix.svg?url" @click="togNavMode('horizontal-mix')" />
                     <template #content>
                         <span>混合菜单模式</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navMode === 'horizontal-mix'" />
+                <el-badge type="primary" is-dot v-show="navMode === 'horizontal-mix'" />
             </div>
         </div>
     </div>
@@ -51,20 +51,3 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="scss" scoped>
-.nav-mode-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 2px 0;
-    .nav-mode-item{
-        margin-right: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        img{
-            margin-bottom: .5rem;
-        }
-    }
-}
-</style>

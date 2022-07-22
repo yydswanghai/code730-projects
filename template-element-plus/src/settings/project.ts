@@ -15,10 +15,10 @@ const settings: IProject = {
             '#71EFA3', '#171010', '#78DEC7', '#1768AC', '#FB9300', '#FC5404',
         ]
     },
-    headerSetting: {// 顶部设置
+    headerSetting: {// 顶栏设置
         bgColor: styles.whiteTheme,// 默认背景
         invertedBgColor: styles.blackTheme,// 反转背景
-        fixed: true,// 是否固定顶部
+        fixed: true,// 是否固定顶栏
         isReload: true,// 是否显示刷新按钮
     },
     tagsViewSetting: {// 标签设置
@@ -31,7 +31,6 @@ const settings: IProject = {
         minMenuWidth: 64,// 最小宽度
         menuWidth: 200,// 菜单宽度
         fixed: true,// 是否固定菜单
-        splitMenu: false,// 是否拆分菜单
         mobileWidth: 800,// 触发移动端侧边栏的宽度
     },
     crumbsSetting: {// 面包屑设置

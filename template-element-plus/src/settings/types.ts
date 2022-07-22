@@ -20,7 +20,7 @@ export interface IThemeSetting {
     dark: string
     colorList: string[]
 }
-/* 顶部 */
+/* 顶栏 */
 export interface IHeaderSetting {
     bgColor: string
     invertedBgColor: string
@@ -39,7 +39,6 @@ export interface IMenuSetting{
     minMenuWidth: number
     menuWidth: number
     fixed: boolean
-    splitMenu: boolean
     mobileWidth: number
 }
 /* 面包屑 */

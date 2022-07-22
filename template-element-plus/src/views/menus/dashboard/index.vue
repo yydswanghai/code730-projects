@@ -1,15 +1,15 @@
 <template>
-    <div>dashboard</div>
+    <div class="dashboard-container">
+        <el-calendar v-model="value" />
+        <el-calendar v-model="value" />
+        <el-calendar v-model="value" />
+    </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
-export default defineComponent({
-    setup(){
-        
-    }
-})
+<script lang="ts" setup>
+import { ref } from 'vue'
+const value = ref(new Date())
 </script>
 <style lang="scss" scoped>
-    
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="setting-item">
+    <div class="i-setting">
         <el-divider class="i-divider">主题</el-divider>
         <el-tooltip placement="bottom">
             <el-switch
@@ -39,6 +39,3 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="scss" scoped>
-
-</style>

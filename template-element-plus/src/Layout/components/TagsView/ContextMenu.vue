@@ -66,6 +66,7 @@ export default defineComponent({
         /* 下拉菜单 */
         const contextMenuOptions = computed(() => {
             const isDisabled = props.tagsList.length <= 1;
+            const isHome = props.activeKey === PageEnum.HOME;// 当前选中到控制台不能关闭全部
             return [
                 {
                     label: '刷新当前',
@@ -88,7 +89,7 @@ export default defineComponent({
                 {
                     label: '关闭全部',
                     key: contextMenuEnum.关闭全部,
-                    disabled: isDisabled,
+                    disabled: isHome || isDisabled,
                     icon: renderIcon(MinusBaseline),
                 },
             ]

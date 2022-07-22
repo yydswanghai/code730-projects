@@ -9,6 +9,10 @@
             <NavModeSetting />
             <!-- 导航风格 -->
             <NavThemeSetting />
+            <!-- 其他设置 -->
+            <OtherSetting />
+            <!-- 动画设置 -->
+            <AnimateSetting />
         </div>
     </el-drawer>
 </template>
@@ -20,6 +24,8 @@ import ThemeSetting from './ThemeSetting.vue'
 import ThemeListSetting from './ThemeListSetting.vue'
 import NavModeSetting from './NavModeSetting.vue'
 import NavThemeSetting from './NavThemeSetting.vue'
+import OtherSetting from './OtherSetting.vue'
+import AnimateSetting from './AnimateSetting.vue'
 
 export default defineComponent({
     name: 'AppSetting',
@@ -28,6 +34,8 @@ export default defineComponent({
         ThemeListSetting,
         NavModeSetting,
         NavThemeSetting,
+        OtherSetting,
+        AnimateSetting
     },
     setup(){
         const settingStore = useProjectSettingStore();
@@ -53,9 +61,9 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .app-setting{
-    .setting-item{
+    .i-setting{
         display: flex;
         align-items: center;
         justify-content: center;
@@ -63,6 +71,35 @@ export default defineComponent({
         flex-wrap: wrap;
         :deep(.i-divider){
             margin: 10px 0 20px;
+        }
+        .i-container{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 2px 0;
+            .i-container-item{
+                margin-right: 16px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                img{
+                    margin-bottom: .5rem;
+                }
+            }
+        }
+        .i-item{
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            flex-wrap: wrap;
+            width: 100%;
+            .title{
+                flex: 1 1;
+                font-size: 14px;
+            }
+            .switch{
+                flex: 0 0 auto;
+            }
         }
     }
 }

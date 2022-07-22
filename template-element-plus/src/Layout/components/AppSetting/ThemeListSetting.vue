@@ -1,5 +1,5 @@
 <template>
-    <div class="setting-item">
+    <div class="i-setting">
         <el-divider class="i-divider">修改主题色</el-divider>
         <el-color-picker v-model="color" :predefine="predefineColors" @change="handleChange" />
     </div>
@@ -27,6 +27,3 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="scss" scoped>
-
-</style>

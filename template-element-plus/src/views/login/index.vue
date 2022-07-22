@@ -194,7 +194,7 @@ export default defineComponent({
     }
 }
 .login-container {
-    background-image: url('../../assets/background/confetti-doodles.svg');
+    background-image: url('../../assets/bg-confetti-doodles.svg');
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: cover;

@@ -18,6 +18,7 @@ const MenuItem = defineComponent({
             default: true
         },
         basePath: String,
+        location: String
     },
     setup(props){
         const settingStore = useProjectSettingStore();
@@ -65,26 +66,32 @@ const MenuItem = defineComponent({
             }
         }
         return () => {
-            if(isRootRouter(currentRouter)){
-                return <ElMenuItem data-url={getIndex(currentRouter.path)} index={getIndex(currentRouter.path)}
-                            v-slots={{ 'title': () => {
-                                return (<><span>{currentRouter.meta?.title}</span></>)
-                            } }}>
+            const notSubItem = <ElMenuItem
+                        index={getIndex(currentRouter.path)}
+                        data-index={getIndex(currentRouter.path)}
+                        v-slots={{ 'title': () => { return (<><span>{currentRouter.meta?.title}</span></>) } }}>
                         {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
                     </ElMenuItem>
+            // 单独渲染混合菜单header菜单
+            if(props.location === 'header' && settingStore.navMode === 'horizontal-mix'){
+                return notSubItem
             }else{
-                return <ElSubMenu class="i-menu" popperClass={navIsHead.value ? 'i-popper-head-menu i-popper-menu': 'i-popper-menu'} data-url={getIndex(currentRouter.path)} index={getIndex(currentRouter.path)} v-slots={{ 'title': () => {
-                    return (<>
-                        {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
-                        <span>{currentRouter.meta?.title}</span>
-                    </>)
-                } }}>
-                    {
-                        currentRouter.children?.map(child => {
-                            return <MenuItem option={child} isRoot={false} basePath={getIndex(currentRouter.path)} />
-                        })
-                    }
-                </ElSubMenu>
+                if(isRootRouter(currentRouter)){
+                    return notSubItem
+                }else{
+                    return <ElSubMenu class="i-menu" popperClass={navIsHead.value ? 'i-popper-head-menu i-popper-menu': 'i-popper-menu'} data-url={getIndex(currentRouter.path)} index={getIndex(currentRouter.path)} v-slots={{ 'title': () => {
+                        return (<>
+                            {currentRouter.meta?.icon && (currentRouter.meta?.icon as () => VNode)()}
+                            <span>{currentRouter.meta?.title}</span>
+                        </>)
+                    } }}>
+                        {
+                            currentRouter.children?.map(child => {
+                                return <MenuItem option={child} isRoot={false} basePath={getIndex(currentRouter.path)} />
+                            })
+                        }
+                    </ElSubMenu>
+                }
             }
 
         }

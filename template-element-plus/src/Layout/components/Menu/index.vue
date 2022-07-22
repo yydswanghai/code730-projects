@@ -15,6 +15,7 @@
             :key="route.name"
             :option="route"
             :base-path="route.path"
+            :location="location"
             />
     </el-menu>
 </template>
@@ -79,11 +80,12 @@ export default defineComponent({
         /* 混合菜单 */
         function generatorMenuMix(routes: any[], routerName: RouteRecordName, location: string) {
             const newRoutes = cloneDeep(routes);
-            if(location === 'header'){// 顶部的菜单 (不包含子菜单)
+            if(location === 'header'){// 顶栏菜单 (不包含子菜单)
                 return newRoutes.map(it => {
+                    const children = it.children.length > 1 ? [it.children[0]] : it.children;
                     const routerInfo = {
                         ...it,
-                        children: it.children.length > 1 ? [it.children[0]] : it.children
+                        children,
                     }
                     return routerInfo
                 })
@@ -95,7 +97,6 @@ export default defineComponent({
         function renderMenu() {
             const routes = filterHide(asyncRouteStore.menus);
             if(navMode.value === 'horizontal-mix'){
-                console.log(props.location)
                 const routerName = ($route.matched[0].name) || '';
                 menus.value = generatorMenuMix(routes, routerName, props.location);
             }else{
@@ -164,7 +165,7 @@ export default defineComponent({
         background-color: var(--bg);
     }
 }
-// 顶部栏目样式
+// 顶栏栏目样式
 .head-menu{
     --bg: var(--i-head-bg-color);
     --text-color: var(--i-head-primary-color);

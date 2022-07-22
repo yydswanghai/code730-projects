@@ -1,34 +1,34 @@
 <template>
-    <div class="setting-item">
+    <div class="i-setting">
         <el-divider class="i-divider">导航栏风格</el-divider>
 
-        <div class="nav-theme-container">
-            <div class="nav-theme-item">
+        <div class="i-container">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-theme-dark.svg?url" @click="togNavMode('dark')" />
                     <template #content>
                         <span>暗色侧边栏</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navTheme === 'dark'" />
+                <el-badge type="primary" is-dot v-show="navTheme === 'dark'" />
             </div>
-            <div class="nav-theme-item">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-theme-light.svg?url" @click="togNavMode('light')" />
                     <template #content>
                         <span>亮色侧边栏</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navTheme === 'light'" />
+                <el-badge type="primary" is-dot v-show="navTheme === 'light'" />
             </div>
-            <div class="nav-theme-item">
+            <div class="i-container-item">
                 <el-tooltip placement="top">
                     <img src="~@/icons/nav/nav-theme-mix-dark.svg?url" @click="togNavMode('mix-dark')" />
                     <template #content>
                         <span>暗色混合侧边栏</span>
                     </template>
                 </el-tooltip>
-                <el-badge is-dot v-show="navTheme === 'mix-dark'" />
+                <el-badge type="primary" is-dot v-show="navTheme === 'mix-dark'" />
             </div>
         </div>
     </div>
@@ -52,20 +52,3 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="scss" scoped>
-.nav-theme-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 2px 0;
-    .nav-theme-item{
-        margin-right: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        img{
-            margin-bottom: .5rem;
-        }
-    }
-}
-</style>

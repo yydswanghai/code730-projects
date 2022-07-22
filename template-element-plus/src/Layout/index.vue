@@ -4,7 +4,7 @@
         <el-aside
             v-if="showAside"
             class="layout-aside"
-            :style="asideStyles"
+            :style="{ width: menuWidth }"
             >
             <el-scrollbar>
                 <Logo :collapsed="collapsed" />
@@ -12,22 +12,28 @@
             </el-scrollbar>
         </el-aside>
         <el-container>
-            <!-- 头部 -->
-            <el-header class="layout-header" :class="{ 'padding-left' : asideIsTop }" >
-                <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" :inverted="headerInverted" />
-            </el-header>
-            <!-- 内容区 -->
-            <el-main class="i-main">
-                <!-- 菜单标签 -->
-                <TagsView v-if="showTagsView" :collapsed="collapsed" :isMixMenuNoneSub="isMixMenuNoneSub" />
-                <Main class="layout-main" :class="{ 'main-fixed': fixedTagsView, 'no-tags-view' : !showTagsView }" />
-            </el-main>
+            <el-scrollbar class="i-scroll">
+                <!-- 头部 -->
+                <el-header class="layout-header" :class="{ 'padding-left' : asideIsTop, 'i-fixed-header': fixedHeader }" >
+                    <Header :collapsed="collapsed" :changeCollapsed="changeCollapsed" :inverted="headerInverted" />
+                </el-header>
+                <!-- 内容区 -->
+                <main class="i-main" :class="{ 'padding-left' : asideIsTop }">
+                    <!-- 菜单标签 -->
+                    <TagsView v-if="showTagsView" :collapsed="collapsed"
+                        :class="{ 'i-fixed-tags-view': fixedTagsView,
+                        'i-tags-view-dark-bg': isDark,
+                        'i-tags-view-bg': !isDark }"
+                        />
+                    <Main class="layout-main" :class="{ 'no-tags-view' : !fixedTagsView }" />
+                </main>
+            </el-scrollbar>
         </el-container>
     </el-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, unref } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useProjectSettingStore } from '@/store/modules/projectSetting'
 import { Logo } from './components/Logo/'
 import { Menu as AsideMenu } from './components/Menu/'
@@ -55,30 +61,17 @@ export default defineComponent({
             get: () => settingStore.isMobile,
             set: (val) => settingStore.setIsMobile(val)
         });
-        /* 混合菜单模式并开启分割菜单且没有子路由 */
-        const isMixMenuNoneSub = computed(() => {
-            const { splitMenu } = settingStore.menuSetting;
-            if(navMode.value !== 'horizontal-mix') return true;
-            if(navMode.value === 'horizontal-mix' && splitMenu){
-                return false
-            }
-            return true;
-        });
         /* 显示侧边栏 */
         const showAside = computed(() => {
             return !isMobile.value && (navMode.value === 'vertical' || navMode.value === 'horizontal-mix')
         });
-        const asideIsTop = computed(() => navMode.value === 'horizontal' || navMode.value === 'horizontal-mix');
-        /* 侧边栏样式 */
-        const asideStyles = computed(() => {
-            return {
-                width: (collapsed.value ?
-                    settingStore.menuSetting.minMenuWidth :
-                    settingStore.menuSetting.menuWidth) + 'px',
-            }
-        });
+        /* 侧边栏宽度 */
+        const menuWidth = computed(() => collapsed.value ?
+            settingStore.menuSetting.minMenuWidth + 'px' :
+            settingStore.menuSetting.menuWidth + 'px');
+        /* 反转样式 */
         const { inverted, headerInverted } = useAddTheme();
-
+        /* 用于给子组件切换 */
         function changeCollapsed() {
             collapsed.value = !collapsed.value;
         }
@@ -98,14 +91,15 @@ export default defineComponent({
 
         return {
             collapsed,
-            asideStyles,
             showAside,
-            isMixMenuNoneSub,
-            asideIsTop,
             inverted,
             headerInverted,
+            menuWidth,
+            asideIsTop: computed(() => navMode.value === 'horizontal'),
             showTagsView: computed(() => settingStore.tagsViewSetting.show),
             fixedTagsView: computed(() => settingStore.tagsViewSetting.fixed),
+            fixedHeader: computed(() => settingStore.headerSetting.fixed),
+            isDark: computed(() => settingStore.themeSetting.isDark),
             changeCollapsed,
         }
     }
@@ -116,6 +110,8 @@ export default defineComponent({
 .layout{
     width: 100%;
     height: 100%;
+    --gap: 20px;
+    --menu-width: v-bind(menuWidth);
     .layout-aside{
         transition: all .3s;
         background-color: var(--i-menu-bg-color);
@@ -124,22 +120,48 @@ export default defineComponent({
     .layout-header{
         padding-right: 0;
         height: $header-height;
-        &.padding-left{
-            padding-left: 0;
-        }
     }
     .i-main{
         padding-right: 0;
         padding-top: 0;
+        padding-left: var(--gap);
+        box-sizing: border-box;
     }
     .layout-main{
-        &.main-fixed{
-            padding-top: 44px;
-        }
+        padding-top: 44px;
+        width: 100%;
         &.no-tags-view{
             padding-top: 0;
             margin-top: 0.75rem;
         }
+    }
+    .padding-left{
+        padding-left: 0;
+    }
+    .i-scroll{
+        width: 100%;
+    }
+    .i-tags-view-bg{
+        background: #f5f7f9;
+    }
+    .i-tags-view-dark-bg{
+        background: #101014;
+    }
+    /* 固定顶栏 */
+    .i-fixed-header{
+        position: sticky;
+        position: -webkit-sticky;
+        left: var(--menu-width);
+        right: 0;
+        top: 0;
+        z-index: 100;
+    }
+    .i-fixed-tags-view{
+        position: fixed;
+        left: calc(var(--menu-width) + var(--gap));
+        right: 0;
+        top: $header-height;
+        z-index: 1;
     }
 }
 </style>

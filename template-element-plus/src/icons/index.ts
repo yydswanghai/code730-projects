@@ -24,7 +24,6 @@ export {
     ArrowDownOutline, ArrowLeftOutline, ArrowRightOutline, CloseRound,
     ColumnWidthOutline, FullscreenExit, Fullscreen, Github,
     MinusBaseline, ReloadBlod, SettingsOutline,
-    Document, Organization, Tree,
-    Logo1, Logo2, Avatar1, Avatar2, Avatar3,
-    EyeOutline, EyeOffOutline
+    Document, Organization, Tree, EyeOutline, EyeOffOutline,
+    Avatar1, Avatar2, Avatar3, Logo1, Logo2
 }
